@@ -1,8 +1,0 @@
-{
-    "semantic" : "MODELVIEW",
-    "symbol" : "modelView",
-    "type" : "mat4",
-    "extra" : {
-       "Application specific" : "The extra object can contain any properties."
-    }     
-}
