@@ -1073,25 +1073,34 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                     this.delegate.willDraw(this);
             }
 
-            //parseInt(window.getComputedStyle(this.element.parentElement, null).getPropertyValue("width"));
-            //this._height;//parseInt(window.getComputedStyle(this.element.parentElement, null).getPropertyValue("height"));
-            var width =  this._width;//parseInt(this.canvas.getAttribute("width"));
-            var height = this._height;//parseInt(this.canvas.getAttribute("height"));
-            //if (width != this.width) {
-                this.canvas.setAttribute("width", this._width + "px");
-            //}
+            //FIXME: should probably have to do this...
+            var width;
+            if (!this._width) {
+                width = parseInt(window.getComputedStyle(this.element.parentElement, null).getPropertyValue("width"));
+                this._width = width;
+            } else {
+                width = this._width;
+            }
 
-            //if (height != this.height) {
-                this.canvas.setAttribute("height", this._height + "px");
-            //}
+            var height;
+            if (!this._height) {
+                height = parseInt(window.getComputedStyle(this.element.parentElement, null).getPropertyValue("height"));
+                this._height = height;
+            } else {
+                height = this._height;
+            }
+
+            this.canvas.setAttribute("width", this._width + "px");
+            this.canvas.setAttribute("height", this._height + "px");
+            //----
 
             var webGLContext = this.getWebGLContext();
             webGLContext.viewport(0, 0, width, height);
-            /*if (webGLContext) {
+            //should zap color buffer clear if we have
+            if (webGLContext) {
                 webGLContext.clearColor(0,0,0,0.);
                 webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
-            }*/
-
+            }
         }
     },
 
