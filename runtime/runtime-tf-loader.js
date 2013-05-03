@@ -392,9 +392,8 @@ var global = window;
 
                 this.storeEntry(entryID, node, description);
 
-                node.transform = description.matrix ? mat4.create(description.matrix) : mat4.identity();
+                node.transform = Object.create(Transform).initWithDescription(description);
 
-                //FIXME: decision needs to be made between these 2 ways, probably meshes will be discarded.
                 var meshEntry;
                 if (description.mesh) {
                     meshEntry = this.getEntry(description.mesh);

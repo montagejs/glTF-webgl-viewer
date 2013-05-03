@@ -67,12 +67,15 @@ var global = window;
         Camera = require("runtime/camera").Camera;
         Utilities = require("runtime/utilities").Utilities;
         Renderer = require("runtime/renderer").Renderer;
+        Transform = require("runtime/transform").Transform;
+
     } else {
         Node = global.Node;
         Projection = global.Projection;
         Camera = global.Camera;
         Utilities = global.Utilities;
         Renderer = global.Renderer;
+        Transform = global.Transform;
     }
 
 
@@ -371,7 +374,7 @@ var global = window;
                 this.scene.rootNode.apply( function(node, parent, context) {
                     var worldMatrix = mat4.create();
 
-                    mat4.multiply(context[WORLD], node.transform , worldMatrix);
+                    mat4.multiply(context[WORLD], node.transform.matrix , worldMatrix);
 
                     var path = context.path.concat([node.id]); 
                     var pathID = path.join('-');
@@ -438,7 +441,7 @@ var global = window;
 
                 //get view matrix
                 var viewMatrix = mat4.create();
-                mat4.inverse(this.viewPoint.transform, viewMatrix);
+                mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
 
                 //to be cached
                 var count = this._pathsInfosArray.length;

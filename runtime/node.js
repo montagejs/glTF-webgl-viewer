@@ -46,10 +46,12 @@ var global = window;
     if (typeof exports === 'object') {
         require("runtime/dependencies/gl-matrix");
         Base = require("runtime/base").Base;
+        Transform = require("runtime/transform").Transform;
         Utilities = require("runtime/utilities").Utilities;
     } else {
         Base = global.Base;
         Utilities = global.Utilities;
+        Transform = global.Transform;
     }
 
     var Node = Object.create(Base, {
@@ -140,7 +142,7 @@ var global = window;
             value: function() {
                 this.__Base_init();
                 this._children = [];
-                this._transform = mat4.identity();
+                this._transform = Object.create(Transform).init();
                 this._properties["meshes"] = [];
 
                 var self = this;

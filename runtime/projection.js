@@ -210,7 +210,7 @@ var global = window;
         },
 
         init: {
-            value: function(description) {
+            value: function() {
                 this.__Base_init();
 
                 this.projection = null;
