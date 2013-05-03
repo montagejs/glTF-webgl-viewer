@@ -214,7 +214,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                         var self = this;
                         node.apply( function(node, parent, parentTransform) {
                             var modelMatrix = mat4.create();
-                            mat4.multiply( parentTransform, node.transform, modelMatrix);
+                            mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
 
                             if (node.boundingBox) {
                                 var bbox = Utilities.transformBBox(node.boundingBox, modelMatrix);
@@ -249,7 +249,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                             translationVector[1],
                             translationVector[2]]);
 
-                        mat4.set(translation, scene.rootNode.transform);
+                        mat4.set(translation, scene.rootNode.transform.matrix);
                     }
                     this.engine.technique.rootPass.scene = scene;
                     this.needsDraw = true;
@@ -831,7 +831,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
             node.apply( function(node, parent, parentTransform) {
 
                 var modelMatrix = mat4.create();
-                mat4.multiply( parentTransform, node.transform, modelMatrix);
+                mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
                 if (node.boundingBox) {
                     if (node.meshes) {
                         if (node.meshes.length > 0) {
@@ -853,7 +853,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                                     var scaledModelMatrix = mat4.create();
                                     var scale = 1.0;//1. + (1 - mesh.step) * 0.3;
                                     var scaleMatrix = mat4.scale(mat4.identity(), vec3.createFrom(scale,scale,scale));
-                                    mat4.multiply( node.transform, scaleMatrix , nodeMatrix);
+                                    mat4.multiply( node.transform.matrix, scaleMatrix , nodeMatrix);
                                     mat4.multiply( parentTransform, nodeMatrix, scaledModelMatrix);
                                     if (self.showBBOX)
                                         self.displayBBOX(mesh, cameraMatrix, scaledModelMatrix);
@@ -972,7 +972,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                         return;
                     }
                     var cameraMatrix = this.camera.getViewMat();
-                    mat4.inverse(cameraMatrix, viewPoint.transform);
+                    mat4.inverse(cameraMatrix, viewPoint.transform.matrix);
 
                     //webGLContext.viewport(0, 0, width, height);
 
@@ -995,7 +995,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                         var node = this.scene.rootNode;
 
                         //save car matrix
-                        mat4.set(this.scene.rootNode.transform, savedTr);
+                        mat4.set(this.scene.rootNode.transform.matrix, savedTr);
                         webGLContext.depthMask(true);
 
                         /*
@@ -1012,7 +1012,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                         this.engine.technique.rootPass.viewPoint.flipped = false;
 
                         //restore car matrix
-                        mat4.set(savedTr, node.transform);
+                        mat4.set(savedTr, node.transform.matrix);
                     }
                     
                     //restore culling order
