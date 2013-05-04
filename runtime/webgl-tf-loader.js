@@ -71,7 +71,7 @@ var global = window;
     "use strict";
 
     //to be refined as a tree. in that case, asking for nodes or scenes (most common case) will be fine, but asking for light will trigger unexpected callback (that will be no-op on client side, but could be avoided...)
-    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "techniques", "materials", "meshes", "cameras", "lights", "nodes", "scenes"];
+    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "techniques", "materials", "meshes", "cameras", "lights", "nodes", "scenes", "animations"];
 
     var categoryForType = {
         "buffer" : "buffers",
@@ -84,7 +84,8 @@ var global = window;
         "camera" : "cameras",
         "light" : "lights",
         "node" : "nodes",
-        "scene" : "scenes"
+        "scene" : "scenes",
+        "animation" : "animations"
     };
 
     var typeForCategory = {
@@ -98,7 +99,8 @@ var global = window;
         "cameras" : "camera",
         "lights" : "light",
         "nodes" : "node",
-        "scenes" : "scene"
+        "scenes" : "scene",
+        "animations" : "animation"
     };
 
     var WebGLTFLoader = Object.create(Object.prototype, {
@@ -110,7 +112,6 @@ var global = window;
         SCENE: { value: "scene" },
         NODE: { value: "node" },
         CAMERA: { value: "camera" },
-        VERTEX_ATTRIBUTES: { value: "vertexAttributes" },
         BUFFER : { value: "buffer" },
         IMAGE : { value: "image" },
 
@@ -252,7 +253,8 @@ var global = window;
                     "light" : this.handleLight,
                     "node" : this.handleNode,
                     "scene" : this.handleScene,
-                    "image" : this.handleImage
+                    "image" : this.handleImage,
+                    "animation" : this.handleAnimation
                 };
 
                 var success = true;

@@ -73,7 +73,6 @@ var global = window;
                         this._matrix = mat4.identity();
                     }
 
-
                     mat4.multiply(this._matrix, tr);
                     mat4.multiply(this._matrix, rotation);
                     mat4.multiply(this._matrix, scale);

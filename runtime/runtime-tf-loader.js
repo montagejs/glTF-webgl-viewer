@@ -132,7 +132,6 @@ var global = window;
             }
         },
 
-
         handleTechnique: {
             value: function(entryID, description, userInfo) {
                 var technique = Object.create(Technique);
@@ -153,34 +152,32 @@ var global = window;
                 var allPassesNames = Object.keys(description.passes);
                 allPassesNames.forEach( function(passName) {
                     var passDescription = passesDescriptions[passName];
-                    if (passDescription.type === Pass.PROGRAM) {
-                        var program = passDescription.program; 
-                        if (program) {
-                            var pass = Object.create(ProgramPass).init();
-                            //it is necessary to add an id that is composited using the techniqueID for pass, 
-                            //so that we can uniquely identify them when adding primitives per passes.
-                            pass.id = globalID + "_" + rootPassID;
-                            var vsShaderEntry = this.getEntry(program["VERTEX_SHADER"]);
-                            var fsShaderEntry = this.getEntry(program["FRAGMENT_SHADER"]);
+                    var program = passDescription.program;
+                    if (program) {
+                        var pass = Object.create(ProgramPass).init();
+                        //it is necessary to add an id that is composited using the techniqueID for pass,
+                        //so that we can uniquely identify them when adding primitives per passes.
+                        pass.id = globalID + "_" + rootPassID;
+                        var vsShaderEntry = this.getEntry(program["VERTEX_SHADER"]);
+                        var fsShaderEntry = this.getEntry(program["FRAGMENT_SHADER"]);
 
-                            var progInfo = {};
-                            progInfo[GLSLProgram.VERTEX_SHADER] = vsShaderEntry.entry;
-                            progInfo[GLSLProgram.FRAGMENT_SHADER] = fsShaderEntry.entry;
-                            progInfo["uniforms"] = program.uniforms;
-                            progInfo["attributes"]= program.attributes;
+                        var progInfo = {};
+                        progInfo[GLSLProgram.VERTEX_SHADER] = vsShaderEntry.entry;
+                        progInfo[GLSLProgram.FRAGMENT_SHADER] = fsShaderEntry.entry;
+                        progInfo["uniforms"] = program.uniforms;
+                        progInfo["attributes"]= program.attributes;
 
-                            pass.program = Object.create(ResourceDescription).init(pass.id +"_program", progInfo);
-                            pass.program.type = "program"; //add this here this program object is not defined in the JSON format, we need to set the type manually.
+                        pass.program = Object.create(ResourceDescription).init(pass.id +"_program", progInfo);
+                        pass.program.type = "program"; //add this here this program object is not defined in the JSON format, we need to set the type manually.
 
-                            pass.states = passDescription.states;
-                            passes[passName] = pass;
+                        pass.states = passDescription.states;
+                        passes[passName] = pass;
 
-                        } else {
-                            console.log("ERROR: A Pass with type=program must have a program property");
-                            return false;
-                        }
+                    } else {
+                        console.log("ERROR: A Pass with type=program must have a program property");
+                        return false;
                     }
-                    
+
                 }, this);
 
                 technique.passes = passes;
@@ -249,7 +246,6 @@ var global = window;
 
         handleMesh: {
             value: function(entryID, description, userInfo) {
-
                 var mesh = Object.create(Mesh).init();
                 mesh.id = entryID;
                 mesh.name = description.name;
@@ -428,11 +424,17 @@ var global = window;
             }
         },
 
+        handleAnimation : {
+            value: function(entryID, description, userInfo) {
+            }
+        },
+
         handleError: {
             value: function(reason) {
                 //TODO: propagate in the delegate
             }
         },
+
 
         //----- store model values
 
