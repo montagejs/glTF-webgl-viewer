@@ -1491,8 +1491,12 @@ var global = window;
             b10, b11, b12,
             b20, b21, b22;
 
-        if (!len) { return null; }
+        if (!len) {
+            return null;
+        }
+
         if (len !== 1) {
+            //debugger;
             len = 1 / len;
             x *= len;
             y *= len;
@@ -2379,6 +2383,12 @@ var global = window;
             ratioA,
             ratioB;
 
+        var sign = 1;
+        if (cosHalfTheta < 0) {
+            cosHalfTheta = -cosHalfTheta;
+            sign = -1;
+        }
+
         if (Math.abs(cosHalfTheta) >= 1.0) {
             if (dest !== quat) {
                 dest[0] = quat[0];
@@ -2388,7 +2398,6 @@ var global = window;
             }
             return dest;
         }
-
         halfTheta = Math.acos(cosHalfTheta);
         sinHalfTheta = Math.sqrt(1.0 - cosHalfTheta * cosHalfTheta);
 
@@ -2399,14 +2408,13 @@ var global = window;
             dest[3] = (quat[3] * 0.5 + quat2[3] * 0.5);
             return dest;
         }
-
         ratioA = Math.sin((1 - slerp) * halfTheta) / sinHalfTheta;
         ratioB = Math.sin(slerp * halfTheta) / sinHalfTheta;
 
-        dest[0] = (quat[0] * ratioA + quat2[0] * ratioB);
-        dest[1] = (quat[1] * ratioA + quat2[1] * ratioB);
-        dest[2] = (quat[2] * ratioA + quat2[2] * ratioB);
-        dest[3] = (quat[3] * ratioA + quat2[3] * ratioB);
+        dest[0] = (quat[0] * ratioA + quat2[0] * sign * ratioB);
+        dest[1] = (quat[1] * ratioA + quat2[1] * sign * ratioB);
+        dest[2] = (quat[2] * ratioA + quat2[2] * sign * ratioB);
+        dest[3] = (quat[3] * ratioA + quat2[3] * sign * ratioB);
 
         return dest;
     };
