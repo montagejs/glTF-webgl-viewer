@@ -57,7 +57,7 @@ Material.implicitAnimationsEnabled = true;
 exports.View = Component.specialize( {
 
     constructor: {
-        value: function Component() {
+        value: function View() {
             this.super();
         }
     },
