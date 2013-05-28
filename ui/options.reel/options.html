@@ -117,6 +117,24 @@ POSSIBILITY OF SUCH DAMAGE.
                 "valuePropertyPath": "path",
                 "element": {"#": "selectModel"}
             }
+        },
+
+        "modelControllerCamera": {
+            "prototype": "montage/core/range-controller",
+            "properties": {
+                "selectAddedContent": true,
+                "content": []
+            }
+        },
+
+        "selectCamera": {
+            "prototype": "matte/ui/select.reel",
+            "properties": {
+                "contentController": {"@": "modelControllerCamera"},
+                "textPropertyPath": "name",
+                "valuePropertyPath": "node",
+                "element": {"#": "selectCamera"}
+            }
         }
     }
     </script>
@@ -125,7 +143,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <body>
     <div data-montage-id="options" class="options">
         
-        <h1 class="title">COLLADA2GLTF</h1>
+        <h1 class="title">GLTF Viewer</h1>
         
         <section class="optionsGroup">
             <h3></h3>
@@ -162,7 +180,18 @@ POSSIBILITY OF SUCH DAMAGE.
             <select type="select" data-montage-id="selectModel">
             </select>
         </section>
-        
+
+        <section class="optionsGroup">
+            <h3>Camera</h3>
+            <select type="select" data-montage-id="selectCamera">
+            </select>
+        </section>
+
+        <section class="optionsGroup">
+            <image src="ui/options.reel/montage-160x160.png" width="160" height="160">
+        </section>
+
+
     </div>
 </body>
 </html>

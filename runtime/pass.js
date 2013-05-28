@@ -346,6 +346,31 @@ var global = window;
             }
         },
 
+        updateTransforms: {
+            value: function() {
+                if (this.scene) {
+                    var self = this;
+                    var context = mat4.identity();
+                    this.scene.rootNode.apply( function(node, parent, context) {
+                        var worldMatrix;
+                        var pathID = self._pathIDsForNodeID[node.id];
+
+                        var pathInfos = self._pathsInfos[pathID];
+                        if (pathInfos) {
+                            worldMatrix = pathInfos[Renderer.WORLD];
+                        } else {
+                            worldMatrix = parentMatrix;
+                        }
+
+                        var parentMatrix = context;
+                        mat4.multiply(parentMatrix, node.transform.matrix , worldMatrix);
+
+                        return worldMatrix;
+                    } , true, context);
+                }
+            }
+        },
+
         sceneDidChange: {
             value: function() {
                 //prepares all infos
@@ -436,21 +461,29 @@ var global = window;
                 if (!this.scene)
                     return;
 
+                this.updateTransforms();
+
                 //set projection matrix
                 renderer.projectionMatrix = this.viewPoint.cameras[0].projection.matrix;
 
                 //get view matrix
                 var viewMatrix = mat4.create();
-                mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
+
+                //FIXME: hack, need to properly expose world matrix, the app can't currently access it.
+                if (this.viewPoint.flipped) {
+                    mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
+                } else {
+                    var pathID = this._pathIDsForNodeID[this.viewPoint.id];
+                    if (pathID) {
+                        var pathInfo = this._pathsInfos[pathID];
+                        mat4.inverse(pathInfo[Renderer.WORLD], viewMatrix);
+                    } else {
+                        mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
+                    }
+                }
 
                 //to be cached
                 var count = this._pathsInfosArray.length;
-
-                if (this.viewPoint.flipped) {
-                    var translationMatrix = mat4.translate(mat4.identity(), [0, 0, 0 ]);
-                    var scaleMatrix = mat4.scale(translationMatrix, [1, 1, -1]);
-                    mat4.multiply(viewMatrix, scaleMatrix, viewMatrix) ;
-                }
 
                 for (var i = 0 ; i < count ; i++) {
                     var pathInfos = this._pathsInfosArray[i];
@@ -467,7 +500,7 @@ var global = window;
                 keys.forEach( function(key) {
                     var passWithPrimitives = this._primitivesPerPass[key];
                     var states = passWithPrimitives.pass.states;
-                    if (states.BLEND) {
+                    if (states.blendEnable) {
                         nonOpaquePassesWithPrimitives.push(passWithPrimitives);
                     } else {
                         renderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass);
@@ -528,6 +561,11 @@ var global = window;
         viewPoint: {
             get: function() {
                 return this.sceneRenderer ? this.sceneRenderer.viewPoint : null;
+            },
+            set: function(viewpoint) {
+                if (this.sceneRenderer) {
+                    this.sceneRenderer.viewPoint = viewpoint;
+                }
             }
         },
 

@@ -1,16 +1,22 @@
 {
+    "animations": {},
     "bufferViews": {
-        "bufferView_337": {
+        "bufferView_331": {
             "buffer": "wine.bin",
             "byteLength": 284064,
             "byteOffset": 0,
             "target": "ARRAY_BUFFER"
         },
-        "bufferView_338": {
+        "bufferView_332": {
             "buffer": "wine.bin",
             "byteLength": 44940,
             "byteOffset": 284064,
             "target": "ELEMENT_ARRAY_BUFFER"
+        },
+        "bufferView_333": {
+            "buffer": "wine.bin",
+            "byteLength": 0,
+            "byteOffset": 329004
         }
     },
     "buffers": {
@@ -60,10 +66,6 @@
                             "type": "SAMPLER_2D",
                             "wrapS": "REPEAT",
                             "wrapT": "REPEAT"
-                        },
-                        "shininess": {
-                            "type": "FLOAT",
-                            "value": -1
                         }
                     }
                 }
@@ -90,10 +92,6 @@
                                 0.972549,
                                 0.835294
                             ]
-                        },
-                        "shininess": {
-                            "type": "FLOAT",
-                            "value": -1
                         },
                         "transparency": {
                             "type": "FLOAT",
@@ -124,10 +122,6 @@
                             "type": "SAMPLER_2D",
                             "wrapS": "REPEAT",
                             "wrapT": "REPEAT"
-                        },
-                        "shininess": {
-                            "type": "FLOAT",
-                            "value": -1
                         }
                     }
                 }
@@ -154,10 +148,6 @@
                                 1,
                                 1
                             ]
-                        },
-                        "shininess": {
-                            "type": "FLOAT",
-                            "value": -1
                         }
                     }
                 }
@@ -184,10 +174,6 @@
                             "type": "SAMPLER_2D",
                             "wrapS": "REPEAT",
                             "wrapT": "REPEAT"
-                        },
-                        "shininess": {
-                            "type": "FLOAT",
-                            "value": -1
                         }
                     }
                 }
@@ -197,12 +183,10 @@
     "meshes": {
         "geometry16": {
             "attributes": {
-                "attribute_24": {
-                    "bufferView": "bufferView_337",
+                "attribute_18": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 0,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 96,
                     "max": [
                         2,
@@ -213,14 +197,13 @@
                         0,
                         0,
                         5.5
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_26": {
-                    "bufferView": "bufferView_337",
+                "attribute_20": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 1152,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 96,
                     "max": [
                         1,
@@ -231,14 +214,13 @@
                         -1,
                         -1,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_28": {
-                    "bufferView": "bufferView_337",
+                "attribute_22": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 2304,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 96,
                     "max": [
                         4.15963,
@@ -247,14 +229,15 @@
                     "min": [
                         -1.14777,
                         -0.08885
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry16",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 0,
                         "count": 168,
                         "type": "UNSIGNED_SHORT"
@@ -262,21 +245,19 @@
                     "material": "material.2",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_26",
-                        "POSITION": "attribute_24",
-                        "TEXCOORD_0": "attribute_28"
+                        "NORMAL": "attribute_20",
+                        "POSITION": "attribute_18",
+                        "TEXCOORD_0": "attribute_22"
                     }
                 }
             ]
         },
         "geometry24": {
             "attributes": {
-                "attribute_43": {
-                    "bufferView": "bufferView_337",
+                "attribute_37": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 3072,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 720,
                     "max": [
                         16.8,
@@ -287,14 +268,13 @@
                         1.4,
                         -0,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_45": {
-                    "bufferView": "bufferView_337",
+                "attribute_39": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 11712,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 720,
                     "max": [
                         1,
@@ -305,14 +285,15 @@
                         -1,
                         -1,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 }
             },
             "name": "geometry24",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 336,
                         "count": 1944,
                         "type": "UNSIGNED_SHORT"
@@ -320,20 +301,18 @@
                     "material": "material.3",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_45",
-                        "POSITION": "attribute_43"
+                        "NORMAL": "attribute_39",
+                        "POSITION": "attribute_37"
                     }
                 }
             ]
         },
         "geometry29": {
             "attributes": {
-                "attribute_60": {
-                    "bufferView": "bufferView_337",
+                "attribute_54": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 20352,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 720,
                     "max": [
                         16.8,
@@ -344,14 +323,13 @@
                         1.4,
                         -0,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_62": {
-                    "bufferView": "bufferView_337",
+                "attribute_56": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 28992,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 720,
                     "max": [
                         1,
@@ -362,14 +340,15 @@
                         -1,
                         -1,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 }
             },
             "name": "geometry29",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 4224,
                         "count": 1944,
                         "type": "UNSIGNED_SHORT"
@@ -377,20 +356,18 @@
                     "material": "material.3",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_62",
-                        "POSITION": "attribute_60"
+                        "NORMAL": "attribute_56",
+                        "POSITION": "attribute_54"
                     }
                 }
             ]
         },
         "geometry35": {
             "attributes": {
-                "attribute_81": {
-                    "bufferView": "bufferView_337",
+                "attribute_75": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 37632,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 30,
                     "max": [
                         0.5,
@@ -401,14 +378,13 @@
                         -0.5,
                         0,
                         2.5
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_83": {
-                    "bufferView": "bufferView_337",
+                "attribute_77": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 37992,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 30,
                     "max": [
                         1,
@@ -419,14 +395,13 @@
                         -1,
                         -1,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_85": {
-                    "bufferView": "bufferView_337",
+                "attribute_79": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 38352,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 30,
                     "max": [
                         0.291667,
@@ -435,14 +410,15 @@
                     "min": [
                         -0.291667,
                         0.352547
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry35",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 8112,
                         "count": 48,
                         "type": "UNSIGNED_SHORT"
@@ -450,21 +426,51 @@
                     "material": "material.2",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_83",
-                        "POSITION": "attribute_81",
-                        "TEXCOORD_0": "attribute_85"
+                        "NORMAL": "attribute_77",
+                        "POSITION": "attribute_75",
+                        "TEXCOORD_0": "attribute_79"
                     }
                 }
             ]
         },
         "geometry40": {
             "attributes": {
-                "attribute_104": {
-                    "bufferView": "bufferView_337",
+                "attribute_100": {
+                    "bufferView": "bufferView_331",
+                    "byteOffset": 40704,
+                    "byteStride": 12,
+                    "count": 176,
+                    "max": [
+                        1,
+                        1,
+                        1
+                    ],
+                    "min": [
+                        -1,
+                        -1,
+                        -1
+                    ],
+                    "type": "FLOAT_VEC3"
+                },
+                "attribute_102": {
+                    "bufferView": "bufferView_331",
+                    "byteOffset": 42816,
+                    "byteStride": 8,
+                    "count": 176,
+                    "max": [
+                        8.17898,
+                        1
+                    ],
+                    "min": [
+                        2.31603,
+                        -0.06428
+                    ],
+                    "type": "FLOAT_VEC2"
+                },
+                "attribute_98": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 38592,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 176,
                     "max": [
                         54,
@@ -475,48 +481,15 @@
                         -5,
                         0,
                         0
-                    ]
-                },
-                "attribute_106": {
-                    "bufferView": "bufferView_337",
-                    "byteOffset": 40704,
-                    "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
-                    "count": 176,
-                    "max": [
-                        1,
-                        1,
-                        1
                     ],
-                    "min": [
-                        -1,
-                        -1,
-                        -1
-                    ]
-                },
-                "attribute_108": {
-                    "bufferView": "bufferView_337",
-                    "byteOffset": 42816,
-                    "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
-                    "count": 176,
-                    "max": [
-                        8.17898,
-                        1
-                    ],
-                    "min": [
-                        2.31603,
-                        -0.06428
-                    ]
+                    "type": "FLOAT_VEC3"
                 }
             },
             "name": "geometry40",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 8208,
                         "count": 360,
                         "type": "UNSIGNED_SHORT"
@@ -524,21 +497,19 @@
                     "material": "material.2",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_106",
-                        "POSITION": "attribute_104",
-                        "TEXCOORD_0": "attribute_108"
+                        "NORMAL": "attribute_100",
+                        "POSITION": "attribute_98",
+                        "TEXCOORD_0": "attribute_102"
                     }
                 }
             ]
         },
         "geometry45": {
             "attributes": {
-                "attribute_127": {
-                    "bufferView": "bufferView_337",
+                "attribute_121": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 44224,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 96,
                     "max": [
                         2,
@@ -549,14 +520,13 @@
                         0,
                         0,
                         5.5
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_129": {
-                    "bufferView": "bufferView_337",
+                "attribute_123": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 45376,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 96,
                     "max": [
                         1,
@@ -567,14 +537,13 @@
                         -1,
                         -1,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_131": {
-                    "bufferView": "bufferView_337",
+                "attribute_125": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 46528,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 96,
                     "max": [
                         4.15963,
@@ -583,14 +552,15 @@
                     "min": [
                         -1.14777,
                         -0.08885
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry45",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 8928,
                         "count": 168,
                         "type": "UNSIGNED_SHORT"
@@ -598,21 +568,19 @@
                     "material": "material.2",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_129",
-                        "POSITION": "attribute_127",
-                        "TEXCOORD_0": "attribute_131"
+                        "NORMAL": "attribute_123",
+                        "POSITION": "attribute_121",
+                        "TEXCOORD_0": "attribute_125"
                     }
                 }
             ]
         },
         "geometry51": {
             "attributes": {
-                "attribute_150": {
-                    "bufferView": "bufferView_337",
+                "attribute_144": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 47296,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 1968,
                     "max": [
                         117.98,
@@ -623,14 +591,13 @@
                         0,
                         0,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_152": {
-                    "bufferView": "bufferView_337",
+                "attribute_146": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 70912,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 1968,
                     "max": [
                         0.995313,
@@ -641,14 +608,13 @@
                         -0.995313,
                         -0.995313,
                         -0.962469
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_154": {
-                    "bufferView": "bufferView_337",
+                "attribute_148": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 94528,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 1968,
                     "max": [
                         0.855532,
@@ -657,14 +623,15 @@
                     "min": [
                         -0.555297,
                         0.021103
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry51",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 9264,
                         "count": 4740,
                         "type": "UNSIGNED_SHORT"
@@ -672,21 +639,19 @@
                     "material": "material.4",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_152",
-                        "POSITION": "attribute_150",
-                        "TEXCOORD_0": "attribute_154"
+                        "NORMAL": "attribute_146",
+                        "POSITION": "attribute_144",
+                        "TEXCOORD_0": "attribute_148"
                     }
                 }
             ]
         },
         "geometry58": {
             "attributes": {
-                "attribute_189": {
-                    "bufferView": "bufferView_337",
+                "attribute_183": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 110272,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 48,
                     "max": [
                         82.9854,
@@ -697,14 +662,13 @@
                         34.9944,
                         34.9944,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_191": {
-                    "bufferView": "bufferView_337",
+                "attribute_185": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 110848,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 48,
                     "max": [
                         -0,
@@ -715,14 +679,13 @@
                         -0,
                         0,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_193": {
-                    "bufferView": "bufferView_337",
+                "attribute_187": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 111424,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 48,
                     "max": [
                         0.642232,
@@ -731,14 +694,15 @@
                     "min": [
                         0.349715,
                         0.987863
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry58",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 18744,
                         "count": 66,
                         "type": "UNSIGNED_SHORT"
@@ -746,14 +710,14 @@
                     "material": "material.5",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_191",
-                        "POSITION": "attribute_189",
-                        "TEXCOORD_0": "attribute_193"
+                        "NORMAL": "attribute_185",
+                        "POSITION": "attribute_183",
+                        "TEXCOORD_0": "attribute_187"
                     }
                 },
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 18876,
                         "count": 66,
                         "type": "UNSIGNED_SHORT"
@@ -761,21 +725,19 @@
                     "material": "material.4",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_191",
-                        "POSITION": "attribute_189",
-                        "TEXCOORD_0": "attribute_193"
+                        "NORMAL": "attribute_185",
+                        "POSITION": "attribute_183",
+                        "TEXCOORD_0": "attribute_187"
                     }
                 }
             ]
         },
         "geometry64": {
             "attributes": {
-                "attribute_212": {
-                    "bufferView": "bufferView_337",
+                "attribute_206": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 111808,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 176,
                     "max": [
                         54,
@@ -786,14 +748,13 @@
                         -5,
                         0,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_214": {
-                    "bufferView": "bufferView_337",
+                "attribute_208": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 113920,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 176,
                     "max": [
                         1,
@@ -804,14 +765,13 @@
                         -1,
                         -1,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_216": {
-                    "bufferView": "bufferView_337",
+                "attribute_210": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 116032,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 176,
                     "max": [
                         8.17898,
@@ -820,14 +780,15 @@
                     "min": [
                         2.31603,
                         -0.06428
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry64",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 19008,
                         "count": 360,
                         "type": "UNSIGNED_SHORT"
@@ -835,21 +796,19 @@
                     "material": "material.2",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_214",
-                        "POSITION": "attribute_212",
-                        "TEXCOORD_0": "attribute_216"
+                        "NORMAL": "attribute_208",
+                        "POSITION": "attribute_206",
+                        "TEXCOORD_0": "attribute_210"
                     }
                 }
             ]
         },
         "geometry71": {
             "attributes": {
-                "attribute_231": {
-                    "bufferView": "bufferView_337",
+                "attribute_225": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 117440,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 224,
                     "max": [
                         5,
@@ -860,14 +819,13 @@
                         0,
                         0,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_233": {
-                    "bufferView": "bufferView_337",
+                "attribute_227": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 120128,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 224,
                     "max": [
                         1,
@@ -878,14 +836,15 @@
                         -1,
                         -0.97185,
                         -0.97185
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 }
             },
             "name": "geometry71",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 19728,
                         "count": 600,
                         "type": "UNSIGNED_SHORT"
@@ -893,20 +852,18 @@
                     "material": "material.3",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_233",
-                        "POSITION": "attribute_231"
+                        "NORMAL": "attribute_227",
+                        "POSITION": "attribute_225"
                     }
                 }
             ]
         },
         "geometry75": {
             "attributes": {
-                "attribute_252": {
-                    "bufferView": "bufferView_337",
+                "attribute_246": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 122816,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 2933,
                     "max": [
                         25.9025,
@@ -917,14 +874,13 @@
                         0,
                         0,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_254": {
-                    "bufferView": "bufferView_337",
+                "attribute_248": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 158012,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 2933,
                     "max": [
                         0.999806,
@@ -935,14 +891,13 @@
                         -0.999806,
                         -0.999806,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_256": {
-                    "bufferView": "bufferView_337",
+                "attribute_250": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 193208,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 2933,
                     "max": [
                         0.888318,
@@ -951,14 +906,15 @@
                     "min": [
                         -0.595152,
                         0.013247
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry75",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 20928,
                         "count": 6918,
                         "type": "UNSIGNED_SHORT"
@@ -966,21 +922,19 @@
                     "material": "material.6",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_254",
-                        "POSITION": "attribute_252",
-                        "TEXCOORD_0": "attribute_256"
+                        "NORMAL": "attribute_248",
+                        "POSITION": "attribute_246",
+                        "TEXCOORD_0": "attribute_250"
                     }
                 }
             ]
         },
         "geometry85": {
             "attributes": {
-                "attribute_271": {
-                    "bufferView": "bufferView_337",
+                "attribute_265": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 216672,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 120,
                     "max": [
                         0,
@@ -991,14 +945,13 @@
                         -118,
                         -0,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_273": {
-                    "bufferView": "bufferView_337",
+                "attribute_267": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 218112,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 120,
                     "max": [
                         1,
@@ -1009,14 +962,15 @@
                         -1,
                         -1,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 }
             },
             "name": "geometry85",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 34764,
                         "count": 216,
                         "type": "UNSIGNED_SHORT"
@@ -1024,20 +978,18 @@
                     "material": "material.3",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_273",
-                        "POSITION": "attribute_271"
+                        "NORMAL": "attribute_267",
+                        "POSITION": "attribute_265"
                     }
                 }
             ]
         },
         "geometry89": {
             "attributes": {
-                "attribute_292": {
-                    "bufferView": "bufferView_337",
+                "attribute_286": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 219552,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 1968,
                     "max": [
                         117.98,
@@ -1048,14 +1000,13 @@
                         0,
                         0,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_294": {
-                    "bufferView": "bufferView_337",
+                "attribute_288": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 243168,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 1968,
                     "max": [
                         0.995313,
@@ -1066,14 +1017,13 @@
                         -0.995313,
                         -0.995313,
                         -0.962469
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_296": {
-                    "bufferView": "bufferView_337",
+                "attribute_290": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 266784,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 1968,
                     "max": [
                         0.855532,
@@ -1082,14 +1032,15 @@
                     "min": [
                         -0.555297,
                         0.021103
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry89",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 35196,
                         "count": 4740,
                         "type": "UNSIGNED_SHORT"
@@ -1097,21 +1048,19 @@
                     "material": "material.4",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_294",
-                        "POSITION": "attribute_292",
-                        "TEXCOORD_0": "attribute_296"
+                        "NORMAL": "attribute_288",
+                        "POSITION": "attribute_286",
+                        "TEXCOORD_0": "attribute_290"
                     }
                 }
             ]
         },
         "geometry98": {
             "attributes": {
-                "attribute_331": {
-                    "bufferView": "bufferView_337",
+                "attribute_325": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 282528,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 48,
                     "max": [
                         82.9854,
@@ -1122,14 +1071,13 @@
                         34.9944,
                         34.9944,
                         0
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_333": {
-                    "bufferView": "bufferView_337",
+                "attribute_327": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 283104,
                     "byteStride": 12,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 3,
                     "count": 48,
                     "max": [
                         -0,
@@ -1140,14 +1088,13 @@
                         -0,
                         0,
                         -1
-                    ]
+                    ],
+                    "type": "FLOAT_VEC3"
                 },
-                "attribute_335": {
-                    "bufferView": "bufferView_337",
+                "attribute_329": {
+                    "bufferView": "bufferView_331",
                     "byteOffset": 283680,
                     "byteStride": 8,
-                    "componentType": "FLOAT",
-                    "componentsPerAttribute": 2,
                     "count": 48,
                     "max": [
                         0.642232,
@@ -1156,14 +1103,15 @@
                     "min": [
                         0.349715,
                         0.987863
-                    ]
+                    ],
+                    "type": "FLOAT_VEC2"
                 }
             },
             "name": "geometry98",
             "primitives": [
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 44676,
                         "count": 66,
                         "type": "UNSIGNED_SHORT"
@@ -1171,14 +1119,14 @@
                     "material": "material.5",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_333",
-                        "POSITION": "attribute_331",
-                        "TEXCOORD_0": "attribute_335"
+                        "NORMAL": "attribute_327",
+                        "POSITION": "attribute_325",
+                        "TEXCOORD_0": "attribute_329"
                     }
                 },
                 {
                     "indices": {
-                        "bufferView": "bufferView_338",
+                        "bufferView": "bufferView_332",
                         "byteOffset": 44808,
                         "count": 66,
                         "type": "UNSIGNED_SHORT"
@@ -1186,9 +1134,9 @@
                     "material": "material.4",
                     "primitive": "TRIANGLES",
                     "semantics": {
-                        "NORMAL": "attribute_333",
-                        "POSITION": "attribute_331",
-                        "TEXCOORD_0": "attribute_335"
+                        "NORMAL": "attribute_327",
+                        "POSITION": "attribute_325",
+                        "TEXCOORD_0": "attribute_329"
                     }
                 }
             ]
@@ -11693,7 +11641,7 @@
         }
     },
     "profile": "WebGL 1.0",
-    "scene" : "defaultScene",
+    "scene": "defaultScene",
     "scenes": {
         "defaultScene": {
             "node": "root"
@@ -11735,14 +11683,14 @@
                                 "type": "FLOAT_VEC3"
                             },
                             {
-                                "semantic": "TEXCOORD_0",
-                                "symbol": "a_texcoord0",
-                                "type": "FLOAT_VEC2"
-                            },
-                            {
                                 "semantic": "POSITION",
                                 "symbol": "a_position",
                                 "type": "FLOAT_VEC3"
+                            },
+                            {
+                                "semantic": "TEXCOORD_0",
+                                "symbol": "a_texcoord0",
+                                "type": "FLOAT_VEC2"
                             }
                         ],
                         "uniforms": [
@@ -11750,11 +11698,6 @@
                                 "semantic": "WORLDVIEWINVERSETRANSPOSE",
                                 "symbol": "u_normalMatrix",
                                 "type": "FLOAT_MAT3"
-                            },
-                            {
-                                "parameter": "diffuse",
-                                "symbol": "u_diffuseTexture",
-                                "type": "SAMPLER_2D"
                             },
                             {
                                 "semantic": "WORLDVIEW",
@@ -11765,15 +11708,20 @@
                                 "semantic": "PROJECTION",
                                 "symbol": "u_projectionMatrix",
                                 "type": "FLOAT_MAT4"
+                            },
+                            {
+                                "parameter": "diffuse",
+                                "symbol": "u_diffuseTexture",
+                                "type": "SAMPLER_2D"
                             }
                         ]
                     },
                     "states": {
                         "blendEnable": false,
+                        "cullFaceEnable": true,
                         "depthMask": true,
                         "depthTestEnable": true
-                    },
-                    "type": "program"
+                    }
                 }
             }
         },
@@ -11804,16 +11752,6 @@
                                 "type": "FLOAT_MAT3"
                             },
                             {
-                                "parameter": "diffuse",
-                                "symbol": "u_diffuse",
-                                "type": "FLOAT_VEC3"
-                            },
-                            {
-                                "parameter": "transparency",
-                                "symbol": "u_transparency",
-                                "type": "FLOAT"
-                            },
-                            {
                                 "semantic": "WORLDVIEW",
                                 "symbol": "u_worldviewMatrix",
                                 "type": "FLOAT_MAT4"
@@ -11822,6 +11760,16 @@
                                 "semantic": "PROJECTION",
                                 "symbol": "u_projectionMatrix",
                                 "type": "FLOAT_MAT4"
+                            },
+                            {
+                                "parameter": "diffuse",
+                                "symbol": "u_diffuse",
+                                "type": "FLOAT_VEC3"
+                            },
+                            {
+                                "parameter": "transparency",
+                                "symbol": "u_transparency",
+                                "type": "FLOAT"
                             }
                         ]
                     },
@@ -11832,10 +11780,10 @@
                             "dfactor": "ONE_MINUS_SRC_ALPHA",
                             "sfactor": "SRC_ALPHA"
                         },
+                        "cullFaceEnable": true,
                         "depthMask": false,
                         "depthTestEnable": true
-                    },
-                    "type": "program"
+                    }
                 }
             }
         },
@@ -11866,11 +11814,6 @@
                                 "type": "FLOAT_MAT3"
                             },
                             {
-                                "parameter": "diffuse",
-                                "symbol": "u_diffuse",
-                                "type": "FLOAT_VEC3"
-                            },
-                            {
                                 "semantic": "WORLDVIEW",
                                 "symbol": "u_worldviewMatrix",
                                 "type": "FLOAT_MAT4"
@@ -11879,18 +11822,23 @@
                                 "semantic": "PROJECTION",
                                 "symbol": "u_projectionMatrix",
                                 "type": "FLOAT_MAT4"
+                            },
+                            {
+                                "parameter": "diffuse",
+                                "symbol": "u_diffuse",
+                                "type": "FLOAT_VEC3"
                             }
                         ]
                     },
                     "states": {
                         "blendEnable": false,
+                        "cullFaceEnable": true,
                         "depthMask": true,
                         "depthTestEnable": true
-                    },
-                    "type": "program"
+                    }
                 }
             }
         }
     },
-    "version": "0.2"
+    "version": "0.3"
 }

@@ -423,8 +423,6 @@ var global = window;
 
                 handleError: function(errorCode, info) {
                     // FIXME: report error
-                    debugger;
-
                     console.log("ERROR:vertexAttributeBufferDelegate:"+errorCode+" :"+info);
                 },
             
@@ -446,27 +444,62 @@ var global = window;
                 }
             }
         },
-        
+
         vertexAttributeBufferDelegate: {
              value: {
-                webGLContext:  {
+
+                 _componentTypeForGLType: function(gl, glType) {
+                     switch (glType) {
+                         case "FLOAT" :
+                         case "FLOAT_VEC2" :
+                         case "FLOAT_VEC3" :
+                         case "FLOAT_VEC4" :
+                             return gl.FLOAT;
+                         case "UNSIGNED_BYTE":
+                             return gl.UNSIGNED_BYTE;
+                         case "UNSIGNED_SHORT" :
+                             return gl.UNSIGNED_SHORT;
+                         default:
+                             return null;
+                     }
+                 },
+
+                 _componentsPerElementForGLType: function(glType) {
+                     switch (glType) {
+                         case "FLOAT" :
+                         case "UNSIGNED_BYTE" :
+                         case "UNSIGNED_SHORT" :
+                             return 1;
+                         case "FLOAT_VEC2" :
+                             return 2;
+                         case "FLOAT_VEC3" :
+                             return 3;
+                         case "FLOAT_VEC4" :
+                             return 4;
+                         default:
+                             return null;
+                     }
+                 },
+
+                 webGLContext:  {
                     value: null, writable: true
                 },
 
                 handleError: function(errorCode, info) {
-                    debugger;
-
                     console.log("ERROR:vertexAttributeBufferDelegate:"+errorCode+" :"+info);
                 },
             
                 convert: function (resource, ctx) {
+                    var attribute = ctx;
                     var gl = this.webGLContext;                
                     var previousBuffer = gl.getParameter(gl.ARRAY_BUFFER_BINDING);
-        
+
                     var glResource =  gl.createBuffer();                
                     gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
-                    gl.bufferData(gl.ARRAY_BUFFER, resource, gl.STATIC_DRAW);                
-
+                    //FIXME: use bufferSubData to prevent alloc
+                    gl.bufferData(gl.ARRAY_BUFFER, resource, gl.STATIC_DRAW);
+                    glResource.componentType = this._componentTypeForGLType(gl, attribute.type);
+                    glResource.componentsPerAttribute = this._componentsPerElementForGLType(attribute.type);
                     gl.bindBuffer(gl.ARRAY_BUFFER, previousBuffer);
                     return glResource;
                 },
@@ -605,18 +638,20 @@ var global = window;
                     case gl.BLEND:
                         if ((this._blend !== flag) || force) {
                             if (flag) {
-                                gl.depthMask(false);
                                 gl.enable(gl.BLEND);
-                                gl.blendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
                             } else {
-                                gl.depthMask(true);
-                                gl.disable(gl.BLEND);                               
+                                gl.disable(gl.BLEND);
                             }
                             this._blend = flag;
                         }
                     break; 
 
                     default:
+                        if (flag) {
+                            gl.enable(stateID);
+                        } else {
+                            gl.disable(stateID);
+                        }
                     break;
                 }
             }
@@ -632,7 +667,7 @@ var global = window;
                 }
                 this._lastMaxEnabledArray = -1;
                 this.bindedProgram = null;
-                this.setState(this.BLEND, false, true);
+                this.setState(gl.BLEND, false);
             }
         },
         
@@ -641,6 +676,7 @@ var global = window;
                 var renderVertices = false;
                 //var worldMatrix = primitiveDescription.worldViewMatrix;
                 //var projectionMatrix = this.projectionMatrix;
+
                   var primitive = primitiveDescription.primitive;
                 var newMaxEnabledArray = -1;
                 var gl = this.webGLContext;
@@ -687,7 +723,6 @@ var global = window;
                 
                 var availableCount = 0;
 
-
                 //----- bind attributes -----
                 var attributes = pass.program.description.attributes;
 
@@ -699,11 +734,7 @@ var global = window;
                     var accessor = primitive.semantics[semantic];
 
                     this.vertexAttributeBufferDelegate.webGLContext = this.webGLContext;
-                    var glResource = this.resourceManager.getResource(  accessor, 
-                                                                        this.vertexAttributeBufferDelegate,  { 
-                                                                            "semantic": semantic, 
-                                                                            "primitive": primitive
-                                                                        });
+                    var glResource = this.resourceManager.getResource(  accessor, this.vertexAttributeBufferDelegate, accessor);
                     // this call will bind the resource when available
                     if (glResource) {
                         gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
@@ -718,7 +749,10 @@ var global = window;
                             //if (this._lastMaxEnabledArray < attributeLocation) {
                             gl.enableVertexAttribArray(attributeLocation);
                             //}
-                            gl.vertexAttribPointer(attributeLocation, accessor.componentsPerAttribute, gl.FLOAT, false, accessor.byteStride, 0);
+                            gl.vertexAttribPointer(attributeLocation,
+                                glResource.componentsPerAttribute,
+                                glResource.componentType, false, accessor.byteStride, 0);
+
                             if ( renderVertices && (semantic == "POSITION")) {
                                 gl.drawArrays(gl.POINTS, 0, accessor.count);
                             }
@@ -759,7 +793,6 @@ var global = window;
         programDelegate: {
             value: {
                 handleError: function(errorCode, info) {
-                    debugger;
                     // FIXME: report
                      console.log("ERROR:programDelegate:"+errorCode+" :"+info);
                 },
@@ -792,6 +825,7 @@ var global = window;
                         var blending = false;
                         var depthTest = true;
                         var depthMask = true;
+                        var cullFaceEnable = true;
                         var states = pass.states;
                         var blendEquation = gl.FUNC_ADD;
                         var sfactor = gl.SRC_ALPHA;
@@ -805,6 +839,8 @@ var global = window;
                                 depthTest = false;
                             if (!states.depthMask)
                                 depthMask = false;
+                            if (typeof states["cullFaceEnable"] != "undefined")
+                                cullFaceEnable = states["cullFaceEnable"];
                             if(states.blendEquation) {
                                 var blendFunc = states.blendFunc;
                                 if (blendFunc) {
@@ -816,11 +852,14 @@ var global = window;
                             }
                         }
 
-                        this.setState(gl.BLEND, blending);
                         this.setState(gl.DEPTH_TEST, depthTest);
+                        this.setState(gl.CULL_FACE, cullFaceEnable);
                         gl.depthMask(depthMask);
-                        gl.blendEquation(blendEquation);
-                        gl.blendFunc(sfactor, dfactor);
+                        this.setState(gl.BLEND, blending);
+                        if (blending) {
+                            gl.blendEquation(blendEquation);
+                            gl.blendFunc(sfactor, dfactor);
+                        }
 
                         this.bindedProgram = glProgram;
                         for (var i = 0 ; i < count ; i++) {

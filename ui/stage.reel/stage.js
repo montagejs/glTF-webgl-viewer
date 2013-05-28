@@ -68,9 +68,15 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
+    selectCamera: {
+        get: function() {
+            var options = this.templateObjects.options;
+            return options ? options.selectCamera : null;
+        }
+    },
+
     restart: {
         value: function() {
-
             var self = this;
             var view = this.view;
             if (view) {
@@ -116,6 +122,17 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
             this.templateObjects.options.addEventListener("action", listenerObj, false);
             this.view.delegate = this;
+        }
+    },
+
+    viewPoint: {
+        get: function() {
+            return this.view.viewPoint;
+        },
+        set: function(value) {
+            if (value !== this._model) {
+                this.view.viewPoint = value;
+            }
         }
     },
 
@@ -196,7 +213,6 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
-
     _bytesLimit: { value: 0, writable: true },
 
     bytesLimit: {
@@ -248,6 +264,22 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                         resourceManager.observers.push(this);
                     }
                 }
+                this.selectCamera.content = [];
+
+                var cameraNodes = [];
+                this.view.scene.rootNode.apply( function(node, parent, context) {
+                    if (node.cameras) {
+                        if (node.cameras.length)
+                            cameraNodes = cameraNodes.concat(node);
+                    }
+                    return context;
+                } , true, null);
+
+                cameraNodes.forEach( function(cameraNode) {
+                    this.selectCamera.content.push( { "name": cameraNode.name, "node":cameraNode} );
+                }, this);
+                this.selectCamera.needsDraw = true;
+
             }
         }
     },

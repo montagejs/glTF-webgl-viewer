@@ -43,8 +43,8 @@ var global = window;
         factory(root);
     }
 }(this, function (root) {
-    var WebGLTFLoader,ResourceDescription,Technique,ProgramPass,Pass,ScenePass,
-        GLSLProgram,Material,Mesh,Node,Primitive,Projection,Camera,Scene;
+    var WebGLTFLoader, ResourceDescription, Technique, ProgramPass, Pass, ScenePass,
+        GLSLProgram, Material, Mesh, Node, Primitive, Projection, Camera, Scene, Transform, Animation, AnimationManager;
     if (typeof exports === 'object') {
         require("runtime/dependencies/gl-matrix");
         WebGLTFLoader = require("runtime/webgl-tf-loader").WebGLTFLoader;
@@ -61,7 +61,11 @@ var global = window;
         Projection = require("runtime/projection").Projection;
         Camera = require("runtime/camera").Camera;
         Scene = require("runtime/scene").Scene;
-    } else {        
+        Transform = require("runtime/transform").Transform;
+        Animation = require("runtime/animation").Animation;
+        AnimationManager = require("runtime/animation-manager").AnimationManager;
+
+    } else {
         WebGLTFLoader = global.WebGLTFLoader;
         ResourceDescription = global.ResourceDescription;
         Technique = global.Technique;
@@ -76,11 +80,16 @@ var global = window;
         Projection = global.Projection;
         Camera = global.Camera;
         Scene = global.Scene;
+        Transform = global.Transform;
+        Animation = global.Animation;
+        AnimationManager = global.AnimationManager;
     }
 
     var RuntimeTFLoader = Object.create(WebGLTFLoader, {
 
         _scenes: { writable:true, value: null },
+
+        _animations: { writable:true, value: null },
 
         //----- implements WebGLTFLoader ----------------------------
 
@@ -280,7 +289,6 @@ var global = window;
                             if (!attributeEntry) {
                                 //let's just use an anonymous object for the attribute
                                 var attribute = description.attributes[attributeID];
-                                attribute.type = "attribute";
                                 this.storeEntry(attributeID, attribute, attribute);
 
                                 var bufferEntry = this.getEntry(attribute.bufferView);
@@ -298,7 +306,6 @@ var global = window;
                         var indicesID = entryID + "_indices"+"_"+i;
                         var indicesEntry = this.getEntry(indicesID);
                         if (!indicesEntry) {
-
                             indices = primitiveDescription.indices;
                             indices.id = indicesID;
                             var bufferEntry = this.getEntry(indices.bufferView);
@@ -316,7 +323,7 @@ var global = window;
         handleCamera: {
             value: function(entryID, description, userInfo) {
                 //Do not handle camera for now.
-                /*
+
                 var camera = Object.create(Camera).init();
                 camera.id = entryID;
                 this.storeEntry(entryID, camera, description);
@@ -324,7 +331,7 @@ var global = window;
                 var projection = Object.create(Projection);
                 projection.initWithDescription(description);
                 camera.projection = projection;
-                */
+
                 return true;
             }
         },
@@ -418,6 +425,10 @@ var global = window;
             value: function(success) {
                 if (this._scenes && this.delegate) {
                     if (this._scenes.length > 0) {
+                        //add animation manager in scene
+                        var animationManager = Object.create(AnimationManager).init();
+                        animationManager.animations = this._animations;
+                        this._scenes[0].animationManager = animationManager;
                         this.delegate.loadCompleted(this._scenes[0]);
                     }
                 }
@@ -426,6 +437,67 @@ var global = window;
 
         handleAnimation : {
             value: function(entryID, description, userInfo) {
+                if (!this._animations) {
+                    this._animations = [];
+                }
+
+                var animation = Object.create(Animation).initWithDescription(description);
+                animation.id =  entryID;
+                this.storeEntry(entryID, animation, description);
+
+                var componentSize = 0;
+                var parameters = {};
+                Object.keys(description.parameters).forEach( function(parameterSID) {
+                    var parameterDescription = description.parameters[parameterSID];
+                    //we can avoid code below if we add byteStride
+                    switch (parameterDescription.type) {
+                        case "FLOAT_VEC4":
+                            componentsPerAttribute = 4;
+                            break;
+                        case "FLOAT_VEC3":
+                            componentsPerAttribute = 3;
+                            break;
+                        case "FLOAT_VEC2":
+                            componentsPerAttribute = 2;
+                            break;
+                        case "FLOAT":
+                            componentsPerAttribute = 1;
+                            break;
+                        default: {
+                            debugger;
+                            console.log("type:"+parameterDescription.type+" byteStride not handled");
+                            break;
+                        }
+                    }
+
+                    parameterDescription.byteStride = 4 * componentsPerAttribute;
+                    parameterDescription.componentsPerAttribute = componentsPerAttribute;
+                    parameterDescription.count = animation.count;
+                    parameterDescription.bufferView = this.getEntry(parameterDescription.bufferView).entry;
+                    parameterDescription.id = animation.id + parameterSID;
+                    parameters[parameterSID] = parameterDescription;
+                }, this);
+
+                animation.parameters = parameters;
+
+                animation.channels.forEach(function(channel) {
+                    var targetUID = Object.keys(channel.target)[0];
+                    var path = channel.target[targetUID];
+
+                    channel.target = this.getEntry(targetUID).entry;
+                    channel.path = path;
+                }, this);
+
+                Object.keys(animation.samplers).forEach( function(samplerSID) {
+                    var samplerDescription = description.samplers[samplerSID];
+                    var sampler = animation.samplers[samplerSID];
+                    var inputName = samplerDescription.input;
+                    var outputName = samplerDescription.output;
+                    sampler.input = parameters[inputName];
+                    sampler.output = parameters[outputName];
+                }, this);
+
+                this._animations.push(animation);
             }
         },
 
@@ -434,7 +506,6 @@ var global = window;
                 //TODO: propagate in the delegate
             }
         },
-
 
         //----- store model values
 

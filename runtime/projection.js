@@ -176,8 +176,8 @@ var global = window;
                             aspectRatio = this.xfov/this.yfov;
                         }
 
-                        this._matrix = mat4.perspective(yfov, aspectRatio, this.znear, this.zfar);
-                    } else if (type == "orthographic") {
+                        this._matrix = mat4.perspective(yfov, this.aspectRatio, this.znear, this.zfar);
+                    } else if (this.type == "orthographic") {
                         //TODO:
                     } else {
                         console.log("WARNING: unhandled camera type:"+type)

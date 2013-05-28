@@ -66,12 +66,9 @@ var global = window;
 
                     mat4.translate(tr, this._translation);
                     mat4.scale(scale, this._scale);
-                    //FIXME: the alloc to get the axis is unfortunate here...
-                    mat4.rotate(rotation, this._rotation[3], vec3.createFrom(this._rotation[0],this._rotation[1],this._rotation[2]));
+                    quat4.toMat4(this._rotation, rotation);
 
-                    if (!this._matrix) {
-                        this._matrix = mat4.identity();
-                    }
+                    this._matrix = mat4.identity();
 
                     mat4.multiply(this._matrix, tr);
                     mat4.multiply(this._matrix, rotation);
@@ -117,7 +114,8 @@ var global = window;
                     this.matrix = mat4.create(description.matrix);
                 } else if (description.translation || description.rotation || description.scale) {
                     this.translation = description.translation ? vec3.create(description.translation) : vec3.createFrom(0,0,0);
-                    this.rotation = description.rotation ? vec4.create(description.rotation) : vec4.createFrom(0,0,0,0);
+                    var r = description.rotation;
+                    this.rotation = r ?  quat4.fromAngleAxis(r[3], vec3.createFrom(r[0],r[1],r[2])) : vec4.createFrom(0,0,0,0);
                     this.scale = description.scale ? vec3.create(description.scale) : vec3.createFrom(1,1,1);
                 } else {
                     this.matrix = mat4.identity();

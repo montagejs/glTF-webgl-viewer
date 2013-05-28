@@ -75,6 +75,17 @@ var global = window;
             }
         },
 
+        _animationManager: { value: null, writable: true },
+
+        animationManager: {
+            get: function() {
+                return this._animationManager;
+            },
+            set: function(value) {
+                this._animationManager = value;
+            }
+        },
+
         init: {
             value: function() {
                 this.__Base_init();

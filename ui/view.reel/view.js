@@ -54,7 +54,13 @@ Material.implicitAnimationsEnabled = true;
     @class module:"montage/ui/view.reel".view
     @extends module:montage/ui/component.Component
 */
-exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel".view# */ {
+exports.View = Component.specialize( {
+
+    constructor: {
+        value: function Component() {
+            this.super();
+        }
+    },
 
     translateComposer: {
         value: null
@@ -64,16 +70,23 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
         value: null
     },
 
-    // API for modelController to trigger a draw
-    // TODO I didn't want to leak component needsDraw details, nor did I want to force view.js to
-    // react to some specific event from the modelController. This seems the most congenial route.
     update: {
         value: function() {
             this.needsDraw = true;
         }
     },
 
-    scaleFactor: { value: window.devicePixelRatio, writable: true},
+    viewPoint: {
+        get: function() {
+            return this.engine ? this.engine.technique.rootPass.viewPoint : null;
+        },
+        set: function(value) {
+            this.engine.technique.rootPass.viewPoint = value;
+        }
+    },
+
+     scaleFactor: { value: (window.devicePixelRatio || 1), writable: true},
+//    scaleFactor: { value:1, writable: true},
 
     canvas: {
         get: function() {
@@ -132,7 +145,6 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
 
     _scenePath: { value: null, writable: true },
 
-
     //Test for https://github.com/KhronosGroup/glTF/issues/67
     loadMultipleScenesTest: {
         value: function() {
@@ -169,6 +181,8 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
 
     scenePath: {
         set: function(value) {
+            console.log("scenePath:"+this._scenePath);
+
             if (value !== this._scenePath) {
                 if (0) {
                     this.loadMultipleScenesTest();
@@ -200,21 +214,27 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
             return this._scenePath;
         }
     },
-
+                        
     applyScene: {
         value:function (scene) {
             if (this.engine) {
                 if (this.engine.technique.rootPass) {
                     if (scene) {
+                        this.camera = null;
+
                         //compute hierarchical bbox for the whole scene
                         //this will be removed from this place when node bounding box become is implemented as hierarchical
                         var ctx = mat4.identity();
                         var node = scene.rootNode;
                         var sceneBBox = null;
                         var self = this;
+                        var hasCamera = false;
                         node.apply( function(node, parent, parentTransform) {
                             var modelMatrix = mat4.create();
                             mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
+                            if (node.cameras) {
+                                hasCamera |= (node.cameras.length > 0);
+                            }
 
                             if (node.boundingBox) {
                                 var bbox = Utilities.transformBBox(node.boundingBox, modelMatrix);
@@ -250,8 +270,30 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                             translationVector[2]]);
 
                         mat4.set(translation, scene.rootNode.transform.matrix);
+
                     }
                     this.engine.technique.rootPass.scene = scene;
+                    if (!hasCamera) {
+                        this.camera = new MontageOrbitCamera(this.canvas);
+                        this.camera.translateComposer = this.translateComposer;
+                        this.camera._hookEvents(this.canvas);
+                        this.camera.maxDistance = 200;
+                        this.camera.minDistance = 0.0;
+                        this.camera.setDistance(1.3);//0.9999542236328);
+                        this.camera.distanceStep = 0.0001;
+                        this.camera.constrainDistance = false;
+                        this.camera.setYUp(true);
+                        this.camera.orbitX = 0.675
+                        this.camera.orbitY = 1.8836293856408279;
+
+                        this.camera.minOrbitX = 0.2;//this.camera.orbitX - 0.6;
+                        this.camera.maxOrbitX = 1.2;
+
+                       // this.camera.constrainXOrbit = true;
+
+                        var center = vec3.createFrom(0,0,0.2);
+                        this.camera.setCenter(center);
+                    }
                     this.needsDraw = true;
                 }
             }
@@ -275,27 +317,8 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
 
             if (this._scene)
                 this.applyScene(this._scene);
-
-            this.camera = new MontageOrbitCamera(this.canvas);
-            this.camera.translateComposer = this.translateComposer;
-            this.camera._hookEvents(this.canvas);
-            this.camera.maxDistance = 200;
-            this.camera.minDistance = 0.0;
-            this.camera.setDistance(1.3);//0.9999542236328);
-            this.camera.distanceStep = 0.0001;
-            this.camera.constrainDistance = false;
-            this.camera.setYUp(true);
-            this.camera.orbitX = 0.6750000000000003; //values taken out the camera while manipulating the model...
-            this.camera.orbitY = -0.5836293856408279;
-
-            this.camera.minOrbitX = 0;//this.camera.orbitX - 0.6;
-            this.camera.maxOrbitX = 1.6;
-
-            this.camera.constrainXOrbit = true;
-
-            var center = vec3.createFrom(0,0,0.2);
-            this.camera.setCenter(center);
-
+/*
+*/
             this.needsDraw = true;
 
             // TODO the camera does its own listening but doesn't know about our draw system
@@ -312,6 +335,27 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
             document.addEventListener('mouseup', this.end.bind(this), true);
             document.addEventListener('mousemove', this.move.bind(this), true);
             document.addEventListener('mousewheel', this, true);
+
+            /*
+            window.requestAnimFrame = (function(){
+                return  window.requestAnimationFrame       ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame    ||
+                    window.oRequestAnimationFrame      ||
+                    window.msRequestAnimationFrame     ||
+                    function( callback, element){
+                        return window.setTimeout(callback, 1000 / 60);
+                    };
+            })();
+
+            var request;
+             var self = this;
+            // start and run the animloop
+            (function animloop(){
+                console.log("render:"+self.scenePath);
+                request = requestAnimFrame(animloop, self.canvas);
+            })();
+*/
         }
     },
 
@@ -405,7 +449,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
             this._enableReflection = flag;
 
             //if reflection (e.g floor) is enabled, then we constrain the rotation
-            if (this.camera)
+            if (flag && this.camera)
                 this.camera.constrainXOrbit = flag;
         }
 
@@ -507,8 +551,8 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
     },
 
     drawFloor: {
-        value: function(cameraMatrix) {
-
+        value: function(cameraMatrix) { 
+            return;
             if (!this.engine || !this.scene)
                 return;
             if (!this.engine.technique.rootPass.viewPoint)
@@ -544,7 +588,6 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
             this.engine.renderer.bindedProgram = null;
 
             var viewPoint = this.engine.technique.rootPass.viewPoint;
-
             var projectionMatrix = viewPoint.cameras[0].projection.matrix;
 
             //gl.disable(gl.DEPTH_TEST);
@@ -675,6 +718,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
 
     displayBBOX: {
         value: function(mesh, cameraMatrix, modelMatrix) {
+            debugger;
             var bbox = mesh.boundingBox;
             if (mesh.step === 0)
                 return;
@@ -688,7 +732,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
 
             this.engine.renderer.bindedProgram = null;
 
-            var viewPoint = this.engine.technique.rootPass.viewPoint;
+            var viewPoint = this.viewPoint;
             var projectionMatrix = viewPoint.cameras[0].projection.matrix;
 
             if (mesh.step < 1.) {
@@ -939,7 +983,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
             if (!this._scene)
                 return;
 
-            if(this.cameraAnimating) {
+           if(this.camera && this.cameraAnimating) {
                 if (this.cameraAnimatingXVel < 0.0013) {
                     this.cameraAnimatingXVel += 0.00001
                 }
@@ -950,60 +994,48 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                 this.camera.orbit(this.cameraAnimatingXVel, this.cameraAnimatingYVel);
                 this.needsDraw = true;
             }
+//FIXME:
+                this.needsDraw = true;
 
             if (this.scene) {
                 renderer = this.engine.renderer;
                 if (webGLContext) {
                     width = this._width;
                     height = this._height;
-                    //this.canvas.setAttribute("width", this._width + "px");
-                    //this.canvas.setAttribute("height", this._height + "px");
 
-                    if (this.scaleFactor > 1) {
+                    //as indicated here: http://www.khronos.org/webgl/wiki/HandlingHighDPI
+                    //set draw buffer and canvas size
+                    this.canvas.style.width = (this._width / this.scaleFactor) + "px";
+                    this.canvas.style.height = (this._height / this.scaleFactor) + "px";
+                    this.canvas.width = this._width;
+                    this.canvas.height = this._height;
 
-                        var offsetX = -(this.width/2);
-                        var offsetY = -(this.height/2);
-                        var scale = 1./( this.scaleFactor);
-
-                        this.canvas.style["-webkit-transform"] =  "scale("+scale+","+scale+") translateZ(0) translate("+ offsetX +"px,"+offsetY+"px)";
-                    }
-                    var viewPoint = this.engine.technique.rootPass.viewPoint;
+                    var viewPoint = this.viewPoint;
                     if (!viewPoint) {
                         return;
                     }
-                    var cameraMatrix = this.camera.getViewMat();
-                    mat4.inverse(cameraMatrix, viewPoint.transform.matrix);
-
-                    //webGLContext.viewport(0, 0, width, height);
-
-                    //configure projection
-                    viewPoint.cameras[0].projection.aspectRatio = width / height;
-                    viewPoint.cameras[0].projection.zfar = 10000;
-                    viewPoint.cameras[0].projection.zmin = 1;
 
                     /* ------------------------------------------------------------------------------------------------------------
                         Draw reflected car
                             - enable depth testing
                             - enable culling
                      ------------------------------------------------------------------------------------------------------------ */
-                    if(this.enableReflection) {
+                    if(this.enableReflection && this.camera) {
                         webGLContext.depthFunc(webGLContext.LESS);
                         webGLContext.enable(webGLContext.DEPTH_TEST);
                         webGLContext.frontFace(webGLContext.CW);
                         var savedTr = mat4.create();
 
                         var node = this.scene.rootNode;
-
                         //save car matrix
                         mat4.set(this.scene.rootNode.transform.matrix, savedTr);
                         webGLContext.depthMask(true);
 
-                        /*
                         var translationMatrix = mat4.translate(mat4.identity(), [0, 0, 0 ]);
                         var scaleMatrix = mat4.scale(translationMatrix, [1, 1, -1]);
-                        mat4.multiply(scaleMatrix, node.transform) ;
-                        mat4.set(scaleMatrix, node.transform);
-                        */
+                        mat4.multiply(scaleMatrix, node.transform.matrix) ;
+                        this.scene.rootNode.transform.matrix = scaleMatrix;
+
                         //FIXME: passing a matrix was the proper to do this, but right now matrix updates are disabled (temporarly)
                         this.engine.technique.rootPass.viewPoint.flipped = true;
 
@@ -1011,8 +1043,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                         webGLContext.depthMask(true);
                         this.engine.technique.rootPass.viewPoint.flipped = false;
 
-                        //restore car matrix
-                        mat4.set(savedTr, node.transform.matrix);
+                        this.scene.rootNode.transform.matrix = savedTr;
                     }
                     
                     //restore culling order
@@ -1031,14 +1062,14 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
 
                     this.engine.render();
 
-                    //webGLContext.flush();
+                    webGLContext.flush();
 
                     var error = webGLContext.getError();
                     if (error != webGLContext.NO_ERROR) {
                         console.log("gl error"+webGLContext.getError());
                     }
                     
-                    this.displayAllBBOX(cameraMatrix);
+                    //this.displayAllBBOX(cameraMatrix);
                 }
             }
         }
@@ -1058,48 +1089,37 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
         }
     },
 
-    captureResize: {
-        value: function(evt) {
-
-            //this.needsDraw = true;
-
-        }
-    },
-
     willDraw: {
         value: function() {
-            if (this.delegate) {
-                if (this.delegate.willDraw)
-                    this.delegate.willDraw(this);
-            }
 
-            //FIXME: should probably have to do this...
-            var width;
-            if (!this._width) {
-                width = parseInt(window.getComputedStyle(this.element.parentElement, null).getPropertyValue("width"));
-                this._width = width;
-            } else {
-                width = this._width;
+            if (this.engine && this.scene) {
+                this.scene.animationManager.updateTargetsAtTime(Date.now(), this.engine.renderer.resourceManager);
             }
-
-            var height;
-            if (!this._height) {
-                height = parseInt(window.getComputedStyle(this.element.parentElement, null).getPropertyValue("height"));
-                this._height = height;
-            } else {
-                height = this._height;
-            }
-
-            this.canvas.setAttribute("width", this._width + "px");
-            this.canvas.setAttribute("height", this._height + "px");
-            //----
 
             var webGLContext = this.getWebGLContext();
-            webGLContext.viewport(0, 0, width, height);
-            //should zap color buffer clear if we have
+            webGLContext.viewport(0, 0, this._width, this._height);
             if (webGLContext) {
                 webGLContext.clearColor(0,0,0,0.);
                 webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
+            }
+
+            //this.canvas.setAttribute("width", this._width + "px");
+            //this.canvas.setAttribute("height", this._height + "px");
+            //----
+
+            if (this.camera) {
+                var cameraMatrix = this.camera.getViewMat();
+                mat4.inverse(cameraMatrix, this.viewPoint.transform.matrix);
+                if (this.viewPoint) {
+                    this.viewPoint.cameras[0].projection.aspectRatio = this._width / this._height;
+                    this.viewPoint.cameras[0].projection.zfar = 100;
+                    this.viewPoint.cameras[0].projection.znear = 0.01;
+                }
+            }
+
+            if (this.delegate) {
+                if (this.delegate.willDraw)
+                    this.delegate.willDraw(this);
             }
         }
     },
@@ -1107,7 +1127,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
     templateDidLoad: {
         value: function() {
             self = this;
-            //window.addEventListener("resize", this, true);
+            window.addEventListener("resize", this, true);
 
             var parent = this.parentComponent;
             var animationTimeout = null;
@@ -1142,6 +1162,7 @@ exports.View = Montage.create(Component, /** @lends module:"montage/ui/view.reel
                 }, 3000)
             }, false);
             this.translateComposer = composer;
+
         }
     },
 
