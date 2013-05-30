@@ -472,7 +472,6 @@ var global = window;
 
                     parameterDescription.byteStride = 4 * componentsPerAttribute;
                     parameterDescription.componentsPerAttribute = componentsPerAttribute;
-                    parameterDescription.count = animation.count;
                     parameterDescription.bufferView = this.getEntry(parameterDescription.bufferView).entry;
                     parameterDescription.id = animation.id + parameterSID;
                     parameters[parameterSID] = parameterDescription;
@@ -481,11 +480,9 @@ var global = window;
                 animation.parameters = parameters;
 
                 animation.channels.forEach(function(channel) {
-                    var targetUID = Object.keys(channel.target)[0];
-                    var path = channel.target[targetUID];
-
+                    var targetUID = channel.target.id;
+                    channel.path = channel.target.path;
                     channel.target = this.getEntry(targetUID).entry;
-                    channel.path = path;
                 }, this);
 
                 Object.keys(animation.samplers).forEach( function(samplerSID) {

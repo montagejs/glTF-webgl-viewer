@@ -357,8 +357,7 @@ var global = window;
                 }, this);
 
 
-                Object.keys(description.channels).forEach( function(channelID) {
-                    var channelDescription = description.channels[channelID];
+                description.channels.forEach( function(channelDescription) {
                     var animationChannel = Object.create(Channel).initWithDescription(channelDescription);
 
                     animationChannel.sampler = this.samplers[channelDescription.sampler];

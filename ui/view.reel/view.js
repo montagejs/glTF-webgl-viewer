@@ -1106,15 +1106,15 @@ exports.View = Component.specialize( {
             //this.canvas.setAttribute("width", this._width + "px");
             //this.canvas.setAttribute("height", this._height + "px");
             //----
+            if (this.viewPoint) {
+                this.viewPoint.cameras[0].projection.aspectRatio = this._width / this._height;
+                //this.viewPoint.cameras[0].projection.zfar = 100;
+                //this.viewPoint.cameras[0].projection.znear = 0.01;
+            }
 
             if (this.camera) {
                 var cameraMatrix = this.camera.getViewMat();
                 mat4.inverse(cameraMatrix, this.viewPoint.transform.matrix);
-                if (this.viewPoint) {
-                    this.viewPoint.cameras[0].projection.aspectRatio = this._width / this._height;
-                    this.viewPoint.cameras[0].projection.zfar = 100;
-                    this.viewPoint.cameras[0].projection.znear = 0.01;
-                }
             }
 
             if (this.delegate) {
