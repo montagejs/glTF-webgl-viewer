@@ -28,8 +28,7 @@ var global = window;
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
 
-        module.exports = factory(global);
-        module.exports.Animation = module.exports;
+        factory(module.exports);
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define([], function () {
