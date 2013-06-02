@@ -12,11 +12,6 @@
             "byteLength": 25272,
             "byteOffset": 76768,
             "target": "ELEMENT_ARRAY_BUFFER"
-        },
-        "bufferView_26": {
-            "buffer": "duck.bin",
-            "byteLength": 0,
-            "byteOffset": 102040
         }
     },
     "buffers": {
@@ -206,20 +201,17 @@
                 1
             ],
             "name": "directionalLight1"
-        },
-        "root": {
-            "children": [
-                "node_0",
-                "node_1",
-                "node_2"
-            ]
         }
     },
     "profile": "WebGL 1.0",
     "scene": "defaultScene",
     "scenes": {
         "defaultScene": {
-            "node": "root"
+            "nodes": [
+                "node_0",
+                "node_1",
+                "node_2"
+            ]
         }
     },
     "shaders": {

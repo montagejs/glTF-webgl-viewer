@@ -12,11 +12,6 @@
             "byteLength": 44940,
             "byteOffset": 284064,
             "target": "ELEMENT_ARRAY_BUFFER"
-        },
-        "bufferView_333": {
-            "buffer": "wine.bin",
-            "byteLength": 0,
-            "byteOffset": 329004
         }
     },
     "buffers": {
@@ -11632,19 +11627,16 @@
                 "geometry51"
             ],
             "name": "ID75"
-        },
-        "root": {
-            "children": [
-                "node_0",
-                "node_423"
-            ]
         }
     },
     "profile": "WebGL 1.0",
     "scene": "defaultScene",
     "scenes": {
         "defaultScene": {
-            "node": "root"
+            "nodes": [
+                "node_0",
+                "node_423"
+            ]
         }
     },
     "shaders": {

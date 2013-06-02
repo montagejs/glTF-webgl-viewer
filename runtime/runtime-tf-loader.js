@@ -362,8 +362,8 @@ var global = window;
                     this._scenes = [];
                 }
 
-                if (!description.node) {
-                    console.log("ERROR: invalid file required node property is missing from scene");
+                if (!description.nodes) {
+                    console.log("ERROR: invalid file required nodes property is missing from scene");
                     return false;
                 }
 
@@ -372,12 +372,19 @@ var global = window;
                 scene.name = description.name;
                 this.storeEntry(entryID, scene, description);
 
-                var nodeEntry = this.getEntry(description.node);
+                var rootNode = Object.create(Node).init();
 
-                scene.rootNode = nodeEntry.entry;
+                if (description.nodes) {
+                    description.nodes.forEach(function(nodeUID) {
+                        var nodeEntry = this.getEntry(nodeUID);
+                        rootNode.children.push(nodeEntry.entry);
+                        this.buildNodeHirerachy(nodeEntry);
+                    }, this);
+                }
+
+                scene.rootNode = rootNode;
                 this._scenes.push(scene);
                 //now build the hirerarchy
-                this.buildNodeHirerachy(nodeEntry);
 
                 return true;
             }
