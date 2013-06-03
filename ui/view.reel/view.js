@@ -291,7 +291,7 @@ exports.View = Component.specialize( {
 
                        // this.camera.constrainXOrbit = true;
 
-                        var center = vec3.createFrom(0,0,0.2);
+                        //var center = vec3.createFrom(0,0,0.2);
                         this.camera.setCenter(center);
                     }
                     this.needsDraw = true;
