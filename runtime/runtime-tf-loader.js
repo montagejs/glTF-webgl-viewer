@@ -163,12 +163,11 @@ var global = window;
                     var program = passDescription.program;
                     if (program) {
                         var pass = Object.create(ProgramPass).init();
-                        //it is necessary to add an id that is composited using the techniqueID for pass,
+                        //it is necessary to add an id that is composed using the techniqueID for pass,
                         //so that we can uniquely identify them when adding primitives per passes.
                         pass.id = globalID + "_" + rootPassID;
-                        var vsShaderEntry = this.getEntry(program["VERTEX_SHADER"]);
-                        var fsShaderEntry = this.getEntry(program["FRAGMENT_SHADER"]);
-
+                        var vsShaderEntry = this.getEntry(program["vertexShader"]);
+                        var fsShaderEntry = this.getEntry(program["fragmentShader"]);
                         var progInfo = {};
                         progInfo[GLSLProgram.VERTEX_SHADER] = vsShaderEntry.entry;
                         progInfo[GLSLProgram.FRAGMENT_SHADER] = fsShaderEntry.entry;
@@ -470,7 +469,6 @@ var global = window;
                             componentsPerAttribute = 1;
                             break;
                         default: {
-                            debugger;
                             console.log("type:"+parameterDescription.type+" byteStride not handled");
                             break;
                         }

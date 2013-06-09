@@ -59,7 +59,6 @@
     margin: 0 auto;     
 }
 
-
 /* Custom */
 
 .speed .range {
@@ -68,4 +67,15 @@
 
 .speed label {
     margin: 0 10px 0 4px;
+}
+
+/* Branding */
+
+.branding {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    background: url(montage-icon.png) no-repeat center;
+    background-size: 100% auto;
+    opacity: .1;
 }
