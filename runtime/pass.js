@@ -43,11 +43,8 @@ var global = window;
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
-      
-        module.exports = factory(global);
-        module.exports.Pass = module.exports.Pass;
-        module.exports.ProgramPass = module.exports.ProgramPass;
-        module.exports.ScenePass = module.exports.ScenePass;
+
+        factory(module.exports);
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define([], function () {
@@ -58,7 +55,7 @@ var global = window;
         factory(root);
     }
 }(this, function (root) {
-    var Node, Projection, Camera, Utilities, Renderer;
+    var Node, Projection, Camera, Utilities, Renderer, Transform, ResourceDescription;
 
     if (typeof exports === 'object') {
         require("runtime/dependencies/gl-matrix");
@@ -68,6 +65,7 @@ var global = window;
         Utilities = require("runtime/utilities").Utilities;
         Renderer = require("runtime/renderer").Renderer;
         Transform = require("runtime/transform").Transform;
+        ResourceDescription = require("runtime/resource-description").ResourceDescription;
 
     } else {
         Node = global.Node;
@@ -76,8 +74,8 @@ var global = window;
         Utilities = global.Utilities;
         Renderer = global.Renderer;
         Transform = global.Transform;
+        ResourceDescription = global.ResourceDescription;
     }
-
 
     var LinkedListNode = Object.create(Object.prototype, {
 
@@ -202,9 +200,68 @@ var global = window;
 
     });
 
+    //-- Render Target ---
+
+    var RenderTarget = Object.create(Object.prototype, {
+
+        _extras: { value: null, writable:true},
+
+        _width: { value: 0, writable:true},
+
+        _height: { value: 0, writable:true},
+
+        _attachments: { value: null, writable:true},
+
+        attachments: {
+            get: function() {
+                return this._attachments;
+            },
+            set: function(value) {
+                this._attachments = value;
+            }
+        },
+
+        init : {
+            value: function() {
+                this.attachments = [];
+                this.extras = {};
+                return this;
+            }
+        },
+
+        width : {
+            get: function() {
+                return this._width;
+            },
+            set: function(value) {
+                this._width = value;
+            }
+        },
+
+        height : {
+            get: function() {
+                return this._height;
+            },
+            set: function(value) {
+                this._height = value;
+            }
+        },
+
+        extras : {
+            get: function() {
+                return this._extras;
+            },
+            set: function(value) {
+                this._extras = value;
+            }
+        }
+    });
+
     //-- Pass ---
 
     var Pass = Object.create(Object.prototype, {
+
+        _extras: { value: null, writable:true},
 
         //constants
         PROGRAM: { value: "program", writable: false },
@@ -216,8 +273,16 @@ var global = window;
             get: function() {
                 return this._type;
             }
-        }
+        },
 
+        extras : {
+            get: function() {
+                return this._extras;
+            },
+            set: function(value) {
+                this._extras = value;
+            }
+        }
     });
 
     var ProgramPass = Object.create(Pass, {
@@ -251,6 +316,7 @@ var global = window;
                 this.uniforms = {};
                 this.states = {};
                 this._type = Pass.ProgramPass;
+                this.extras = {};
                 return this;
             }
         }
@@ -258,7 +324,6 @@ var global = window;
     });
 
     var SceneRenderer = Object.create(Object.prototype, {
-
 
         _pathsInfosArray: { value: null, writable: true },
 
@@ -285,6 +350,17 @@ var global = window;
 
         setupNodeAtPath: {
             value:function(node, pathID) {
+                var nodePickingColor = null;
+                if (node.id) {
+                    //FIXME move this into the picking technique when we have it..
+                    //for picking, we need to associate a color to each node.
+                    nodePickingColor = this.pickingPass.extras.nodeIDToColor[node.id];
+                    if (!nodePickingColor) {
+                        nodePickingColor = vec4.createFrom(Math.random(),Math.random(),Math.random(), 1.);
+                        this.pickingPass.extras.nodeIDToColor[node.id] = nodePickingColor;
+                    }
+                }
+
                 if (node.meshes) {
                     node.meshes.forEach( function(mesh) {
                         if (mesh.primitives) {
@@ -315,6 +391,10 @@ var global = window;
                                                 renderPrimitive[WORLD] = pathInfo[WORLD];
                                                 renderPrimitive[WORLDVIEWINVERSETRANSPOSE] = pathInfo[WORLDVIEWINVERSETRANSPOSE];
                                                 renderPrimitive[WORLDVIEW] = pathInfo[WORLDVIEW];
+
+                                                if (nodePickingColor) {
+                                                    renderPrimitive["pickingColor"] = nodePickingColor;
+                                                }
 
                                                 passWithPrimitives.primitives.push(renderPrimitive);
                                             }
@@ -455,14 +535,20 @@ var global = window;
             }
         },
 
+
         render: {
-            value: function(renderer) {
+            value: function(renderer, options) {
 
                 if (!this.scene)
                     return;
 
-                this.updateTransforms();
+                var picking = options ? ((options.picking == true) && (options.coords)) : false;
 
+                if (picking) {
+                    this.pickingRenderTarget.extras.coords = options.coords;
+                    renderer.bindRenderTarget(this.pickingRenderTarget);
+                }
+                this.updateTransforms();
                 //set projection matrix
                 renderer.projectionMatrix = this.viewPoint.cameras[0].projection.matrix;
 
@@ -499,17 +585,38 @@ var global = window;
                 var keys = Object.keys(this._primitivesPerPass);
                 keys.forEach( function(key) {
                     var passWithPrimitives = this._primitivesPerPass[key];
-                    var states = passWithPrimitives.pass.states;
-                    if (states.blendEnable) {
+                    var pass = picking ? this.pickingPass : passWithPrimitives.pass;
+
+                    var states = pass.states;
+                    //we do not check hitTesting for non-opaque elements
+                    if (states.blendEnable && !picking) {
                         nonOpaquePassesWithPrimitives.push(passWithPrimitives);
                     } else {
-                        renderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass);
+                        renderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass);
                     }
                 }, this);
 
-                nonOpaquePassesWithPrimitives.forEach( function(passWithPrimitives) {
-                    renderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass);
-                }, this);
+                if (!picking) {
+                    nonOpaquePassesWithPrimitives.forEach( function(passWithPrimitives) {
+                        renderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass);
+                    }, this);
+                } else {
+                    renderer.unbindRenderTarget(this.pickingRenderTarget);
+
+                    var pickedPixel = this.pickingRenderTarget.extras.pickedPixel;
+                    var selectedNodeID = null;
+                    var nodeIDs = Object.keys(this.pickingPass.extras.nodeIDToColor);
+                    nodeIDs.forEach( function(nodeID) {
+                        var color = this.pickingPass.extras.nodeIDToColor[nodeID];
+
+                        if (Math.abs(Math.round(color[0]*255) - pickedPixel[0]) <= 1 &&
+                            Math.abs(Math.round(color[1]*255) - pickedPixel[1]) <= 1 &&
+                            Math.abs(Math.round(color[2]*255) - pickedPixel[2]) <= 1)  {
+                            selectedNodeID = nodeID;
+                        }
+                    }, this);
+                    options.delegate.handleSelectedNode(selectedNodeID);
+                }
             }
         },
 
@@ -525,8 +632,108 @@ var global = window;
             }
         },
 
+        _pickingPass: { value: null, writable: true },
+
+        pickingPass: {
+            get: function() {
+                return this._pickingPass;
+            },
+            set: function(value) {
+                this._pickingPass = value;
+            }
+        },
+
+        _pickingRenderTarget: { value: null, writable: true },
+
+        pickingRenderTarget: {
+            get: function() {
+                return this._pickingRenderTarget;
+            },
+            set: function(value) {
+                this._pickingRenderTarget = value;
+            }
+        },
+
+        createPickingPassIfNeeded: {
+            value: function() {
+                if (!this.pickingPass) {
+                    this.pickingPass = Object.create(ProgramPass).init();
+//                    this.pickingPass.extras.nodeIDToColor
+                    this.pickingPass.id = "__PickingPass";
+
+                    this.pickingPass.extras.nodeIDToColor = {};
+
+                    //--
+                    var shaderVS = Object.create(ResourceDescription).init("pickingVS", {
+                        "path" : "assets/pickingVS.glsl"
+                    });
+                    shaderVS.id = "pickingVS";
+                    shaderVS.type = "shader";
+
+                    //--
+                    var shaderFS = Object.create(ResourceDescription).init("pickingFS", {
+                        "path" : "assets/pickingFS.glsl"
+                    });
+                    shaderFS.id = "pickingFS";
+                    shaderFS.type = "shader";
+
+
+                    var program =  Object.create(ResourceDescription).init(this.pickingPass.id +"_program", null);
+                    program.type = "program";
+                    this.pickingPass.instanceProgram = {};
+                    this.pickingPass.instanceProgram.program = program;
+                    program["x-shader/x-vertex"] = shaderVS;
+                    program["x-shader/x-fragment"] = shaderFS;
+                    this.pickingPass.instanceProgram["uniforms"] = [{
+                        "semantic": "WORLDVIEW",
+                        "symbol": "u_worldviewMatrix",
+                        "type": "FLOAT_MAT4"
+                    },{
+                        "semantic": "PROJECTION",
+                        "symbol": "u_projectionMatrix",
+                        "type": "FLOAT_MAT4"
+                    }];
+                    this.pickingPass.instanceProgram["attributes"]= [{
+                        "semantic": "POSITION",
+                        "symbol": "a_position",
+                        "type": "FLOAT_VEC3"
+                    }];
+
+                    this.pickingPass.states = {
+                        "blendEnable": false,
+                        "cullFaceEnable": true,
+                        "depthMask": true,
+                        "depthTestEnable": true
+                    }
+                }
+                return this.pickingPass;
+            }
+        },
+
+        createPickingRenderTargetIfNeeded: {
+            value: function() {
+                if (!this._pickingRenderTarget) {
+                    this._pickingRenderTarget = Object.create(RenderTarget).init();
+                    this._pickingRenderTarget.attachments.push({
+                        "semantic" : "COLOR_ATTACHMENT0",
+                        "parameter" : "__pickingTexture"
+                    });
+                    this._pickingRenderTarget.attachments.push({
+                        "semantic" : "DEPTH_ATTACHMENT",
+                        "parameter" : "__pickingRenderBuffer"
+                    });
+                    this.pickingRenderTarget.extras.picking = true;
+                }
+                return this._pickingRenderTarget;
+            }
+        },
+
         init: {
             value: function() {
+                this.pickingPass = this.createPickingPassIfNeeded();
+                this.pickingRenderTarget = this.createPickingRenderTargetIfNeeded();
+                this.pickingRenderTarget.width = 512;
+                this.pickingRenderTarget.height = 512;
                 return this;
             }
         }
@@ -579,14 +786,17 @@ var global = window;
         },
 
         execute: {
-            value: function(renderer) {
-                this.sceneRenderer.render(renderer);
+            value: function(renderer, options) {
+                //pickingRenderTarget
+                this.sceneRenderer.render(renderer, options);
             }
         },
 
         init: {
             value: function() {
                 this._type = Pass.ScenePass;
+                this.extras = {};
+                return this;
             }
         }
 
@@ -665,18 +875,15 @@ var global = window;
                 }
                 return results;
             }
-
         },*/
-
-
-
 
     if(root) {
         root.Pass = Pass;
         root.ScenePass = ScenePass;
         root.ProgramPass = ProgramPass;
+        root.RenderTarget = RenderTarget;
     }
 
-    return {'Pass' : Pass, 'ProgramPass' : ProgramPass, 'ScenePass' : ScenePass }
+    return {'Pass' : Pass, 'ProgramPass' : ProgramPass, 'ScenePass' : ScenePass, 'RenderTarget' : RenderTarget }
 
 }));

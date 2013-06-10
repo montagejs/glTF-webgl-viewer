@@ -59,7 +59,7 @@ var global = window;
             value: function() {
                 if (!this._technique) {
                     this._technique = Object.create(Technique).init();
-                    var pass = Object.create(ScenePass);
+                    var pass = Object.create(ScenePass).init();
                     //there is just one pass, so passName will be automatically set to "defaultPass"
                     this._technique.passes = { "defaultPass": pass };
                 }
@@ -110,9 +110,9 @@ var global = window;
         },
 
         render: {
-            value: function() {
+            value: function(options) {
                 if (this.technique) {
-                    this.technique.execute(this.renderer);
+                    this.technique.execute(this.renderer, options);
                 } else {
                     console.log("WARNING render invoke in engine but no technique");
                 }   

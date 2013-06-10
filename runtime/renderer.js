@@ -685,7 +685,7 @@ var global = window;
                 var currentTexture = 0;
 
                 //----- bind uniforms -----
-                var uniforms = pass.program.description.uniforms;
+                var uniforms = pass.instanceProgram.uniforms;
                 var parameters = primitive.material.parameters;
                 for (i = 0; i < uniforms.length ; i++) {
                     var uniform = uniforms[i];
@@ -723,7 +723,7 @@ var global = window;
                 var availableCount = 0;
 
                 //----- bind attributes -----
-                var attributes = pass.program.description.attributes;
+                var attributes = pass.instanceProgram.attributes;
 
                 for (i = 0 ; i < attributes.length ; i++) {
                     var attribute = attributes[i];
@@ -814,12 +814,110 @@ var global = window;
             }
         },
 
+        //Create a Picking technique, to get rid of the special cases, but implemention of new design parameters
+        bindRenderTarget: {
+            value: function(renderTarget) {
+                var gl = this.webGLContext;
+                var initializing = renderTarget.FBO ? false : true;
+                renderTarget.previousFBO = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+                if (!renderTarget.FBO) {
+                    renderTarget.FBO = gl.createFramebuffer();
+                    initializing = true;
+                }
+
+                gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.FBO);
+
+                var extras = renderTarget.extras;
+
+                var shouldResize =  (gl.drawingBufferWidth != renderTarget.width) ||
+                                    (gl.drawingBufferHeight != renderTarget.height);
+                var width = gl.drawingBufferWidth;
+                var height = gl.drawingBufferHeight;
+
+                if (initializing || shouldResize) {
+                    renderTarget.attachments.forEach (function (attachment) {
+                        if (attachment.semantic == "COLOR_ATTACHMENT0") {
+                            if (extras.picking) {
+                                var textureBinding = gl.getParameter(gl.TEXTURE_BINDING_2D);
+                                if (initializing)
+                                    extras.pickingTexture = gl.createTexture();
+                                if (shouldResize) {
+                                    gl.bindTexture(gl.TEXTURE_2D, extras.pickingTexture);
+                                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+                                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                                }
+                                if (initializing)
+                                    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, extras.pickingTexture, 0);
+                                gl.bindTexture(gl.TEXTURE_2D, textureBinding);
+                            } else {
+                            }
+                        }
+
+                        if (attachment.semantic == "DEPTH_ATTACHMENT") {
+                            if (extras.picking) {
+                                var renderBufferBinding = gl.getParameter(gl.RENDERBUFFER_BINDING);
+                                if (initializing) {
+                                    extras.pickingRenderBuffer = gl.createRenderbuffer();
+                                }
+                                if (shouldResize) {
+                                    gl.bindRenderbuffer(gl.RENDERBUFFER, extras.pickingRenderBuffer);
+                                    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+                                }
+                                if (initializing)
+                                    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, extras.pickingRenderBuffer);
+
+                                gl.bindRenderbuffer(gl.RENDERBUFFER, renderBufferBinding);
+                            } else {
+                            }
+                        }
+
+                    }, this);
+                }
+                gl.clearColor(0,0,0,1.);
+                gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+            }
+        },
+
+        unbindRenderTarget: {
+            value: function(renderTarget) {
+                var gl = this.webGLContext;
+
+                if (renderTarget.extras.picking) {
+                    if (!renderTarget.extras.pickedPixel) {
+                        renderTarget.extras.pickedPixel = new Uint8Array(4); //RGBA
+                    }
+                    gl.finish();
+
+                    gl.readPixels(  renderTarget.extras.coords[0],
+                                    renderTarget.extras.coords[1],
+                                    1,1,
+                                    gl.RGBA,gl.UNSIGNED_BYTE, renderTarget.extras.pickedPixel);
+                }
+
+                gl.bindFramebuffer(gl.FRAMEBUFFER, renderTarget.previousFBO);
+
+                var showPickingImage = false;
+                if (showPickingImage) {
+                    renderTarget.attachments.forEach (function (attachment) {
+                        if (attachment.semantic === "COLOR_ATTACHMENT0") {
+                            if (renderTarget.extras.picking) {
+                                this.drawTexture(renderTarget.extras.pickingTexture);
+                            }
+                        }
+                    }, this);
+                }
+            }
+        },
+
         renderPrimitivesWithPass: {
             value: function(primitives, pass) {
                 var count = primitives.length;
                 var gl = this.webGLContext;
-                if (pass.program) {
-                    var glProgram = this.resourceManager.getResource(pass.program, this.programDelegate, gl);
+                if (pass.instanceProgram) {
+                    var glProgram = this.resourceManager.getResource(pass.instanceProgram.program, this.programDelegate, gl);
                     if (glProgram) {
                         var blending = false;
                         var depthTest = true;
@@ -829,6 +927,7 @@ var global = window;
                         var blendEquation = gl.FUNC_ADD;
                         var sfactor = gl.SRC_ALPHA;
                         var dfactor = gl.ONE_MINUS_SRC_ALPHA;
+                        var isPickingPass = (pass.id === "__PickingPass");
 
                         //FIXME: make a clever handling of states, For now this is incomplete and inefficient.(but robust)
                         if (states) {
@@ -861,15 +960,133 @@ var global = window;
                         }
 
                         this.bindedProgram = glProgram;
-                        for (var i = 0 ; i < count ; i++) {
-                            this.renderPrimitive(primitives[i]);
+
+                        if (isPickingPass) {
+                            for (var i = 0 ; i < count ; i++) {
+                                var primitive = primitives[i];
+                                if (primitive.pickingColor) {
+                                    this.bindedProgram.setValueForSymbol("u_pickingColor", primitive.pickingColor);
+                                    this.renderPrimitive(primitive);
+                                }
+                            }
+                        } else {
+                            for (var i = 0 ; i < count ; i++) {
+                                this.renderPrimitive(primitives[i]);
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        },
 
+        drawTexture: {
+            value: function(textureName) {
+                var gl = this.webGLContext;
+                //save values
+                var restoreDepthState = gl.isEnabled(gl.DEPTH_TEST);
+                var restoreCullFace = gl.isEnabled(gl.CULL_FACE);
+                var restoreBlend = gl.isEnabled(gl.BLEND);
+
+                this.setState(gl.DEPTH_TEST, false);
+                this.setState(gl.CULL_FACE, false);
+                this.setState(gl.BLEND, false);
+
+                if (!this.displayTexture) {
+                    this.displayTexture = {};
+                    this.displayTexture.program = Object.create(GLSLProgram);
+
+                    var vertexShader =  "precision highp float;" +
+                        "attribute vec3 vert;"  +
+                        "attribute vec2 uv;"  +
+                        "uniform mat4 u_projMatrix; " +
+                        "varying vec2 v_uv;"  +
+                        "void main(void) { " +
+                        "v_uv = uv;" +
+                        "gl_Position = u_projMatrix * vec4(vert,1.0); }";
+
+                    var fragmentShader =    "precision highp float;" +
+                        "uniform sampler2D u_texture;" +
+                        "varying vec2 v_uv;"  +
+                        " void main(void) { " +
+                        " vec4 color = texture2D(u_texture, v_uv); " +
+                        " gl_FragColor = color; }";
+
+                    this.displayTexture.program.initWithShaders({
+                        "x-shader/x-vertex" : vertexShader ,
+                        "x-shader/x-fragment" : fragmentShader
+                    });
+
+                    if (!this.displayTexture.program.build(gl)) {
+                        console.log(this.displayTexture.program.errorLogs);
+                    }
+
+                    var vertices = [
+                        - 1.0,-1, 0.0,      0,0,
+                        1.0,-1, 0.0,        1,0,
+                        -1.0, 1.0, 0.0,     0,1,
+                        -1.0, 1.0, 0.0,     0,1,
+                        1.0,-1, 0.0,        1,0,
+                        1.0, 1.0, 0.0,      1,1];
+
+                    // Init the buffer
+                    this.displayTexture.vertexBuffer = gl.createBuffer();
+                    gl.bindBuffer(gl.ARRAY_BUFFER, this.displayTexture.vertexBuffer);
+                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+                }
+                var program = this.displayTexture.program;
+                var vertexBuffer = this.displayTexture.vertexBuffer;
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+
+                var orthoMatrix = mat4.ortho(-1, 1, -1.0, 1, 0, 1000);
+
+                var vertLocation = program.getLocationForSymbol("vert");
+                var hasVertex = (typeof vertLocation !== "undefined");
+                if (hasVertex) {
+                    gl.enableVertexAttribArray(vertLocation);
+                    gl.vertexAttribPointer(vertLocation, 3, gl.FLOAT, false, 20, 0);
+                }
+                var uvLocation = program.getLocationForSymbol("uv");
+                var hasUV = (typeof uvLocation !== "undefined");
+                if (hasUV) {
+                    gl.enableVertexAttribArray(uvLocation);
+                    gl.vertexAttribPointer(uvLocation, 2, gl.FLOAT, false, 20, 12);
+                }
+
+                var textureBinding = gl.getParameter(gl.TEXTURE_BINDING_2D);
+                gl.activeTexture(gl.TEXTURE0);
+                gl.bindTexture(gl.TEXTURE_2D, textureName);
+
+                this.bindedProgram = program;
+
+                var projectionMatrixLocation = program.getLocationForSymbol("u_projMatrix");
+                if (projectionMatrixLocation) {
+                    program.setValueForSymbol("u_projMatrix",orthoMatrix);
+                }
+
+                var samplerLocation = program.getLocationForSymbol("u_texture");
+                if (samplerLocation) {
+                    program.setValueForSymbol("u_texture", 0);
+                }
+
+                program.commit(gl);
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+                //restore values
+                gl.bindTexture(gl.TEXTURE_2D, textureBinding);
+
+                if (hasVertex)
+                    gl.disableVertexAttribArray(vertLocation);
+                if (hasUV)
+                    gl.disableVertexAttribArray(uvLocation);
+
+                this.setState(gl.DEPTH_TEST, restoreDepthState);
+                this.setState(gl.CULL_FACE, restoreCullFace);
+                this.setState(gl.BLEND, restoreBlend);
+            }
+        }
+
+    });
 
     if(root) {
         root.Renderer = Renderer;

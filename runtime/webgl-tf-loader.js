@@ -69,14 +69,14 @@ var global = window;
 }(this, function (root) {
     "use strict";
 
-    //to be refined as a tree. in that case, asking for nodes or scenes (most common case) will be fine, but asking for light will trigger unexpected callback (that will be no-op on client side, but could be avoided...)
-    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "techniques", "materials", "meshes", "cameras", "lights", "nodes", "scenes", "animations"];
+    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "programs", "techniques", "materials", "meshes", "cameras", "lights", "nodes", "scenes", "animations"];
 
     var categoryForType = {
         "buffer" : "buffers",
         "bufferView" : "bufferViews",
         "image" : "images",
         "shader" : "shaders",
+        "program" : "programs",
         "technique" : "techniques",
         "material" : "materials",
         "mesh" : "meshes",
@@ -92,6 +92,7 @@ var global = window;
         "bufferViews" : "bufferView",
         "images" : "image",
         "shaders" : "shader",
+        "programs" : "program",
         "techniques" : "technique",
         "materials" : "material",
         "meshes" : "mesh",
@@ -245,6 +246,7 @@ var global = window;
                     "buffer" : this.handleBuffer,
                     "bufferView" : this.handleBufferView,
                     "shader" : this.handleShader,
+                    "program" : this.handleProgram,
                     "technique" : this.handleTechnique,
                     "material" : this.handleMaterial,
                     "mesh" : this.handleMesh,

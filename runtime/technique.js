@@ -113,9 +113,9 @@ var global = window;
         },
 
         execute: {
-            value: function(renderer) {
+            value: function(renderer, options) {
                 renderer.resetStates();
-                this.rootPass.execute(renderer);
+                this.rootPass.execute(renderer, options);
             }
         }
 

@@ -771,8 +771,8 @@ var global = window;
                 var fsCtx = { stage: "x-shader/x-fragment", "sources" : sources,  "programCtx" : programCtx };
                 var vsCtx = { stage: "x-shader/x-vertex", "sources" : sources,  "programCtx" : programCtx };
 
-                this.getResource(program.description["x-shader/x-fragment"], this.shaderDelegate, fsCtx);
-                this.getResource(program.description["x-shader/x-vertex"], this.shaderDelegate, vsCtx);
+                this.getResource(program["x-shader/x-fragment"], this.shaderDelegate, fsCtx);
+                this.getResource(program["x-shader/x-vertex"], this.shaderDelegate, vsCtx);
             }
         },
 

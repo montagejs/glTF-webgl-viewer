@@ -85,8 +85,7 @@ exports.View = Component.specialize( {
         }
     },
 
-     scaleFactor: { value: (window.devicePixelRatio || 1), writable: true},
-//    scaleFactor: { value:1, writable: true},
+    scaleFactor: { value: (window.devicePixelRatio || 1), writable: true},
 
     canvas: {
         get: function() {
@@ -290,8 +289,6 @@ exports.View = Component.specialize( {
                         this.camera.maxOrbitX = 1.2;
 
                        // this.camera.constrainXOrbit = true;
-
-                        //var center = vec3.createFrom(0,0,0.2);
                         this.camera.setCenter(center);
                     }
                     this.needsDraw = true;
@@ -374,6 +371,9 @@ exports.View = Component.specialize( {
     move:{
         value: function (event) {
             this.needsDraw = true;
+
+            //no drag at the moment
+            this._mousePosition = null;
         }
     },
 
@@ -382,7 +382,7 @@ exports.View = Component.specialize( {
             event.preventDefault();
             this._consideringPointerForPicking = true;
             var position = this.getRelativePositionToCanvas(event);
-            this._mousePosition = [position.x, position.y];
+            this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
         }
     },
 
@@ -717,11 +717,10 @@ exports.View = Component.specialize( {
     },
 
     displayBBOX: {
-        value: function(mesh, cameraMatrix, modelMatrix) {
-            debugger;
-            var bbox = mesh.boundingBox;
-            if (mesh.step === 0)
-                return;
+        value: function(bbox, cameraMatrix, modelMatrix) {
+            //var bbox = mesh.boundingBox;
+            //if (mesh.step === 0)
+             //   return;
 
             if (!this.engine || !this.scene)
                 return;
@@ -734,12 +733,12 @@ exports.View = Component.specialize( {
 
             var viewPoint = this.viewPoint;
             var projectionMatrix = viewPoint.cameras[0].projection.matrix;
-
+/*
             if (mesh.step < 1.) {
                 gl.enable(gl.BLEND);
                 gl.blendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
             }
-
+*/
             gl.disable(gl.CULL_FACE);
 
             if (!this._BBOXProgram) {
@@ -801,16 +800,17 @@ exports.View = Component.specialize( {
             }
             gl.bindBuffer(gl.ARRAY_BUFFER, this._BBOXVertexBuffer);
 
-            var incrBox = (1 - mesh.step) * 5.;
+            //var incrBox = (1 - mesh.step) * 5.;
 
-            if (mesh.loaded) {
-                min[X] -= incrBox;
+            //if (mesh.loaded) {
+            /*    min[X] -= incrBox;
                 min[Y] -= incrBox;
                 min[Z] -= incrBox;
                 max[X] += incrBox;
                 max[Y] += incrBox;
                 max[Z] += incrBox;
-            }
+                */
+            //}
             var vertices = [
                     max[X], min[Y], min[Z], 
                     max[X], max[Y], min[Z], 
@@ -848,7 +848,7 @@ exports.View = Component.specialize( {
 
             var transparency = this._BBOXProgram.getLocationForSymbol("u_transparency");
             if (transparency) {
-                this._BBOXProgram.setValueForSymbol("u_transparency",mesh.step);
+                this._BBOXProgram.setValueForSymbol("u_transparency",1 /*mesh.step*/);
             }
 
             this._BBOXProgram.commit(gl);
@@ -863,8 +863,22 @@ exports.View = Component.specialize( {
     },
 
 
+    handleSelectedNode: {
+        value: function(nodeID) {
+            console.log("selected node:"+nodeID);
+
+            if (this.camera)
+                this.displayAllBBOX(this.camera.getViewMat(), nodeID);
+            else {
+                var camMat = mat4.create();
+                mat4.inverse(this.viewPoint.transform.matrix, camMat);
+                this.displayAllBBOX(camMat, nodeID);
+            }
+        }
+    },
+
     displayAllBBOX: {
-        value: function(cameraMatrix) {
+        value: function(cameraMatrix, selectedNodeID) {
             if (!this.scene)
                 return;
 
@@ -873,38 +887,16 @@ exports.View = Component.specialize( {
             var self = this;
 
             node.apply( function(node, parent, parentTransform) {
-
                 var modelMatrix = mat4.create();
                 mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
-                if (node.boundingBox) {
-                    if (node.meshes) {
-                        if (node.meshes.length > 0) {
-                            node.meshes.forEach( function(mesh) {
-                                var incr = 0.02;
-                                if (!mesh.loaded) {
-                                    if (mesh.step < 1)
-                                        mesh.step += incr;
-                                    else 
-                                        mesh.step = 1;
-                                } else {
-                                    if (mesh.step > 0)
-                                        mesh.step -= incr;
-                                    else 
-                                        mesh.step = 0;
-                                }
-                                if (mesh.step !== 0) {
-                                    var nodeMatrix = mat4.create();
-                                    var scaledModelMatrix = mat4.create();
-                                    var scale = 1.0;//1. + (1 - mesh.step) * 0.3;
-                                    var scaleMatrix = mat4.scale(mat4.identity(), vec3.createFrom(scale,scale,scale));
-                                    mat4.multiply( node.transform.matrix, scaleMatrix , nodeMatrix);
-                                    mat4.multiply( parentTransform, nodeMatrix, scaledModelMatrix);
-                                    if (self.showBBOX)
-                                        self.displayBBOX(mesh, cameraMatrix, scaledModelMatrix);
-                                }
-                            }, self);
-                        }
-                    }
+                if (node.boundingBox && node.id == selectedNodeID) {
+                    var nodeMatrix = mat4.create();
+                    var scaledModelMatrix = mat4.create();
+                    var scale = 1.0
+                    var scaleMatrix = mat4.scale(mat4.identity(), vec3.createFrom(scale,scale,scale));
+                    mat4.multiply( node.transform.matrix, scaleMatrix , nodeMatrix);
+                    mat4.multiply( parentTransform, nodeMatrix, scaledModelMatrix);
+                    self.displayBBOX(node.boundingBox, cameraMatrix, scaledModelMatrix);
                 }
                 return modelMatrix;
             }, true, ctx);
@@ -1016,7 +1008,7 @@ exports.View = Component.specialize( {
                     }
 
                     /* ------------------------------------------------------------------------------------------------------------
-                        Draw reflected car
+                        Draw reflected scene
                             - enable depth testing
                             - enable culling
                      ------------------------------------------------------------------------------------------------------------ */
@@ -1060,9 +1052,16 @@ exports.View = Component.specialize( {
                     webGLContext.enable(webGLContext.CULL_FACE);
                     webGLContext.disable(webGLContext.BLEND);
 
+                    if (this._mousePosition) {
+                        this.engine.render({    "picking" : true,
+                            "coords" : this._mousePosition,
+                            "delegate" : this
+                        });
+                    }
+
                     this.engine.render();
 
-                    webGLContext.flush();
+                    //webGLContext.flush();
 
                     var error = webGLContext.getError();
                     if (error != webGLContext.NO_ERROR) {
@@ -1099,12 +1098,12 @@ exports.View = Component.specialize( {
             var webGLContext = this.getWebGLContext();
             webGLContext.viewport(0, 0, this._width, this._height);
             if (webGLContext) {
-                webGLContext.clearColor(0,0,0,0.);
-                webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
+                //webGLContext.clearColor(0,0,0,0.);
+                //webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
 
             //this.canvas.setAttribute("width", this._width + "px");
-            //this.canvas.setAttribute("height", this._height + "px");
+            //this.canvas.setAttribrenderTargetute("height", this._height + "px");
             //----
             if (this.viewPoint) {
                 this.viewPoint.cameras[0].projection.aspectRatio = this._width / this._height;

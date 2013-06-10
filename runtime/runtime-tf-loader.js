@@ -124,8 +124,22 @@ var global = window;
             value: function(entryID, description, userInfo) {
                 var shader = Object.create(ResourceDescription).init(entryID, description);
                 shader.id = entryID;
-                shader.type = "shader"; //FIXME should I pass directly the description ? add a type property in resource-description ? (probably first solution...)
+                shader.type = "shader";
                 this.storeEntry(entryID, shader, description);
+                return true;
+            }
+        },
+
+        handleProgram: {
+            value: function(entryID, description, userInfo) {
+                var program = Object.create(ResourceDescription).init(entryID, description);
+                program.id = entryID;
+                program.type = "program";
+                var vsShaderEntry = this.getEntry(program.description["vertexShader"]);
+                var fsShaderEntry = this.getEntry(program.description["fragmentShader"]);
+                program[GLSLProgram.VERTEX_SHADER] = vsShaderEntry.entry;
+                program[GLSLProgram.FRAGMENT_SHADER] = fsShaderEntry.entry;
+                this.storeEntry(entryID, program, description);
                 return true;
             }
         },
@@ -160,26 +174,14 @@ var global = window;
                 var allPassesNames = Object.keys(description.passes);
                 allPassesNames.forEach( function(passName) {
                     var passDescription = passesDescriptions[passName];
-                    var program = passDescription.program;
-                    if (program) {
+                    var instanceProgram = passDescription.instanceProgram;
+                    if (instanceProgram) {
                         var pass = Object.create(ProgramPass).init();
-                        //it is necessary to add an id that is composed using the techniqueID for pass,
-                        //so that we can uniquely identify them when adding primitives per passes.
                         pass.id = globalID + "_" + rootPassID;
-                        var vsShaderEntry = this.getEntry(program["vertexShader"]);
-                        var fsShaderEntry = this.getEntry(program["fragmentShader"]);
-                        var progInfo = {};
-                        progInfo[GLSLProgram.VERTEX_SHADER] = vsShaderEntry.entry;
-                        progInfo[GLSLProgram.FRAGMENT_SHADER] = fsShaderEntry.entry;
-                        progInfo["uniforms"] = program.uniforms;
-                        progInfo["attributes"]= program.attributes;
-
-                        pass.program = Object.create(ResourceDescription).init(pass.id +"_program", progInfo);
-                        pass.program.type = "program"; //add this here this program object is not defined in the JSON format, we need to set the type manually.
-
+                        pass.instanceProgram = passDescription.instanceProgram;
+                        pass.instanceProgram.program = this.getEntry(instanceProgram.program).entry;
                         pass.states = passDescription.states;
                         passes[passName] = pass;
-
                     } else {
                         console.log("ERROR: A Pass with type=program must have a program property");
                         return false;

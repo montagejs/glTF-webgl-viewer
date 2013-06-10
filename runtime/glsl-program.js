@@ -26,6 +26,7 @@
 
 //FIXME: Delete shader if compile failed
 //FIXME: Delete program if LINK failed
+//FIXME: Validate
 //NOTE: those 2 are typically garbage collected and then the gl resource is supposed to be released, but it shouldn't harm to release them as soon as possible without waiting for gc.
 var global = window;
 (function (root, factory) {
@@ -55,13 +56,6 @@ var global = window;
         VERTEX_SHADER: { value: "x-shader/x-vertex" },
         FRAGMENT_SHADER: { value: "x-shader/x-fragment" },
 
-        VERTEX: { value: "VERTEX" },
-        NORMAL: { value: "NORMAL" },
-        UV_0: {   value: "UV_0" },
-        MODELVIEW_MATRIX: { value: "MODELVIEW_MATRIX" },
-        PROJECTION_MATRIX: { value: "PROJECTION_MATRIX" },
-        MODELVIEW_PROJECTION_MATRIX: { value: "MODELVIEW_PROJECTION_MATRIX" },
-
         _GLTypes:
         {
             enumerable: false,
@@ -69,8 +63,6 @@ var global = window;
             writable: true
         },
 
-
-        //FIXME: shaders should be private
         _shaders:
         {
             enumerable: false,
