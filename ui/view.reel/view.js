@@ -382,7 +382,7 @@ exports.View = Component.specialize( {
             event.preventDefault();
             this._consideringPointerForPicking = true;
             var position = this.getRelativePositionToCanvas(event);
-            this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
+            //this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
         }
     },
 

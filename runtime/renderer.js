@@ -676,27 +676,27 @@ var global = window;
                 //var worldMatrix = primitiveDescription.worldViewMatrix;
                 //var projectionMatrix = this.projectionMatrix;
 
-                  var primitive = primitiveDescription.primitive;
+                var primitive = primitiveDescription.primitive;
                 var newMaxEnabledArray = -1;
                 var gl = this.webGLContext;
                 var program =  this.bindedProgram;
                 var pass = primitive.material.technique.rootPass;
                 var i;
                 var currentTexture = 0;
-
-                //----- bind uniforms -----
-                var uniforms = pass.instanceProgram.uniforms;
                 var parameters = primitive.material.parameters;
-                for (i = 0; i < uniforms.length ; i++) {
-                    var uniform = uniforms[i];
-                    var symbol = uniform.symbol;
-                    if (uniform.semantic) {
-                        if (uniform.semantic == this.PROJECTION) {
+                var allUniforms = program.uniformSymbols;
+
+                for (i = 0; i < allUniforms.length ; i++) {
+                    var symbol = allUniforms[i];
+                    var parameter = pass.instanceProgram.uniforms[symbol];
+                    parameter = parameters[parameter];
+                    if (parameter.semantic) {
+                        if (parameter.semantic == this.PROJECTION) {
                             value = this.projectionMatrix;
-                        } else 
-                            value = primitiveDescription[uniform.semantic];
+                        } else
+                            value = primitiveDescription[parameter.semantic];
                     } else {
-                        value = parameters[uniform.parameter];
+                        value = parameter.value;
                     }
 
                     var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
@@ -716,23 +716,24 @@ var global = window;
                     } else {
                         program.setValueForSymbol(symbol, value);
                     }
+
                 }
 
                 program.commit(gl);
                 
                 var availableCount = 0;
+                this.vertexAttributeBufferDelegate.webGLContext = this.webGLContext;
 
                 //----- bind attributes -----
                 var attributes = pass.instanceProgram.attributes;
-
-                for (i = 0 ; i < attributes.length ; i++) {
-                    var attribute = attributes[i];
-                        
-                    var symbol = attribute.symbol;
-                    var semantic = attribute.semantic;
+                var allAttributes = program.attributeSymbols;
+                for (i = 0 ; i < allAttributes.length ; i++) {
+                    var symbol = allAttributes[i];
+                    var parameter = attributes[symbol];
+                    parameter = parameters[parameter];
+                    var semantic = parameter.semantic;
                     var accessor = primitive.semantics[semantic];
 
-                    this.vertexAttributeBufferDelegate.webGLContext = this.webGLContext;
                     var glResource = this.resourceManager.getResource(  accessor, this.vertexAttributeBufferDelegate, accessor);
                     // this call will bind the resource when available
                     if (glResource) {
@@ -763,8 +764,7 @@ var global = window;
                 }                
 
                 //-----
-
-                var available = availableCount === attributes.length;
+                var available = availableCount === allAttributes.length;
                 if (!renderVertices)  { 
                     //Just disable what is not required here…
                     if (available) {
@@ -958,7 +958,6 @@ var global = window;
                             gl.blendEquation(blendEquation);
                             gl.blendFunc(sfactor, dfactor);
                         }
-
                         this.bindedProgram = glProgram;
 
                         if (isPickingPass) {

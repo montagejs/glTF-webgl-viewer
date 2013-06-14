@@ -180,6 +180,7 @@ var global = window;
                         pass.id = globalID + "_" + rootPassID;
                         pass.instanceProgram = passDescription.instanceProgram;
                         pass.instanceProgram.program = this.getEntry(instanceProgram.program).entry;
+
                         pass.states = passDescription.states;
                         passes[passName] = pass;
                     } else {
@@ -189,6 +190,7 @@ var global = window;
 
                 }, this);
 
+                technique.parameters = description.parameters;
                 technique.passes = passes;
 
                 return true;
@@ -199,10 +201,11 @@ var global = window;
             value: function(entryID, description, userInfo) {
                 var material = Object.create(Material).init(entryID);
                 this.storeEntry(entryID, material, description);
-
                 //Simplification - Just take the selected technique
+                var instanceTechnique = description.instanceTechnique;
+                var values = instanceTechnique.values;
                 material.name = description.name;
-                var techniqueEntry = this.getEntry(description.technique);
+                var techniqueEntry = this.getEntry(instanceTechnique.technique);
                 if (techniqueEntry) {
                     material.technique = techniqueEntry.entry;
                 } else {
@@ -210,38 +213,33 @@ var global = window;
                     return false;
                 }
 
-                //then check if that technique contains overrides for paraemeteres
-                var techniques = description.techniques;
-                if (techniques) {
-                    var technique = techniques[description.technique];
-                    if (technique) {
-                        var parameters = Object.keys(technique.parameters);
-                        parameters.forEach( function(parameter) {
-                            var param = technique.parameters[parameter];
-                            if (param) {
-                                //TODO: handle with switch all types
-                                switch (param.type) {
-                                    case "SAMPLER_2D": {
-                                        if (param.image) {
-                                            var imageID = param.image + this.loaderContext() + "_sampler";
-                                            var sampler2D = Object.create(ResourceDescription).init(imageID, param);
-                                            sampler2D.type = param.type;
-                                            param.image = this.getEntry(param.image).entry;
-                                            technique.parameters[parameter] = sampler2D;
-                                        }
-                                    }
-                                        break;
-                                    default:
-                                        technique.parameters[parameter] = param.value;
-                                        break;
+                var parameters =  material.technique.parameters;
+                material.parameters = JSON.parse(JSON.stringify(parameters)); //clone parameters
+                values.forEach( function(value) {
+                    var parameter = parameters[value.parameter];
+                    if (parameter) {
+                        var paramValue = null;
+                        switch (parameter.type) {
+                            case "SAMPLER_2D": {
+                                var image = value.value.image;
+                                if (image) {
+                                    var imageID = image + this.loaderContext() + "_sampler";
+                                    var sampler2D = Object.create(ResourceDescription).init(imageID, value.value);
+                                    sampler2D.type = parameter.type;
+                                    value.value.image = this.getEntry(value.value.image).entry;
+                                    value.value = sampler2D;
+                                    paramValue = value;
                                 }
                             }
-                            material.parameters[parameter] = technique.parameters[parameter];
-                        }, this)
-
+                                break;
+                            default: {
+                                paramValue = value;
+                                break;
+                            }
+                        }
                     }
-                }
-
+                    material.parameters[value.parameter] = paramValue;
+                }, this);
                 return true;
             }
         },
