@@ -572,7 +572,6 @@ var global = window;
                     var canvas = document.createElement("canvas");
                     
                     //TODO: add compressed textures
-
                     //set default values
                     var minFilter = this.getGLFilter(resource.description.minFilter);
                     var magFilter = this.getGLFilter(resource.description.magFilter);
@@ -671,7 +670,7 @@ var global = window;
         },
         
         renderPrimitive: {
-            value: function(primitiveDescription) {
+            value: function(primitiveDescription, pass, parameters) {
                 var renderVertices = false;
                 //var worldMatrix = primitiveDescription.worldViewMatrix;
                 //var projectionMatrix = this.projectionMatrix;
@@ -680,10 +679,10 @@ var global = window;
                 var newMaxEnabledArray = -1;
                 var gl = this.webGLContext;
                 var program =  this.bindedProgram;
-                var pass = primitive.material.technique.rootPass;
                 var i;
                 var currentTexture = 0;
-                var parameters = primitive.material.parameters;
+                if (!parameters)
+                    parameters = primitive.material.parameters;
                 var allUniforms = program.uniformSymbols;
 
                 for (i = 0; i < allUniforms.length ; i++) {
@@ -699,22 +698,24 @@ var global = window;
                         value = parameter.value;
                     }
 
-                    var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
-                    if (uniformIsSampler2D) {
-                        var image = value;
-                        this.textureDelegate.webGLContext = this.webGLContext;
-                        var texture = this.resourceManager.getResource(image, this.textureDelegate, this.webGLContext);
-                        if (texture) {
-                            gl.activeTexture(gl.TEXTURE0 + currentTexture);
-                            gl.bindTexture(gl.TEXTURE_2D, texture);
-                            var samplerLocation = program.getLocationForSymbol(symbol);
-                            if (typeof samplerLocation !== "undefined") {
-                                program.setValueForSymbol(symbol, currentTexture);
-                                currentTexture++;
+                    if (value) {
+                        var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
+                        if (uniformIsSampler2D) {
+                            var image = value;
+                            this.textureDelegate.webGLContext = this.webGLContext;
+                            var texture = this.resourceManager.getResource(image, this.textureDelegate, this.webGLContext);
+                            if (texture) {
+                                gl.activeTexture(gl.TEXTURE0 + currentTexture);
+                                gl.bindTexture(gl.TEXTURE_2D, texture);
+                                var samplerLocation = program.getLocationForSymbol(symbol);
+                                if (typeof samplerLocation !== "undefined") {
+                                    program.setValueForSymbol(symbol, currentTexture);
+                                    currentTexture++;
+                                }
                             }
+                        } else {
+                            program.setValueForSymbol(symbol, value);
                         }
-                    } else {
-                        program.setValueForSymbol(symbol, value);
                     }
 
                 }
@@ -913,7 +914,7 @@ var global = window;
         },
 
         renderPrimitivesWithPass: {
-            value: function(primitives, pass) {
+            value: function(primitives, pass, parameters) {
                 var count = primitives.length;
                 var gl = this.webGLContext;
                 if (pass.instanceProgram) {
@@ -965,12 +966,12 @@ var global = window;
                                 var primitive = primitives[i];
                                 if (primitive.pickingColor) {
                                     this.bindedProgram.setValueForSymbol("u_pickingColor", primitive.pickingColor);
-                                    this.renderPrimitive(primitive);
+                                    this.renderPrimitive(primitive, pass, parameters);
                                 }
                             }
                         } else {
                             for (var i = 0 ; i < count ; i++) {
-                                this.renderPrimitive(primitives[i]);
+                                this.renderPrimitive(primitives[i], pass);
                             }
                         }
                     }

@@ -69,7 +69,7 @@ var global = window;
 }(this, function (root) {
     "use strict";
 
-    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "programs", "techniques", "materials", "meshes", "cameras", "lights", "nodes", "scenes", "animations"];
+    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "programs", "techniques", "materials", "indices", "attributes", "meshes", "cameras", "lights", "nodes", "scenes", "animations"];
 
     var categoryForType = {
         "buffer" : "buffers",
@@ -84,7 +84,9 @@ var global = window;
         "light" : "lights",
         "node" : "nodes",
         "scene" : "scenes",
-        "animation" : "animations"
+        "animation" : "animations",
+        "attribute" : "attributes",
+        "indices" : "indices"
     };
 
     var typeForCategory = {
@@ -100,7 +102,9 @@ var global = window;
         "lights" : "light",
         "nodes" : "node",
         "scenes" : "scene",
-        "animations" : "animation"
+        "animations" : "animation",
+        "indices" : "indices",
+        "attributes" : "attribute"
     };
 
     var WebGLTFLoader = Object.create(Object.prototype, {
@@ -255,7 +259,9 @@ var global = window;
                     "node" : this.handleNode,
                     "scene" : this.handleScene,
                     "image" : this.handleImage,
-                    "animation" : this.handleAnimation
+                    "animation" : this.handleAnimation,
+                    "indices" : this.handleIndices,
+                    "attribute" : this.handleAttribute
                 };
 
                 var success = true;
@@ -269,7 +275,6 @@ var global = window;
 
                     var type = typeForCategory[category];
                     var entryID = keys[categoryState.index];
-
                     var description = this.getEntryDescription(entryID, type);
                     if (!description) {
                         if (this.handleError) {
