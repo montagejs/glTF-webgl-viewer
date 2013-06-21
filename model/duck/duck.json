@@ -6,68 +6,45 @@
             "byteOffset": 0,
             "byteStride": 12,
             "count": 2399,
-            "max": [
-                96.1799,
-                163.97,
-                53.9252
-            ],
-            "min": [
-                -69.2985,
-                9.92937,
-                -61.3282
-            ],
             "type": "FLOAT_VEC3"
         },
         "attribute_24": {
             "bufferView": "bufferView_28",
-            "byteOffset": 28788,
+            "byteOffset": 0,
             "byteStride": 12,
             "count": 2399,
-            "max": [
-                0.999599,
-                0.999581,
-                0.998436
-            ],
-            "min": [
-                -0.999084,
-                -1,
-                -0.999832
-            ],
             "type": "FLOAT_VEC3"
         },
         "attribute_26": {
             "bufferView": "bufferView_28",
-            "byteOffset": 57576,
+            "byteOffset": 0,
             "byteStride": 8,
             "count": 2399,
-            "max": [
-                0.983346,
-                0.980037
-            ],
-            "min": [
-                0.026409,
-                0.019963
-            ],
             "type": "FLOAT_VEC2"
         }
     },
     "bufferViews": {
         "bufferView_28": {
             "buffer": "duck.bin",
-            "byteLength": 76768,
+            "byteLength": 0,
             "byteOffset": 0,
             "target": "ARRAY_BUFFER"
         },
         "bufferView_29": {
             "buffer": "duck.bin",
-            "byteLength": 25272,
-            "byteOffset": 76768,
+            "byteLength": 0,
+            "byteOffset": 0,
             "target": "ELEMENT_ARRAY_BUFFER"
+        },
+        "bufferView_31": {
+            "buffer": "duck.bin",
+            "byteLength": 42640,
+            "byteOffset": 0
         }
     },
     "buffers": {
         "duck.bin": {
-            "byteLength": 102040,
+            "byteLength": 0,
             "path": "duck.bin"
         }
     },
@@ -119,6 +96,44 @@
     },
     "meshes": {
         "LOD3spShape-lib": {
+            "extensions": {
+                "won-compression": {
+                    "attribRange": [
+                        0,
+                        2399
+                    ],
+                    "compressedData": {
+                        "bufferView": "bufferView_31",
+                        "byteOffset": 0,
+                        "count": 42640,
+                        "type": "UNSIGNED_BYTE"
+                    },
+                    "decodeOffsets": [
+                        -6860,
+                        983,
+                        -6071,
+                        0,
+                        0,
+                        -511,
+                        -511,
+                        -511
+                    ],
+                    "decodeScales": [
+                        0.0101006,
+                        0.0101006,
+                        0.0101006,
+                        0.000977517,
+                        0.000977517,
+                        0.00195695,
+                        0.00195695,
+                        0.00195695
+                    ],
+                    "indexRange": [
+                        19192,
+                        4212
+                    ]
+                }
+            },
             "name": "LOD3spShape",
             "primitives": [
                 {

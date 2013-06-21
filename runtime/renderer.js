@@ -444,6 +444,77 @@ var global = window;
             }
         },
 
+        setupCompressedMesh: {
+            value: function(mesh, attribs, indices) {
+                var primitive = mesh.primitives[0];
+
+                var gl = this.webGLContext;
+                //create indices
+                var previousBuffer = gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING);
+                var glResource =  gl.createBuffer();
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glResource);
+                gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, previousBuffer);
+
+                glResource.count = indices.length;
+                this.resourceManager.setResource(primitive.indices, glResource);
+                primitive.indices = { "id" : primitive.indices, "count" : glResource.count }; //HACK
+
+                //deinterleave for now, I now it is a bad and this will not be needed anymore soon
+                var count = attribs.length / 8;     //8 = (3pos + 2uv + 3normals)
+
+                var positions = new Float32Array(count * 3);
+                var normals = new Float32Array(count * 3);
+                var texcoords = new Float32Array(count * 2);
+
+                var i;
+                for (i = 0 ; i < count ; i++) {
+                    var idx = i * 8;
+                    positions[(i*3) + 0] = attribs[idx + 0];
+                    positions[(i*3) + 1] = attribs[idx + 1];
+                    positions[(i*3) + 2] = attribs[idx + 2];
+                    normals[(i*3) + 0] = attribs[idx + 5];
+                    normals[(i*3) + 1] = attribs[idx + 6];
+                    normals[(i*3) + 2] = attribs[idx + 7];
+                    texcoords[(i*2) + 0] = attribs[idx + 3];
+                    texcoords[(i*2) + 1] = attribs[idx + 4];
+                }
+
+                previousBuffer = gl.getParameter(gl.ARRAY_BUFFER_BINDING);
+
+                glResource =  gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+                gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+                glResource.componentType = gl.FLOAT;
+                glResource.componentsPerAttribute = 3;
+
+                this.resourceManager.setResource(primitive.semantics["POSITION"], glResource);
+                primitive.semantics["POSITION"] = { "id" : primitive.semantics["POSITION"] , "count" : count, "byteStride" : 12}; //HACK
+
+
+                glResource =  gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+                gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
+                glResource.componentType = gl.FLOAT;
+                glResource.componentsPerAttribute = 3;
+
+                this.resourceManager.setResource(primitive.semantics["NORMAL"], glResource);
+                primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"], "count" : count, "byteStride" : 12}; //HACK
+
+                glResource =  gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+                gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
+                glResource.componentType = gl.FLOAT;
+                glResource.componentsPerAttribute = 2;
+                this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"], glResource);
+                primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"], "count" : count, "byteStride" : 8}; //HACK
+
+                gl.bindBuffer(gl.ARRAY_BUFFER, previousBuffer);
+
+
+            }
+        },
+
         vertexAttributeBufferDelegate: {
              value: {
 
@@ -750,6 +821,7 @@ var global = window;
                             //if (this._lastMaxEnabledArray < attributeLocation) {
                             gl.enableVertexAttribArray(attributeLocation);
                             //}
+
                             gl.vertexAttribPointer(attributeLocation,
                                 glResource.componentsPerAttribute,
                                 glResource.componentType, false, accessor.byteStride, 0);

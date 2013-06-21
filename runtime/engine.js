@@ -64,23 +64,130 @@ exports.Engine = Object.create(Object.prototype, {
 
     technique: {
         get: function() {
-            this.createTechniqueIfNeeded();
             return this._technique;
         },
         set: function(value) {
-            this.createTechniqueIfNeeded();
             this._technique = value;
+        }
+    },
+
+    //All the code within the compressedMeshDelegate comes from webgl-loader project
+    compressedMeshDelegate: {
+        value: {
+
+            handleError: function(errorCode, info) {
+                console.log("ERROR:vertexAttributeBufferDelegate:"+errorCode+" :"+info);
+            },
+
+            decompressAttribsInner_: function(str, inputStart, inputEnd,
+                                             output, outputStart, stride,
+                                             decodeOffset, decodeScale) {
+                var prev = 0;
+                for (var j = inputStart; j < inputEnd; j++) {
+                    var code = str.charCodeAt(j);
+                    prev += (code >> 1) ^ (-(code & 1));
+                    output[outputStart] = decodeScale * (prev + decodeOffset);
+                    outputStart += stride;
+                }
+            },
+
+            decompressIndices_: function(str, inputStart, numIndices,
+                                         output, outputStart) {
+                var highest = 0;
+                for (var i = 0; i < numIndices; i++) {
+                    var code = str.charCodeAt(inputStart++);
+                    output[outputStart++] = highest - code;
+                    if (code == 0) {
+                        highest++;
+                    }
+                }
+            },
+
+            decompressMesh: function(str, meshParams, decodeParams, callback)  {
+                // Extract conversion parameters from attribArrays.
+                var stride = decodeParams.decodeScales.length;
+                var decodeOffsets = decodeParams.decodeOffsets;
+                var decodeScales = decodeParams.decodeScales;
+                var attribStart = meshParams.attribRange[0];
+                var numVerts = meshParams.attribRange[1];
+
+                // Decode attributes.
+                var inputOffset = attribStart;
+                var attribsOut = new Float32Array(stride * numVerts);
+                for (var j = 0; j < stride; j++) {
+                    var end = inputOffset + numVerts;
+                    var decodeScale = decodeScales[j];
+                    if (decodeScale) {
+                        // Assume if decodeScale is never set, simply ignore the
+                        // attribute.
+                        this.decompressAttribsInner_(str, inputOffset, end,
+                            attribsOut, j, stride,
+                            decodeOffsets[j], decodeScale);
+                    }
+                    inputOffset = end;
+                }
+
+                var indexStart = meshParams.indexRange[0];
+                var numIndices = 3*meshParams.indexRange[1];
+                var indicesOut = new Uint16Array(numIndices);
+                this.decompressIndices_(str, inputOffset, numIndices, indicesOut, 0);
+
+                // Decode bboxen.
+                /*
+                var bboxen = undefined;
+                var bboxOffset = meshParams.bboxes;
+                if (bboxOffset) {
+                    bboxen = decompressAABBs_(str, bboxOffset, meshParams.names.length,
+                        decodeOffsets, decodeScales);
+                }
+                */
+                callback(attribsOut, indicesOut, null, meshParams);
+            },
+
+
+            convert: function (resource, ctx) {
+                var compression = ctx.mesh.compression;
+                var indexRange = compression.indexRange;
+                if (indexRange) {
+                    var meshEnd = indexRange[0] + 3*indexRange[1];
+                    var callback = null;
+                    this.decompressMesh(resource, compression, compression,
+                        function(attribsOut, indicesOut, bboxen, meshParams) {
+                            ctx.renderer.setupCompressedMesh(ctx.mesh, attribsOut, indicesOut);
+                    });
+                }
+
+                return resource;
+            },
+
+            resourceAvailable: function (glResource, ctx) {
+            }
         }
     },
 
     scene: {
         get: function() {
-            return this._scene;
+            return this.technique.rootPass.scene;
         },
         set: function(value) {
+            var self = this;
             var scene = this.technique.rootPass.scene;
             if (scene != value) {
-                scene = value;
+                this.technique.rootPass.scene = value;
+
+                this.scene.rootNode.apply( function(node, parent, context) {
+                    if (node.meshes) {
+                        node.meshes.forEach(function (mesh) {
+                            if (mesh.compression) {
+                                mesh.compression.compressedData.requestType = "text";
+
+                                self.renderer.resourceManager.getResource(mesh.compression.compressedData, self.compressedMeshDelegate,
+                                    { "mesh" : mesh, "renderer" : self.renderer});
+                            }
+                        }, this);
+                    }
+                } , true, null);
+
             }
         }
     },
@@ -94,9 +201,11 @@ exports.Engine = Object.create(Object.prototype, {
         }
     },
 
+
     init: {
         value: function( webGLContext, options) {
             this.renderer = Object.create(Renderer).initWithWebGLContext(webGLContext);
+            this.createTechniqueIfNeeded();
             this.loadPickingTechnique();
             return this;
         }

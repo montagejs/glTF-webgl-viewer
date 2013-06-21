@@ -215,6 +215,18 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
             mesh.id = entryID;
             mesh.name = description.name;
 
+            var isCompressedMesh = false;
+            var extensions = description.extensions;
+            if (extensions) {
+                if (extensions["won-compression"]) {
+                    isCompressedMesh = true;
+                    mesh.compression = extensions["won-compression"];
+
+                    mesh.compression.compressedData.bufferView =  this.getEntry(mesh.compression.compressedData.bufferView).entry;
+                    mesh.compression.compressedData.id = entryID + "_compressedData"
+                }
+            }
+
             this.storeEntry(entryID, mesh, description);
 
             var primitivesDescription = description[Mesh.PRIMITIVES];
@@ -243,15 +255,24 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                         var attributeID = semantics[semantic];
                         var attributeEntry = this.getEntry(attributeID);
 
-                        primitive.addVertexAttribute( { "semantic" :  semantic,
-                            "attribute" : attributeEntry.entry });
+                        if (!isCompressedMesh) {
+                            primitive.addVertexAttribute( { "semantic" :  semantic,
+                                "attribute" : attributeEntry.entry });
+                        } else {
+                            primitive.addVertexAttribute( { "semantic" :  semantic,
+                                "attribute" : attributeID });
+                        }
 
                     }, this);
 
                     //set indices
                     var indicesID = primitiveDescription.indices;
                     var indicesEntry = this.getEntry(indicesID);
-                    primitive.indices = indicesEntry.entry;
+                    if (!isCompressedMesh) {
+                        primitive.indices = indicesEntry.entry;
+                    } else {
+                        primitive.indices = indicesID;
+                    }
                 }
             }
             return true;

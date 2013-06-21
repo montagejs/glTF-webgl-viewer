@@ -30,7 +30,7 @@ var global = window;
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
-      
+
         factory(module.exports);
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -115,9 +115,7 @@ var global = window;
             enumerable: false,
             value: function() {
                 if ( (!this._boundingBox) && this.primitives) {
-
                     var count = this.primitives.length;
-
                     if (count > 0) {
                         var bbox = this.primitives[0].boundingBox;
                         if (bbox) {
@@ -154,13 +152,12 @@ var global = window;
         init: {
             value: function() {
                 this.__Base_init();
-                this._primitives = []; 
+                this._primitives = [];
                 return this;
             }
         }
 
     });
-
 
     if(root) {
         root.Mesh = Mesh;

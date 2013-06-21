@@ -571,7 +571,14 @@ var global = window;
                         delegate.handleError(WebGLTFResourceManager.XMLHTTPREQUEST_STATUS_ERROR, this.status);
                     }
                 };
+
+                /*
+                xhr.addEventListener("abort", function() {
+                }, false);
+                */
+
                 xhr.send(null);
+
                 var resourceStatus = this._resourcesStatus[request.id];
                 if (resourceStatus) {
                     resourceStatus.xhr = xhr;
@@ -724,17 +731,19 @@ var global = window;
         _handleWrappedBufferViewResourceLoading: {
             value: function(wrappedBufferView, delegate, ctx) {
                 var bufferView = wrappedBufferView.bufferView;
-                var buffer = bufferView.buffer;
-                var byteOffset = wrappedBufferView.byteOffset + bufferView.description.byteOffset;
-                var range = [byteOffset , (this._elementSizeForGLType(wrappedBufferView.type) * wrappedBufferView.count) + byteOffset];
+                if (bufferView) {
+                    var buffer = bufferView.buffer;
+                    var byteOffset = wrappedBufferView.byteOffset + bufferView.description.byteOffset;
+                    var range = [byteOffset , (this._elementSizeForGLType(wrappedBufferView.type) * wrappedBufferView.count) + byteOffset];
 
-                this._handleRequest({   "id" : wrappedBufferView.id,
-                                        "range" : range,
-                                        "type" : buffer.description.type,
-                                        "path" : buffer.description.path,
-                                        "delegate" : delegate,
-                                        "ctx" : ctx,
-                                        "kind" : "single-part" }, null);
+                    this._handleRequest({   "id" : wrappedBufferView.id,
+                        "range" : range,
+                        "type" : wrappedBufferView.requestType ? wrappedBufferView.requestType : buffer.description.type,
+                        "path" : buffer.description.path,
+                        "delegate" : delegate,
+                        "ctx" : ctx,
+                        "kind" : "single-part" }, null);
+                }
             }
         },
 
@@ -789,7 +798,7 @@ var global = window;
 
         _handleImageLoading: {
             value: function(resource, textureLoadedCallback, ctx) {
-                //TODO: unify with binaries
+                //TODO: unify with binariesw
                 var resourceStatus = this._resourcesStatus[resource.id];
                 var status = null;
                 if (resourceStatus) {
@@ -828,7 +837,7 @@ var global = window;
                 if (resource.description.image) {
                     this._handleImageLoading(resource.description.image, 
                     function(image, id, ctx) {
-                        var gl = ctx;                            
+                        var gl = ctx;
                         var convertedResource = delegate.convert(resource, image);
 
                         delete self._resourcesStatus[resource.id];
@@ -840,7 +849,14 @@ var global = window;
                 }
             }
         },
-        
+
+        //just used a hack now to setup resources coming from compressed meshes
+        setResource: {
+            value: function(resourceID, resource) {
+                this._resources[resourceID] = resource;
+            }
+        },
+
         getResource: {
                 value: function(resource, delegate, ctx) {
 

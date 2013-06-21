@@ -81,23 +81,19 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
             var view = this.view;
             if (view) {
                 if (view.engine) {
-                    view.engine.technique.rootPass.scene.rootNode.apply( function(node, parent) {
-                        if (node.meshes) {
-                            if (node.meshes.length) {
-                                node.meshes.forEach( function(mesh) {
-                                    mesh.loadedPrimitivesCount = 0;
-                                    mesh.step = 0;
-                                }, self);
+                    if (view.engine.scene) {
+                        view.engine.technique.rootPass.scene.rootNode.apply( function(node, parent) {
+                            if (node.meshes) {
+                                if (node.meshes.length) {
+                                    node.meshes.forEach( function(mesh) {
+                                        mesh.loadedPrimitivesCount = 0;
+                                        mesh.step = 0;
+                                    }, self);
+                                }
                             }
-                        }
-                        return null;
-                    } , true, null);
-                }
-                var resourceManager = view.getResourceManager();
-                if (resourceManager) {
-                    resourceManager.maxConcurrentRequests = this.concurrentRequests;
-                    resourceManager.bytesLimit = this.bytesLimit * 1000;
-                    resourceManager.reset();
+                            return null;
+                        } , true, null);
+                    }
                 }
                 var progress = this.progress;
                 if (progress) {
@@ -185,11 +181,11 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
             if (this.selectModel) {
                 ///this.selectModel.content.push( { "name": "layout", "path":"model/remi/layout/LayOut.json"} );
 
+                this.selectModel.content.push( { "name": "duck", "path":"model/duck/duck.json"} );
                 this.selectModel.content.push( { "name": "Buggy", "path":"model/rambler/Rambler.json"} );
                 this.selectModel.content.push( { "name": "SuperMurdoch", "path":"model/SuperMurdoch/SuperMurdoch.json"} );
                 this.selectModel.content.push( { "name": "Wine", "path":"model/wine/wine.json"} );
 
-                this.selectModel.content.push( { "name": "duck", "path":"model/duck/duck.json"} );
                 this.selectModel.needsDraw = true;
                 this.model = this.selectModel.content[0].path;
             }
@@ -249,6 +245,17 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
+    sceneWillChange: {
+        value: function() {
+            var resourceManager = this.view.getResourceManager();
+            if (resourceManager) {
+                resourceManager.maxConcurrentRequests = this.concurrentRequests;
+                resourceManager.bytesLimit = this.bytesLimit * 1000;
+                resourceManager.reset();
+            }
+        }
+    },
+
     sceneDidChange: {
         value: function() {
             var progress = this.progress;
@@ -257,6 +264,7 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                 progress.element.style.opacity = 1;
                 progress.max = this.view.totalBufferSize;
                 progress.value = 0;
+
                 this.restart();
                 var resourceManager = this.view.getResourceManager();
                 if (resourceManager) {

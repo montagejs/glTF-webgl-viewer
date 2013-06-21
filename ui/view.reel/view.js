@@ -124,15 +124,17 @@ exports.View = Component.specialize( {
     scene: {
         get: function() {
             if (this.engine) {
-                if (this.engine.technique.rootPass) {
-                    return this.engine.technique.rootPass.scene;
-                }
+                return this.engine.scene;
             }
             return null;
         },
 
         set: function(value) {
             if (this.scene !== value) {
+                if (this.delegate.sceneWillChange) {
+                    this.delegate.sceneWillChange();
+                }
+
                 this._scene = value;
                 this.applyScene(value);
                 if (this.delegate) {
@@ -254,28 +256,30 @@ exports.View = Component.specialize( {
                             return modelMatrix;
                         }, true, ctx);
 
-                        var sceneSize = [(sceneBBox[1][0] - sceneBBox[0][0]) ,
-                            (sceneBBox[1][1] - sceneBBox[0][1]) ,
-                            (sceneBBox[1][2] - sceneBBox[0][2]) ];
+                        if (sceneBBox) {
+                            var sceneSize = [(sceneBBox[1][0] - sceneBBox[0][0]) ,
+                                (sceneBBox[1][1] - sceneBBox[0][1]) ,
+                                (sceneBBox[1][2] - sceneBBox[0][2]) ];
 
-                        //size to fit
-                        var scaleFactor = sceneSize[0] > sceneSize[1] ? sceneSize[0] : sceneSize[1];
-                        scaleFactor = sceneSize[2] > scaleFactor ? sceneSize[2] : scaleFactor;
+                            //size to fit
+                            var scaleFactor = sceneSize[0] > sceneSize[1] ? sceneSize[0] : sceneSize[1];
+                            scaleFactor = sceneSize[2] > scaleFactor ? sceneSize[2] : scaleFactor;
 
-                        scaleFactor =  1 / scaleFactor;
-                        var scaleMatrix = mat4.scale(mat4.identity(), [scaleFactor, scaleFactor, scaleFactor]);
-                        var center = vec3.createFrom(0,0,(sceneSize[2]*scaleFactor)/2);
-                        //self.camera.setCenter(center);
-                        var translationVector = vec3.createFrom(    -((sceneSize[0] / 2) + sceneBBox[0][0]),
-                            -((sceneSize[1] / 2) + sceneBBox[0][1]),
-                            -( sceneBBox[0][2]));
+                            scaleFactor =  1 / scaleFactor;
+                            var scaleMatrix = mat4.scale(mat4.identity(), [scaleFactor, scaleFactor, scaleFactor]);
+                            var center = vec3.createFrom(0,0,(sceneSize[2]*scaleFactor)/2);
+                            //self.camera.setCenter(center);
+                            var translationVector = vec3.createFrom(    -((sceneSize[0] / 2) + sceneBBox[0][0]),
+                                -((sceneSize[1] / 2) + sceneBBox[0][1]),
+                                -( sceneBBox[0][2]));
 
-                        var translation = mat4.translate(scaleMatrix, [
-                            translationVector[0],
-                            translationVector[1],
-                            translationVector[2]]);
+                            var translation = mat4.translate(scaleMatrix, [
+                                translationVector[0],
+                                translationVector[1],
+                                translationVector[2]]);
 
-                        mat4.set(translation, scene.rootNode.transform.matrix);
+                            mat4.set(translation, scene.rootNode.transform.matrix);
+                        }
 
                     }
                     this.engine.technique.rootPass.scene = scene;
