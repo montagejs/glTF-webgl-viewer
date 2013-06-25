@@ -46,6 +46,7 @@ var Point = require("montage/core/geometry/point").Point;
 var OrbitCamera = require("runtime/dependencies/camera.js").OrbitCamera;
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
 var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
+var URL = require("montage/core/url");
 
 Material.implicitAnimationsEnabled = true;
 
@@ -180,13 +181,15 @@ exports.View = Component.specialize( {
 
     scenePath: {
         set: function(value) {
-            console.log("scenePath:"+value);
-            //HACK: for demo.
-            if (window.__mainLocation) {
-                if (value)
-                    value = window.__mainLocation + value;
+            if (value) {
+                var URLObject = URL.parse(value);
+                if (!URLObject.scheme) {
+                    var packages = Object.keys(require.packages);
+                    //HACK: for demo, packages[0] is guaranted to be the entry point
+                    value = URL.resolve(packages[0], value);
+                }
             }
-
+            console.log("scenePath:"+value);
             if (value !== this._scenePath) {
                 if (0) {
                     this.loadMultipleScenesTest();
