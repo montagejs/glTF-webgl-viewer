@@ -277,7 +277,7 @@ exports.View = Component.specialize( {
 
                     }
                     this.engine.technique.rootPass.scene = scene;
-                    if (!hasCamera) {
+                    if (!hasCamera && scene) {
                         this.camera = new MontageOrbitCamera(this.canvas);
                         this.camera.translateComposer = this.translateComposer;
                         this.camera._hookEvents(this.canvas);
