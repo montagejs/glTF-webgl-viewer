@@ -180,7 +180,12 @@ exports.View = Component.specialize( {
 
     scenePath: {
         set: function(value) {
-            console.log("scenePath:"+this._scenePath);
+            console.log("scenePath:"+value);
+            //HACK: for demo.
+            if (window.__mainLocation) {
+                if (value)
+                    value = window.__mainLocation + value;
+            }
 
             if (value !== this._scenePath) {
                 if (0) {
