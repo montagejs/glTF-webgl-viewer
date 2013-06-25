@@ -43,7 +43,7 @@ exports.Options = Montage.create(Component, /** @lends module:"montage/ui/stage.
     progress: { value: null, writable:true },
     selectModel: { value: null, writable: true },
     selectCamera: { value: null, writable: true },
-    enableReflection: { value: null, writable:true },
+    showReflection: { value: null, writable:true },
     showBBOX: { value: null, writable:true },
 
     templateDidLoad:{
@@ -52,7 +52,7 @@ exports.Options = Montage.create(Component, /** @lends module:"montage/ui/stage.
             this.requests = this.templateObjects.requests;
             this.progress = this.templateObjects.progress;
             this.selectModel = this.templateObjects.selectModel;
-            this.enableReflection = this.templateObjects.enableReflection;
+            this.showReflection = this.templateObjects.showReflection;
             this.showBBOX = this.templateObjects.showBBOX;
             this.selectCamera = this.templateObjects.selectCamera;
         }

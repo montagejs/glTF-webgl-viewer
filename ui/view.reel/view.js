@@ -442,16 +442,34 @@ exports.View = Component.specialize( {
 
     _floorTextureLoaded : { writable: true, value: false },
 
-    _enableReflection: {
-        value: true, writable: true
+    _showGradient: {
+        value: false, writable: true
     },
 
-    enableReflection: {
+    _showReflection: {
+        value: false, writable: true
+    },
+
+    showBBOX: {
+        value: false, writable: true
+    },
+
+    showGradient: {
         get: function() {
-            return this._enableReflection;
+            return this._showGradient;
         },
         set: function(flag) {
-            this._enableReflection = flag;
+            this._showGradient = flag;
+        }
+
+    },
+
+    showReflection: {
+        get: function() {
+            return this._showReflection;
+        },
+        set: function(flag) {
+            this._showReflection = flag;
 
             //if reflection (e.g floor) is enabled, then we constrain the rotation
             if (flag && this.camera)
@@ -460,12 +478,11 @@ exports.View = Component.specialize( {
 
     },
 
-    showBBOX: {
-        value: false, writable: true
-    },
 
     drawGradient: {
         value: function() {
+            if (!this.showGradient)
+                return;
             if (!this.engine || !this.scene)
                 return;
             if (!this.engine.technique.rootPass.viewPoint)
@@ -1017,7 +1034,7 @@ exports.View = Component.specialize( {
                             - enable depth testing
                             - enable culling
                      ------------------------------------------------------------------------------------------------------------ */
-                    if(this.enableReflection && this.camera) {
+                    if(this.showReflection && this.camera) {
                         webGLContext.depthFunc(webGLContext.LESS);
                         webGLContext.enable(webGLContext.DEPTH_TEST);
                         webGLContext.frontFace(webGLContext.CW);

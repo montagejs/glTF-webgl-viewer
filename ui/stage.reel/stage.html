@@ -50,10 +50,11 @@ POSSIBILITY OF SUCH DAMAGE.
             "view": {
                 "prototype": "ui/view.reel",
                 "properties": {
-                    "element": {"#": "view"}
+                    "element": {"#": "view"},
+                    "showGradient" : true
                 },
                 "bindings": {
-                    "enableReflection": {"<->": "@options.enableReflection.checked"},
+                    "showReflection": {"<->": "@options.showReflection.checked"},
                     "showBBOX": {"<->": "@options.showBBOX.checked"}
                 }
             },
