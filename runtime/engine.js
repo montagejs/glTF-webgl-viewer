@@ -39,7 +39,8 @@ exports.Engine = Object.create(Object.prototype, {
             }.bind(this);
 
             var loader = Object.create(RuntimeTFLoader);
-            loader.initWithPath("assets/picking/picking.json");
+            loader.initWithPath(require.location + "assets/picking/picking.json");
+
             loader.delegate = readerDelegate;
             var options = { "ids": ["pickingTechnique"]};
             loader.load(null, options);
