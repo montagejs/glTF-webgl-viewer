@@ -887,11 +887,11 @@ exports.View = Component.specialize( {
         }
     },
 
+    selectedNode: { value: null, writable:true },
 
     handleSelectedNode: {
         value: function(nodeID) {
-            console.log("selected node:"+nodeID);
-
+            this.selectedNode = this.scene.rootNode.nodeWithID(nodeID);
             if (this.camera)
                 this.displayAllBBOX(this.camera.getViewMat(), nodeID);
             else {

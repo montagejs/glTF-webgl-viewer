@@ -964,10 +964,21 @@ var global = window;
                         if (isPickingPass) {
                             for (var i = 0 ; i < count ; i++) {
                                 var primitive = primitives[i];
-                                if (primitive.pickingColor) {
-                                    this.bindedProgram.setValueForSymbol("u_pickingColor", primitive.pickingColor);
-                                    this.renderPrimitive(primitive, pass, parameters);
+                                if (!primitive.pickingColor) {
+                                    if (primitive.nodeID) {
+                                        //FIXME move this into the picking technique when we have it..
+                                        //for picking, we need to associate a color to each node.
+                                        var nodePickingColor = pass.extras.nodeIDToColor[primitive.nodeID];
+                                        if (!nodePickingColor) {
+                                            nodePickingColor = vec4.createFrom(Math.random(),Math.random(),Math.random(), 1.);
+                                            pass.extras.nodeIDToColor[primitive.nodeID] = nodePickingColor;
+                                        }
+                                        primitive.pickingColor = nodePickingColor;
+
+                                    }
                                 }
+                                this.bindedProgram.setValueForSymbol("u_pickingColor", primitive.pickingColor);
+                                this.renderPrimitive(primitive, pass, parameters);
                             }
                         } else {
                             for (var i = 0 ; i < count ; i++) {
