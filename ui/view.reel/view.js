@@ -40,6 +40,7 @@ var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
 var ResourceManager = require("runtime/helpers/resource-manager").ResourceManager;
 var Engine = require("runtime/engine").Engine;
 var Material = require("runtime/material").Material;
+var Scene = require("runtime/scene").Scene;
 var Utilities = require("runtime/utilities").Utilities;
 var dom = require("montage/core/dom");
 var Point = require("montage/core/geometry/point").Point;
@@ -149,11 +150,9 @@ exports.View = Component.specialize( {
     loadMultipleScenesTest: {
         value: function() {
             var paths = [];
-            paths.push( "model/duck/duck.json" );
-            paths.push( "model/rambler/Rambler.json" );
-            paths.push( "model/wine/wine.json" );
-            paths.push( "model/SuperMurdoch/SuperMurdoch.json" );
-            //paths.push( "model/NexusFlattened/NexusFlattened.json" );
+            paths.push( "model/parts/Part1.json" );
+            paths.push( "model/parts/Part2.json" );
+            paths.push( "model/parts/Part3.json" );
 
             var pathsIndex = 0;
 
@@ -904,7 +903,7 @@ exports.View = Component.specialize( {
 
     displayAllBBOX: {
         value: function(cameraMatrix, selectedNodeID) {
-            if (!this.scene)
+            if (!this.scene || !this.showBBOX)
                 return;
 
             var ctx = mat4.identity();
@@ -1011,7 +1010,7 @@ exports.View = Component.specialize( {
                 this.camera.orbit(this.cameraAnimatingXVel, this.cameraAnimatingYVel);
                 this.needsDraw = true;
             }
-//FIXME:
+                //FIXME: shouldn't be needed
                 this.needsDraw = true;
 
             if (this.scene) {
@@ -1117,7 +1116,8 @@ exports.View = Component.specialize( {
         value: function() {
 
             if (this.engine && this.scene) {
-                this.scene.animationManager.updateTargetsAtTime(Date.now(), this.engine.renderer.resourceManager);
+                if (this.scene.animationManager)
+                    this.scene.animationManager.updateTargetsAtTime(Date.now(), this.engine.renderer.resourceManager);
             }
 
             var webGLContext = this.getWebGLContext();
