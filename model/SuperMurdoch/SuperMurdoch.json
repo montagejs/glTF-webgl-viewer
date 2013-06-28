@@ -13953,16 +13953,16 @@
     "profile": "WebGL 1.0",
     "programs": {
         "program_0": {
-            "fragmentShader": "technique1FS",
-            "vertexShader": "technique1VS"
+            "fragmentShader": "SuperMurdoch0FS",
+            "vertexShader": "SuperMurdoch0VS"
         },
         "program_1": {
-            "fragmentShader": "technique2FS",
-            "vertexShader": "technique2VS"
+            "fragmentShader": "SuperMurdoch2FS",
+            "vertexShader": "SuperMurdoch2VS"
         },
         "program_2": {
-            "fragmentShader": "technique3FS",
-            "vertexShader": "technique3VS"
+            "fragmentShader": "SuperMurdoch4FS",
+            "vertexShader": "SuperMurdoch4VS"
         }
     },
     "scene": "defaultScene",
@@ -13974,23 +13974,23 @@
         }
     },
     "shaders": {
-        "technique1FS": {
-            "path": "technique1FS.glsl"
+        "SuperMurdoch0FS": {
+            "path": "SuperMurdoch0FS.glsl"
         },
-        "technique1VS": {
-            "path": "technique1VS.glsl"
+        "SuperMurdoch0VS": {
+            "path": "SuperMurdoch0VS.glsl"
         },
-        "technique2FS": {
-            "path": "technique2FS.glsl"
+        "SuperMurdoch2FS": {
+            "path": "SuperMurdoch2FS.glsl"
         },
-        "technique2VS": {
-            "path": "technique2VS.glsl"
+        "SuperMurdoch2VS": {
+            "path": "SuperMurdoch2VS.glsl"
         },
-        "technique3FS": {
-            "path": "technique3FS.glsl"
+        "SuperMurdoch4FS": {
+            "path": "SuperMurdoch4FS.glsl"
         },
-        "technique3VS": {
-            "path": "technique3VS.glsl"
+        "SuperMurdoch4VS": {
+            "path": "SuperMurdoch4VS.glsl"
         }
     },
     "techniques": {
