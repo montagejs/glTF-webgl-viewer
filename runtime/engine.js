@@ -72,6 +72,7 @@ exports.Engine = Object.create(Object.prototype, {
     },
 
     //All the code within the compressedMeshDelegate comes from webgl-loader project
+    //http://www.apache.org/licenses/LICENSE-2.0
     compressedMeshDelegate: {
         value: {
 
