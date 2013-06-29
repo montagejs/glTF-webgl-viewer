@@ -80,9 +80,9 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
             var self = this;
             var view = this.view;
             if (view) {
-                if (view.engine) {
-                    if (view.engine.scene) {
-                        view.engine.technique.rootPass.scene.rootNode.apply( function(node, parent) {
+                if (view.sceneRenderer) {
+                    if (view.sceneRenderer.scene) {
+                        view.sceneRenderer.technique.rootPass.scene.rootNode.apply( function(node, parent) {
                             if (node.meshes) {
                                 if (node.meshes.length) {
                                     node.meshes.forEach( function(mesh) {

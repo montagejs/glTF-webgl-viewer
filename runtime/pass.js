@@ -43,7 +43,7 @@ var Node = require("runtime/node").Node;
 var Projection = require("runtime/projection").Projection;
 var Camera = require("runtime/camera").Camera;
 var Utilities = require("runtime/utilities").Utilities;
-var Renderer = require("runtime/renderer").Renderer;
+var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
 var Transform = require("runtime/transform").Transform;
 var ResourceDescription = require("runtime/resource-description").ResourceDescription;
 
@@ -355,9 +355,9 @@ var SceneRenderer = Object.create(Object.prototype, {
 
                                         var pathInfo = this._pathsInfos[pathID];
                                         if (pathInfo) {
-                                            var WORLD = Renderer.WORLD;
-                                            var WORLDVIEW = Renderer.WORLDVIEW;
-                                            var WORLDVIEWINVERSETRANSPOSE = Renderer.WORLDVIEWINVERSETRANSPOSE;
+                                            var WORLD = WebGLRenderer.WORLD;
+                                            var WORLDVIEW = WebGLRenderer.WORLDVIEW;
+                                            var WORLDVIEWINVERSETRANSPOSE = WebGLRenderer.WORLDVIEWINVERSETRANSPOSE;
 
                                             var renderPrimitive = {};
                                             renderPrimitive["primitive"] = primitive;
@@ -407,7 +407,7 @@ var SceneRenderer = Object.create(Object.prototype, {
 
                     var pathInfos = self._pathsInfos[pathID];
                     if (pathInfos) {
-                        worldMatrix = pathInfos[Renderer.WORLD];
+                        worldMatrix = pathInfos[WebGLRenderer.WORLD];
                     } else {
                         worldMatrix = parentMatrix;
                     }
@@ -435,9 +435,9 @@ var SceneRenderer = Object.create(Object.prototype, {
             //Assign a view point from available nodes with camera if none
             var self = this;
             var cameraNodes = [];
-            var WORLD = Renderer.WORLD;
-            var WORLDVIEW = Renderer.WORLDVIEW;
-            var WORLDVIEWINVERSETRANSPOSE = Renderer.WORLDVIEWINVERSETRANSPOSE;
+            var WORLD = WebGLRenderer.WORLD;
+            var WORLDVIEW = WebGLRenderer.WORLDVIEW;
+            var WORLDVIEWINVERSETRANSPOSE = WebGLRenderer.WORLDVIEWINVERSETRANSPOSE;
 
             var context = {};
             context["path"] = [];
@@ -507,7 +507,7 @@ var SceneRenderer = Object.create(Object.prototype, {
 
 
     render: {
-        value: function(renderer, options) {
+        value: function(webGLRenderer, options) {
 
             if (!this.scene)
                 return;
@@ -516,11 +516,11 @@ var SceneRenderer = Object.create(Object.prototype, {
 
             if (picking) {
                 this.pickingRenderTarget.extras.coords = options.coords;
-                renderer.bindRenderTarget(this.pickingRenderTarget);
+                webGLRenderer.bindRenderTarget(this.pickingRenderTarget);
             }
             this.updateTransforms();
             //set projection matrix
-            renderer.projectionMatrix = this.viewPoint.cameras[0].projection.matrix;
+            webGLRenderer.projectionMatrix = this.viewPoint.cameras[0].projection.matrix;
 
             //get view matrix
             var viewMatrix = mat4.create();
@@ -532,7 +532,7 @@ var SceneRenderer = Object.create(Object.prototype, {
                 var pathID = this._pathIDsForNodeID[this.viewPoint.id];
                 if (pathID) {
                     var pathInfo = this._pathsInfos[pathID];
-                    mat4.inverse(pathInfo[Renderer.WORLD], viewMatrix);
+                    mat4.inverse(pathInfo[WebGLRenderer.WORLD], viewMatrix);
                 } else {
                     mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
                 }
@@ -543,9 +543,9 @@ var SceneRenderer = Object.create(Object.prototype, {
 
             for (var i = 0 ; i < count ; i++) {
                 var pathInfos = this._pathsInfosArray[i];
-                var worldMatrix = pathInfos[renderer.WORLD];
-                var worldViewMatrix = pathInfos[renderer.WORLDVIEW];
-                var normalMatrix = pathInfos[renderer.WORLDVIEWINVERSETRANSPOSE];
+                var worldMatrix = pathInfos[webGLRenderer.WORLD];
+                var worldViewMatrix = pathInfos[webGLRenderer.WORLDVIEW];
+                var normalMatrix = pathInfos[webGLRenderer.WORLDVIEWINVERSETRANSPOSE];
                 mat4.multiply(viewMatrix, worldMatrix, worldViewMatrix);
                 mat4.toInverseMat3(worldViewMatrix, normalMatrix);
                 mat3.transpose(normalMatrix);
@@ -563,16 +563,16 @@ var SceneRenderer = Object.create(Object.prototype, {
                     nonOpaquePassesWithPrimitives.push(passWithPrimitives);
                 } else {
                     if (this.pickingTechnique)
-                        renderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, this.pickingTechnique.parameters);
+                        webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, this.pickingTechnique.parameters);
                 }
             }, this);
 
             if (!picking) {
                 nonOpaquePassesWithPrimitives.forEach( function(passWithPrimitives) {
-                    renderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass);
+                    webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass);
                 }, this);
             } else {
-                renderer.unbindRenderTarget(this.pickingRenderTarget);
+                webGLRenderer.unbindRenderTarget(this.pickingRenderTarget);
 
                 var pickedPixel = this.pickingRenderTarget.extras.pickedPixel;
                 var selectedNodeID = null;
@@ -714,9 +714,9 @@ var ScenePass = exports.ScenePass = Object.create(Pass, {
     },
 
     execute: {
-        value: function(renderer, options) {
+        value: function(webGLRenderer, options) {
             //pickingRenderTarget
-            this.sceneRenderer.render(renderer, options);
+            this.sceneRenderer.render(webGLRenderer, options);
         }
     },
 

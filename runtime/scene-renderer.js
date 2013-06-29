@@ -24,12 +24,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 require("runtime/dependencies/gl-matrix");
-var Renderer = require("runtime/renderer").Renderer;
+var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
 var Technique = require("runtime/technique").Technique;
 var ScenePass = require("runtime/pass").ScenePass;
 var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
 
-exports.Engine = Object.create(Object.prototype, {
+exports.SceneRenderer = Object.create(Object.prototype, {
 
     loadPickingTechnique: {
         value: function() {
@@ -58,7 +58,7 @@ exports.Engine = Object.create(Object.prototype, {
         }
     },
 
-    _renderer: { value: null, writable: true },
+    _webGLRenderer: { value: null, writable: true },
 
     _technique: { value: null, writable: true },
 
@@ -154,7 +154,7 @@ exports.Engine = Object.create(Object.prototype, {
                     var callback = null;
                     this.decompressMesh(resource, compression, compression,
                         function(attribsOut, indicesOut, bboxen, meshParams) {
-                            ctx.renderer.setupCompressedMesh(ctx.mesh, attribsOut, indicesOut);
+                            ctx.webGLRenderer.setupCompressedMesh(ctx.mesh, attribsOut, indicesOut);
                     });
                 }
 
@@ -182,8 +182,8 @@ exports.Engine = Object.create(Object.prototype, {
                             if (mesh.compression) {
                                 mesh.compression.compressedData.requestType = "text";
 
-                                self.renderer.resourceManager.getResource(mesh.compression.compressedData, self.compressedMeshDelegate,
-                                    { "mesh" : mesh, "renderer" : self.renderer});
+                                self.webGLRenderer.resourceManager.getResource(mesh.compression.compressedData, self.compressedMeshDelegate,
+                                    { "mesh" : mesh, "renderer" : self.webGLRenderer});
                             }
                         }, this);
                     }
@@ -193,19 +193,19 @@ exports.Engine = Object.create(Object.prototype, {
         }
     },
 
-    renderer: {
+    webGLRenderer: {
         get: function() {
-            return this._renderer;
+            return this._webGLRenderer;
         },
         set: function(value) {
-            this._renderer = value;
+            this._webGLRenderer = value;
         }
     },
 
 
     init: {
         value: function( webGLContext, options) {
-            this.renderer = Object.create(Renderer).initWithWebGLContext(webGLContext);
+            this.webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
             this.createTechniqueIfNeeded();
             this.loadPickingTechnique();
             return this;
@@ -215,7 +215,7 @@ exports.Engine = Object.create(Object.prototype, {
     render: {
         value: function(options) {
             if (this.technique)
-                this.technique.execute(this.renderer, options);
+                this.technique.execute(this.webGLRenderer, options);
         }
     }
 

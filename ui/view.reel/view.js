@@ -38,7 +38,7 @@ var Component = require("montage/ui/component").Component;
 require("runtime/dependencies/gl-matrix");
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
 var ResourceManager = require("runtime/helpers/resource-manager").ResourceManager;
-var Engine = require("runtime/engine").Engine;
+var SceneRenderer = require("runtime/scene-renderer").SceneRenderer;
 var Material = require("runtime/material").Material;
 var Scene = require("runtime/scene").Scene;
 var Utilities = require("runtime/utilities").Utilities;
@@ -48,8 +48,6 @@ var OrbitCamera = require("runtime/dependencies/camera.js").OrbitCamera;
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
 var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
 var URL = require("montage/core/url");
-
-Material.implicitAnimationsEnabled = true;
 
 /**
     Description TODO
@@ -80,10 +78,10 @@ exports.View = Component.specialize( {
 
     viewPoint: {
         get: function() {
-            return this.engine ? this.engine.technique.rootPass.viewPoint : null;
+            return this.sceneRenderer ? this.sceneRenderer.technique.rootPass.viewPoint : null;
         },
         set: function(value) {
-            this.engine.technique.rootPass.viewPoint = value;
+            this.sceneRenderer.technique.rootPass.viewPoint = value;
         }
     },
 
@@ -110,21 +108,21 @@ exports.View = Component.specialize( {
         }
     },
 
-    _engine: { value: null, writable: true },
+    _sceneRenderer: { value: null, writable: true },
 
-    engine: {
+    sceneRenderer: {
         get: function() {
-            return this._engine;
+            return this._sceneRenderer;
         },
         set: function(value) {
-            this._engine = value;
+            this._sceneRenderer = value;
         }
     },
 
     scene: {
         get: function() {
-            if (this.engine) {
-                return this.engine.scene;
+            if (this.sceneRenderer) {
+                return this.sceneRenderer.scene;
             }
             return null;
         },
@@ -225,8 +223,8 @@ exports.View = Component.specialize( {
                         
     applyScene: {
         value:function (scene) {
-            if (this.engine) {
-                if (this.engine.technique.rootPass) {
+            if (this.sceneRenderer) {
+                if (this.sceneRenderer.technique.rootPass) {
                     if (scene) {
                         this.camera = null;
 
@@ -282,7 +280,7 @@ exports.View = Component.specialize( {
                         }
 
                     }
-                    this.engine.technique.rootPass.scene = scene;
+                    this.sceneRenderer.technique.rootPass.scene = scene;
                     if (!hasCamera && scene) {
                         this.camera = new MontageOrbitCamera(this.canvas);
                         this.camera.translateComposer = this.translateComposer;
@@ -319,9 +317,9 @@ exports.View = Component.specialize( {
                               
             var webGLContext = this.canvas.getContext("experimental-webgl", { antialias: true}) ||this.canvas.getContext("webgl", { antialias: true});
             var options = null;
-            this.engine = Object.create(Engine);
-            this.engine.init(webGLContext, options);
-            this.engine.renderer.resourceManager.observers.push(this);
+            this.sceneRenderer = Object.create(SceneRenderer);
+            this.sceneRenderer.init(webGLContext, options);
+            this.sceneRenderer.webGLRenderer.resourceManager.observers.push(this);
 
             if (this._scene)
                 this.applyScene(this._scene);
@@ -412,32 +410,32 @@ exports.View = Component.specialize( {
     /* returns an array of test results */
     hitTest: {
         value: function(position, options) {
-            if (this.engine) {
-                if ((this.engine.technique.rootPass) && (this.canvas)) {
+            if (this.sceneRenderer) {
+                if ((this.sceneRenderer.technique.rootPass) && (this.canvas)) {
                     var viewport = [0, 0, parseInt(this.canvas.getAttribute("width")), parseInt(this.canvas.getAttribute("height"))];
-                    return this.engine.technique.rootPass.hitTest(position, viewport, options);
+                    return this.sceneRenderer.technique.rootPass.hitTest(position, viewport, options);
                 }
             }
             return null;
         }
     },
 
-    getRenderer: {
+    getWebGLRenderer: {
         value: function() {
-            return this.engine ? this.engine.renderer : null;
+            return this.sceneRenderer ? this.sceneRenderer.webGLRenderer : null;
         }
     },
 
     getWebGLContext: {
         value: function() {
-            var renderer = this.getRenderer();
+            var renderer = this.getWebGLRenderer();
             return renderer ? renderer.webGLContext : null;
         }
     },
 
     getResourceManager: {
         value: function() {
-            var renderer = this.getRenderer();
+            var renderer = this.getWebGLRenderer();
             return renderer ? renderer.resourceManager : null;
         }
     },
@@ -489,14 +487,14 @@ exports.View = Component.specialize( {
         value: function() {
             if (!this.showGradient)
                 return;
-            if (!this.engine || !this.scene)
+            if (!this.sceneRenderer || !this.scene)
                 return;
-            if (!this.engine.technique.rootPass.viewPoint)
+            if (!this.sceneRenderer.technique.rootPass.viewPoint)
                 return;
             var gl = this.getWebGLContext();
             var self = this;
 
-            this.engine.renderer.bindedProgram = null;
+            this.sceneRenderer.webGLRenderer.bindedProgram = null;
 
             var orthoMatrix = mat4.ortho(-1, 1, 1.0, -1, 0, 1000);
 
@@ -564,7 +562,7 @@ exports.View = Component.specialize( {
                 gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 24, 12);
             }
 
-            this.engine.renderer.bindedProgram = this._gradientProgram;
+            this.sceneRenderer.webGLRenderer.bindedProgram = this._gradientProgram;
 
             var projectionMatrixLocation = this._gradientProgram.getLocationForSymbol("u_projMatrix");
             if (projectionMatrixLocation) {
@@ -578,171 +576,6 @@ exports.View = Component.specialize( {
         }
     },
 
-    drawFloor: {
-        value: function(cameraMatrix) { 
-            return;
-            if (!this.engine || !this.scene)
-                return;
-            if (!this.engine.technique.rootPass.viewPoint)
-                return;
-            var gl = this.getWebGLContext();
-            var self = this;
-            
-            function handleTextureLoaded(image, texture) {
-                gl.bindTexture(gl.TEXTURE_2D, texture);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-                gl.bindTexture(gl.TEXTURE_2D, null);
-                self._floorTextureLoaded = true;
-                self.needsDraw = true;
-            }
-
-            if (!this.floorTexture) {
-                this.floorTexture = gl.createTexture();
-                var floorImage = new Image();
-                floorImage.onload = function() { handleTextureLoaded(floorImage, self.floorTexture); }
-                floorImage.src = "assets/images/dropshadow-1.png";
-            }
-
-            if (!this._floorTextureLoaded) {
-                return;
-            }
-
-            this.engine.renderer.bindedProgram = null;
-
-            var viewPoint = this.engine.technique.rootPass.viewPoint;
-            var projectionMatrix = viewPoint.cameras[0].projection.matrix;
-
-            //gl.disable(gl.DEPTH_TEST);
-            gl.disable(gl.CULL_FACE);
-            //gl.enable(gl.BLEND);
-
-            gl.blendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-               // var textureLoader = new TextureUtil.TextureLoader(ctx);
-//                var texture = textureLoader.load(, function(texture) {
-  //              });
-
-            if (!this._floorProgram) {
-                this._floorProgram = Object.create(GLSLProgram);
-
-                var vertexShader =  "precision highp float;" +
-                                    "attribute vec3 vert;"  +
-                                    "attribute vec3 color;"  +
-                                    "attribute vec2 texcoord;"  +
-                                    "varying vec2 v_texcoord;"  +
-                                    "uniform mat4 u_projMatrix; " +
-                                    "uniform mat4 u_mvMatrix; " +
-                                    "varying vec3 v_color;"  +
-                                    "varying vec3 v_coord;" +
-                                    "void main(void) { " +
-                                    "v_color = color;" +
-                                    "v_texcoord = vec2(texcoord.x, 1.-texcoord.y) - vec2(-0.5,0.35);" +
-                                    "v_coord = vert;" +
-                                    "gl_Position = u_projMatrix * u_mvMatrix * vec4(vert,1.0); }";
-//                                    " v_coord = (u_mvMatrix * vec4(vert,1.0)).xyz;" +
-
-                var fragmentShader =    "precision highp float;" +
-                                        "varying vec3 v_color;"  +
-                                        "varying vec3 v_coord;"  +
-                                        "varying vec2 v_texcoord;"  +
-                                        "uniform sampler2D u_image;" +
-                                        " void main(void) { " +
-                                         " vec4 imgcol =  vec4(texture2D(u_image, v_texcoord));" +
-                                        // " float dist =   sqrt(dot(v_coord,v_coord));" +
-                                        //" dist = 1. - min(dist * (0.009 - 0.007), 1.);" +
-                                     " gl_FragColor = vec4(1.,1.,0.,1.);  }";
-                                   //   " gl_FragColor = vec4( imgcol.xyz,  imgcol.a);  }";
-                                    //  " gl_FragColor = vec4(0.,0.,0.,1.);  }";
-
-//                                       " gl_FragColor = vec4(imgcol.xyz * dist, imgcol.a * dist * 0.1);  }";
-                                       // " gl_FragColor = vec4(dist,dist,dist,1);  }";
-                                      // " gl_FragColor = vec4( ( imgcol.xyz) * ( imgcol.a) * dist, imgcol.a * dist);  }";
-
-                this._floorProgram.initWithShaders( { "x-shader/x-vertex" : vertexShader , "x-shader/x-fragment" : fragmentShader } );
-                if (!this._floorProgram.build(gl))
-                    console.log(this._floorProgram.errorLogs);
-            }
-
-                if (!this.floorVertexBuffer) {
-                    /*
-                        2/3----5
-                        | \   |
-                        |  \  |
-                        |   \ |
-                        0----1/4
-                    */
-                    var size = 160;
-                    var texSize = 1;
-                    var offset = 100;
-                    var vertices = [
-                        -size,-size, 0.0,       1.0, 1.0, 1.0,      -texSize,-texSize,
-                        size,-size, 0.0,        1.0, 1.0, 1.0,      texSize,-texSize,
-                        -size, size, 0.0,     0.0, 0.0, 0.0,        -texSize,texSize,
-
-                        -size, size, 0.0,     0.0, 0.0, 0.0,        -texSize,texSize,
-                        size,-size, 0.0,        1.0, 1.0, 1,        texSize,-texSize,
-                        size, size, 0.0,      0.0, .0, 0.0,         texSize,texSize
-                   ];
-
-                    // Init the buffer
-                    this.floorVertexBuffer = gl.createBuffer();
-                    gl.bindBuffer(gl.ARRAY_BUFFER, this.floorVertexBuffer);
-                    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-                }
-
-                gl.activeTexture(gl.TEXTURE0);
-
-                gl.bindTexture(gl.TEXTURE_2D, this.floorTexture);
-
-                gl.bindBuffer(gl.ARRAY_BUFFER, this.floorVertexBuffer);
-
-                var vertLocation = this._floorProgram.getLocationForSymbol("vert");
-                if (typeof vertLocation !== "undefined") {
-                    gl.enableVertexAttribArray(vertLocation);
-                    gl.vertexAttribPointer(vertLocation, 3, gl.FLOAT, false, 32, 0);
-                }
-                var colorLocation = this._floorProgram.getLocationForSymbol("color");
-                if (typeof colorLocation !== "undefined") {
-                    gl.enableVertexAttribArray(colorLocation);
-                    gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 32, 12);
-                }
-                var texLocation = this._floorProgram.getLocationForSymbol("texcoord");
-                if (typeof texLocation !== "undefined") {
-                    gl.enableVertexAttribArray(texLocation);
-                    gl.vertexAttribPointer(texLocation, 2, gl.FLOAT, false, 32, 24);
-                }
-
-
-                this._floorProgram.setValueForSymbol("u_image", 0);
-
-                this.engine.renderer.bindedProgram = this._floorProgram;
-
-                var projectionMatrixLocation = this._floorProgram.getLocationForSymbol("u_projMatrix");
-                if (projectionMatrixLocation) {
-                    this._floorProgram.setValueForSymbol("u_projMatrix",projectionMatrix);
-                }
-
-                var mvMatrixLocation = this._floorProgram.getLocationForSymbol("u_mvMatrix");
-                if (mvMatrixLocation) {
-                    this._floorProgram.setValueForSymbol("u_mvMatrix",cameraMatrix);
-                }
-
-                this._floorProgram.commit(gl);
-                gl.drawArrays(gl.TRIANGLES, 0, 6);
-                gl.disableVertexAttribArray(vertLocation);
-                gl.disableVertexAttribArray(colorLocation);
-                gl.disableVertexAttribArray(texLocation);
-
-                gl.disable(gl.BLEND);
-                gl.bindTexture(gl.TEXTURE_2D, null);
-            }
-    },
 
     displayBBOX: {
         value: function(bbox, cameraMatrix, modelMatrix) {
@@ -750,14 +583,14 @@ exports.View = Component.specialize( {
             //if (mesh.step === 0)
              //   return;
 
-            if (!this.engine || !this.scene)
+            if (!this.sceneRenderer || !this.scene)
                 return;
-            if (!this.engine.technique.rootPass.viewPoint)
+            if (!this.sceneRenderer.technique.rootPass.viewPoint)
                 return;
             var gl = this.getWebGLContext();
             var self = this;
 
-            this.engine.renderer.bindedProgram = null;
+            this.sceneRenderer.webGLRenderer.bindedProgram = null;
 
             var viewPoint = this.viewPoint;
             var projectionMatrix = viewPoint.cameras[0].projection.matrix;
@@ -857,7 +690,7 @@ exports.View = Component.specialize( {
                 gl.vertexAttribPointer(vertLocation, 3, gl.FLOAT, false, 12, 0);
             }
 
-            this.engine.renderer.bindedProgram = this._BBOXProgram;
+            this.sceneRenderer.webGLRenderer.bindedProgram = this._BBOXProgram;
 
             var projectionMatrixLocation = this._BBOXProgram.getLocationForSymbol("u_projMatrix");
             if (projectionMatrixLocation) {
@@ -941,12 +774,10 @@ exports.View = Component.specialize( {
             return this._width;
         },
         set: function(value) {
-            if (value === this._width) {
-                return;
+            if (value != this._width) {
+                this._width = value * this.scaleFactor;
+                this.needsDraw = true;
             }
-            this._width = value * this.scaleFactor;
-
-            this.needsDraw = true;
         }
     },
 
@@ -959,13 +790,10 @@ exports.View = Component.specialize( {
             return this._height;
         },
         set: function(value) {
-            if (value === this._height) {
-                return;
+            if (value != this._height) {
+                this._height = value * this.scaleFactor;
+                this.needsDraw = true;
             }
-
-            this._height = value * this.scaleFactor;
-
-            this.needsDraw = true;
         }
     },
     _cameraAnimating:{
@@ -1018,7 +846,7 @@ exports.View = Component.specialize( {
                 this.needsDraw = true;
 
             if (this.scene) {
-                renderer = this.engine.renderer;
+                renderer = this.sceneRenderer.webGLRenderer;
                 if (webGLContext) {
                     width = this._width;
                     height = this._height;
@@ -1057,11 +885,11 @@ exports.View = Component.specialize( {
                         this.scene.rootNode.transform.matrix = scaleMatrix;
 
                         //FIXME: passing a matrix was the proper to do this, but right now matrix updates are disabled (temporarly)
-                        this.engine.technique.rootPass.viewPoint.flipped = true;
+                        this.sceneRenderer.technique.rootPass.viewPoint.flipped = true;
 
-                        this.engine.render();
+                        this.sceneRenderer.render();
                         webGLContext.depthMask(true);
-                        this.engine.technique.rootPass.viewPoint.flipped = false;
+                        this.sceneRenderer.technique.rootPass.viewPoint.flipped = false;
 
                         this.scene.rootNode.transform.matrix = savedTr;
                     }
@@ -1081,13 +909,13 @@ exports.View = Component.specialize( {
                     webGLContext.disable(webGLContext.BLEND);
 
                     if (this._mousePosition) {
-                        this.engine.render({    "picking" : true,
+                        this.sceneRenderer.render({    "picking" : true,
                             "coords" : this._mousePosition,
                             "delegate" : this
                         });
                     }
 
-                    this.engine.render();
+                    this.sceneRenderer.render();
 
                     //webGLContext.flush();
 
@@ -1119,9 +947,9 @@ exports.View = Component.specialize( {
     willDraw: {
         value: function() {
 
-            if (this.engine && this.scene) {
+            if (this.sceneRenderer && this.scene) {
                 if (this.scene.animationManager)
-                    this.scene.animationManager.updateTargetsAtTime(Date.now(), this.engine.renderer.resourceManager);
+                    this.scene.animationManager.updateTargetsAtTime(Date.now(), this.sceneRenderer.webGLRenderer.resourceManager);
             }
 
             var webGLContext = this.getWebGLContext();
