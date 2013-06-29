@@ -1,5 +1,8 @@
 {
     "animations": {},
+    "asset": {
+        "generator": "collada2gltf 0.1.0"
+    },
     "attributes": {
         "attribute_116": {
             "bufferView": "bufferView_391",
@@ -11667,10 +11670,6 @@
                 "diffuse": {
                     "type": "SAMPLER_2D"
                 },
-                "diffuseAttrib": {
-                    "semantic": "TEXCOORD_0",
-                    "type": "FLOAT_VEC2"
-                },
                 "normal": {
                     "semantic": "NORMAL",
                     "type": "FLOAT_VEC3"
@@ -11701,7 +11700,6 @@
                 "defaultPass": {
                     "instanceProgram": {
                         "attributes": {
-                            "a_diffuseAttrib": "diffuseAttrib",
                             "a_normal": "normal",
                             "a_position": "position",
                             "a_texcoord0": "texcoord0"
@@ -11834,6 +11832,5 @@
                 }
             }
         }
-    },
-    "version": "0.3"
+    }
 }

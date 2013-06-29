@@ -1,5 +1,8 @@
 {
     "animations": {},
+    "asset": {
+        "generator": "collada2gltf 0.1.0"
+    },
     "attributes": {
         "attribute_1017": {
             "bufferView": "bufferView_4811",
@@ -14152,6 +14155,5 @@
                 }
             }
         }
-    },
-    "version": "0.3"
+    }
 }
