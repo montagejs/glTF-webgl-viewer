@@ -33,14 +33,15 @@ POSSIBILITY OF SUCH DAMAGE.
     @requires montage
     @requires montage/ui/component
 */
+
+require("runtime/dependencies/gl-matrix");
 var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
-require("runtime/dependencies/gl-matrix");
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
 var ResourceManager = require("runtime/helpers/resource-manager").ResourceManager;
+var Scene = require("runtime/scene").Scene;
 var SceneRenderer = require("runtime/scene-renderer").SceneRenderer;
 var Material = require("runtime/material").Material;
-var Scene = require("runtime/scene").Scene;
 var Utilities = require("runtime/utilities").Utilities;
 var dom = require("montage/core/dom");
 var Point = require("montage/core/geometry/point").Point;

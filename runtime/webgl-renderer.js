@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Motorola Mobility, Inc.
+// Copyright (c) 2013, Fabrice Robinet
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@ require("runtime/dependencies/gl-matrix");
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
 var ResourceManager = require("runtime/helpers/resource-manager").ResourceManager;
 
-exports.WebGLRenderer = Object.create(Object, {
+exports.WebGLRenderer = Object.create(Object.prototype, {
 
     WORLD: { value: "WORLD", writable: false},
     VIEW: { value: "VIEW", writable: false},

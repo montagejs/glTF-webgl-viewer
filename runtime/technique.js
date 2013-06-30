@@ -9,9 +9,6 @@
 //  * Redistributions in binary form must reproduce the above copyright
 //    notice, this list of conditions and the following disclaimer in the
 //    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the Motorola Mobility, Inc. nor the names of its
-//    contributors may be used to endorse or promote products derived from this
-//    software without specific prior written permission.
 //
 //  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 // AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -23,108 +20,78 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-var global = window;
-(function (root, factory) {
-    if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
-      
-        factory(module.exports);
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], function () {
-            return factory(root);
-        });
-    } else {
-        // Browser globals
-        factory(root);
-    }
-}(this, function (root) {
-    var Base;
-    if (typeof exports === 'object') {
-        require("runtime/dependencies/gl-matrix");
-        Base = require("runtime/base").Base;
-    } else {
-        Base = global.Base;
-    }
 
-    var Technique = Object.create(Base, {
+var Base = require("runtime/base").Base;
 
-        _parameters: { value: null, writable: true },
+exports.Technique = Object.create(Base, {
 
-        _passName: { value: null, writable: true },
+    _parameters: { value: null, writable: true },
 
-        _passes: { value: null, writable: true },
+    _passName: { value: null, writable: true },
 
-        init: {
-            value: function() {
-                this.__Base_init();
-                this.passes = {};
-                return this;
-            }
+    _passes: { value: null, writable: true },
+
+    init: {
+        value: function() {
+            this.__Base_init();
+            this.passes = {};
+            return this;
+        }
+    },
+
+    parameters: {
+        get: function() {
+            return this._parameters;
         },
+        set: function(value) {
+            this._parameters = value;
+        }
+    },
 
-        parameters: {
-            get: function() {
-                return this._parameters;
-            },
-            set: function(value) {
-                this._parameters = value;
-            }
+    passName: {
+        get: function() {
+            return this._passName;
         },
-
-        passName: {
-            get: function() {
-                return this._passName;
-            },
-            set: function(value) {
-                if (this._passName != value) {
-                    this._passName = value;
-                }
-            }
-        },
-
-        rootPass: {
-            get: function() {
-                return this._passes[this.passName];
-            }
-        },
-
-        passesDidChange: {
-            value: function() {
-                //update the @pass when passes is changed. 
-                //For convenience set to null if there are multiple passes or to the only pass contained when there is just a single one.
-                var passesNames = Object.keys(this.passes);
-                this.passName = (passesNames.length == 1) ? passesNames[0] : null;
-            }
-        },
-
-        passes: {
-            get: function() {
-                return this._passes;
-            },
-            set: function(value) {
-                if (this._passes != value) {
-                    this._passes = value;
-                    this.passesDidChange();
-                }
-            }
-        },
-
-        execute: {
-            value: function(webGLRenderer, options) {
-                webGLRenderer.resetStates();
-                this.rootPass.execute(webGLRenderer, options);
+        set: function(value) {
+            if (this._passName != value) {
+                this._passName = value;
             }
         }
+    },
 
-    });
+    rootPass: {
+        get: function() {
+            return this._passes[this.passName];
+        }
+    },
 
-    if(root) {
-        root.Technique = Technique;
+    passesDidChange: {
+        value: function() {
+            //update the @pass when passes is changed.
+            //For convenience set to null if there are multiple passes or to the only pass contained when there is just a single one.
+            var passesNames = Object.keys(this.passes);
+            this.passName = (passesNames.length == 1) ? passesNames[0] : null;
+        }
+    },
+
+    passes: {
+        get: function() {
+            return this._passes;
+        },
+        set: function(value) {
+            if (this._passes != value) {
+                this._passes = value;
+                this.passesDidChange();
+            }
+        }
+    },
+
+    execute: {
+        value: function(webGLRenderer, options) {
+            webGLRenderer.resetStates();
+            this.rootPass.execute(webGLRenderer, options);
+        }
     }
 
-    return Technique;
+});
 
-}));

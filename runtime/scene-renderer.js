@@ -28,22 +28,20 @@ var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
 var Technique = require("runtime/technique").Technique;
 var ScenePass = require("runtime/pass").ScenePass;
 var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
+var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
 
 exports.SceneRenderer = Object.create(Object.prototype, {
 
     loadPickingTechnique: {
         value: function() {
-            var readerDelegate = {};
-            readerDelegate.loadCompleted = function (technique) {
-                this.technique.rootPass.sceneRenderer.pickingTechnique = technique;
-            }.bind(this);
+            var self = this;
+            var techniquePromise = BuiltInAssets.assetWithName( "pickingTechnique");
 
-            var loader = Object.create(RuntimeTFLoader);
-            loader.initWithPath(require.location + "assets/picking/picking.json");
-
-            loader.delegate = readerDelegate;
-            var options = { "ids": ["pickingTechnique"]};
-            loader.load(null, options);
+            techniquePromise.then(function (asset) {
+                self.technique.rootPass.sceneRenderer.pickingTechnique = asset;
+            }, function (error) {
+            }, function (progress) {
+            });
         }
     },
 

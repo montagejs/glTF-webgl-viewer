@@ -21,63 +21,30 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-var global = window;
-(function (root, factory) {
-    if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
-      
-        factory(module.exports);
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], function () {
-            return factory(root);
-        });
-    } else {
-        // Browser globals
-        factory(root);
-    }
-}(this, function (root) {
-    var Base;
-    var Animation;
-    if (typeof exports === 'object') {
-        require("runtime/dependencies/gl-matrix");
-        Base = require("runtime/base").Base;
-        Animation = require("runtime/animation").Animation;
-    } else {
-        Base = global.Base;
-        Animation = global.Animation;
-    }
+require("runtime/dependencies/gl-matrix");
+var Base = require("runtime/base").Base;
+var Animation = require("runtime/animation").Animation;
 
-    var AnimationManager = Object.create(Base, {
+exports.AnimationManager = Object.create(Base, {
 
-        animations: { value: null, writable: true },
+    animations: { value: null, writable: true },
 
-        updateTargetsAtTime: {
-            value: function(time, resourceManager) {
-                if (this.animations) {
-                    this.animations.forEach( function(animation) {
-                        animation.updateTargetsAtTime(time, resourceManager);
-                    }, this);
-                }
-            }
-        },
-
-        init: {
-            value: function() {
-                this.__Base_init();
-                this.animations = [];
-                return this;
+    updateTargetsAtTime: {
+        value: function(time, resourceManager) {
+            if (this.animations) {
+                this.animations.forEach( function(animation) {
+                    animation.updateTargetsAtTime(time, resourceManager);
+                }, this);
             }
         }
+    },
 
-    });
-
-    if(root) {
-        root.AnimationManager = AnimationManager;
+    init: {
+        value: function() {
+            this.__Base_init();
+            this.animations = [];
+            return this;
+        }
     }
 
-    return AnimationManager;
-
-}));
+});

@@ -24,57 +24,27 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-var global = window;
-(function (root, factory) {
-    if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
-      
-        factory(module.exports);
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], function () {
-            return factory(root);
-        });
-    } else {
-        // Browser globals
-        factory(root);
-    }
-}(this, function (root) {
-    var Base;
-    if (typeof exports === 'object') {
-        Base = require("runtime/base").Base;
-    } else {
-        Base = global.Base;
-    }
+var Base = require("runtime/base").Base;
 
-    var Camera = Object.create(Base, {
+exports.Camera = Object.create(Base, {
 
-        _projection: { value: null, writable: true },
+    _projection: { value: null, writable: true },
 
-        projection: {
-            get: function() {
-                return this._projection;
-            },
-            set: function(value) {
-                this._projection = value;
-            }
+    projection: {
+        get: function() {
+            return this._projection;
         },
-
-        init: {
-            value: function() {
-                this.__Base_init();
-                return this;
-            }
+        set: function(value) {
+            this._projection = value;
         }
+    },
 
-    });
-
-    if(root) {
-        root.Camera = Camera;
+    init: {
+        value: function() {
+            this.__Base_init();
+            return this;
+        }
     }
 
-    return Camera;
+});
 
-}));

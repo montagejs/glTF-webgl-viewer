@@ -21,125 +21,94 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-var global = window;
-(function (root, factory) {
-    if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
-        factory(module.exports);
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], function () {
-            return factory(root);
-        });
-    } else {
-        // Browser globals
-        factory(root);
-    }
-}(this, function (root) {
-    var Base;
-    if (typeof exports === 'object') {
-        require("runtime/dependencies/gl-matrix");
-        Base = require("runtime/base").Base;
-    } else {
-        Base = global.Base;
-    }
+require("runtime/dependencies/gl-matrix");
+var Base = require("runtime/base").Base;
 
-    var Transform = Object.create(Base, {
-        _matrix: { value: null, writable: true },
+exports.Transform = Object.create(Base, {
+    _matrix: { value: null, writable: true },
 
-        _dirty: { value: true, writable: true },
+    _dirty: { value: true, writable: true },
 
-        _translation: { value: null, writable: true },
-        _rotation: { value: null, writable: true },
-        _scale: { value: null, writable: true },
+    _translation: { value: null, writable: true },
+    _rotation: { value: null, writable: true },
+    _scale: { value: null, writable: true },
 
-        matrix: {
-            get: function() {
-                if (this._dirty) {
-                    var tr  = mat4.identity();
-                    var scale  = mat4.identity();
-                    var rotation  = mat4.identity();
+    matrix: {
+        get: function() {
+            if (this._dirty) {
+                var tr  = mat4.identity();
+                var scale  = mat4.identity();
+                var rotation  = mat4.identity();
 
-                    mat4.translate(tr, this._translation);
-                    mat4.scale(scale, this._scale);
-                    quat4.toMat4(this._rotation, rotation);
+                mat4.translate(tr, this._translation);
+                mat4.scale(scale, this._scale);
+                quat4.toMat4(this._rotation, rotation);
 
-                    this._matrix = mat4.identity();
+                this._matrix = mat4.identity();
 
-                    mat4.multiply(this._matrix, tr);
-                    mat4.multiply(this._matrix, rotation);
-                    mat4.multiply(this._matrix, scale);
+                mat4.multiply(this._matrix, tr);
+                mat4.multiply(this._matrix, rotation);
+                mat4.multiply(this._matrix, scale);
 
-                    this._dirty = false;
-                }
-
-                return this._matrix;
-            },
-            set: function(value ) {
-                this._matrix = value;
                 this._dirty = false;
             }
+
+            return this._matrix;
         },
+        set: function(value ) {
+            this._matrix = value;
+            this._dirty = false;
+        }
+    },
 
-        translation : {
-            set: function(value ) {
-                this._translation = value;
-                this._dirty = true;
-            }
-        },
+    translation : {
+        set: function(value ) {
+            this._translation = value;
+            this._dirty = true;
+        }
+    },
 
-        rotation : {
-            set: function(value ) {
-                this._rotation = value;
-                this._dirty = true;
-            }
-        },
+    rotation : {
+        set: function(value ) {
+            this._rotation = value;
+            this._dirty = true;
+        }
+    },
 
-        scale : {
-            set: function(value ) {
-                this._scale = value;
-                this._dirty = true;
-            }
-        },
+    scale : {
+        set: function(value ) {
+            this._scale = value;
+            this._dirty = true;
+        }
+    },
 
-        initWithDescription: {
-            value: function(description) {
-                this.__Base_init();
+    initWithDescription: {
+        value: function(description) {
+            this.__Base_init();
 
-                if (description.matrix) {
-                    this.matrix = mat4.create(description.matrix);
-                } else if (description.translation || description.rotation || description.scale) {
-                    this.translation = description.translation ? vec3.create(description.translation) : vec3.createFrom(0,0,0);
-                    var r = description.rotation;
-                    this.rotation = r ?  quat4.fromAngleAxis(r[3], vec3.createFrom(r[0],r[1],r[2])) : vec4.createFrom(0,0,0,0);
-                    this.scale = description.scale ? vec3.create(description.scale) : vec3.createFrom(1,1,1);
-                } else {
-                    this.matrix = mat4.identity();
-                }
-                return this;
-            }
-        },
-
-        init: {
-            value: function() {
-                this.__Base_init();
-                this.translation = vec3.createFrom(0,0,0);
-                this.rotation = vec4.createFrom(0,0,0,0);
-                this.scale = vec3.createFrom(1,1,1);
-
+            if (description.matrix) {
+                this.matrix = mat4.create(description.matrix);
+            } else if (description.translation || description.rotation || description.scale) {
+                this.translation = description.translation ? vec3.create(description.translation) : vec3.createFrom(0,0,0);
+                var r = description.rotation;
+                this.rotation = r ?  quat4.fromAngleAxis(r[3], vec3.createFrom(r[0],r[1],r[2])) : vec4.createFrom(0,0,0,0);
+                this.scale = description.scale ? vec3.create(description.scale) : vec3.createFrom(1,1,1);
+            } else {
                 this.matrix = mat4.identity();
-                return this;
             }
-        },
+            return this;
+        }
+    },
 
-    });
+    init: {
+        value: function() {
+            this.__Base_init();
+            this.translation = vec3.createFrom(0,0,0);
+            this.rotation = vec4.createFrom(0,0,0,0);
+            this.scale = vec3.createFrom(1,1,1);
 
-    if(root) {
-        root.Transform = Transform;
+            this.matrix = mat4.identity();
+            return this;
+        }
     }
-
-    return Transform;
-
-}));
+});
