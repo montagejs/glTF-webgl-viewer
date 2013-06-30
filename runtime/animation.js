@@ -24,7 +24,7 @@
 require("runtime/dependencies/gl-matrix");
 var Base = require("runtime/base").Base;
 
-exports.Channel = Object.create(Base, {
+var Channel = exports.Channel = Object.create(Base, {
 
     _sampler: { value: null, writable: true },
 
