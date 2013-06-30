@@ -32,8 +32,11 @@ exports.BuiltInAssets = Object.create(Object.prototype, {
 
     registerBuiltinAssetsIfNeeded: {
         value: function() {
-            var location = require.location + "assets/picking/picking.json";
-            this._assetInfos["pickingTechnique"] = { "location" : location, "options" : {"ids": ["pickingTechnique"]} };
+            var pickingLocation = require.location + "assets/picking/picking.json";
+            var gradientLocation = require.location + "assets/gradient/gradient.json";
+
+            this._assetInfos["pickingTechnique"] = { "location" : pickingLocation, "options" : {"ids": ["pickingTechnique"]} };
+            this._assetInfos["gradient"] = { "location" : gradientLocation };
         }
     },
 
@@ -62,7 +65,6 @@ exports.BuiltInAssets = Object.create(Object.prototype, {
                 }
 
                 loader.initWithPath(assetInfos.location);
-
                 loader.delegate = readerDelegate;
                 loader.load(null, assetInfos.options);
             }

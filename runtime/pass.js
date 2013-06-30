@@ -320,18 +320,6 @@ var SceneRenderer = Object.create(Object.prototype, {
 
     setupNodeAtPath: {
         value:function(node, pathID) {
-            var nodePickingColor = null;
-            if (node.id) {
-                //FIXME move this into the picking technique when we have it..
-                //for picking, we need to associate a color to each node.
-                /*
-                nodePickingColor = this.pickingPass.extras.nodeIDToColor[node.id];
-                if (!nodePickingColor) {
-                    nodePickingColor = vec4.createFrom(Math.random(),Math.random(),Math.random(), 1.);
-                    this.pickingPass.extras.nodeIDToColor[node.id] = nodePickingColor;
-                }
-                */
-            }
 
             if (node.meshes) {
                 node.meshes.forEach( function(mesh) {

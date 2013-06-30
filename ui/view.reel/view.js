@@ -49,6 +49,8 @@ var OrbitCamera = require("runtime/dependencies/camera.js").OrbitCamera;
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
 var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
 var URL = require("montage/core/url");
+var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
+var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
 
 /**
     Description TODO
@@ -281,7 +283,7 @@ exports.View = Component.specialize( {
                         }
 
                     }
-                    this.sceneRenderer.technique.rootPass.scene = scene;
+                    this.sceneRenderer.scene = scene;
                     if (!hasCamera && scene) {
                         this.camera = new MontageOrbitCamera(this.canvas);
                         this.camera.translateComposer = this.translateComposer;
@@ -315,17 +317,27 @@ exports.View = Component.specialize( {
 
     enterDocument: {
         value: function(firstTime) {
-                              
             var webGLContext = this.canvas.getContext("experimental-webgl", { antialias: true}) ||this.canvas.getContext("webgl", { antialias: true});
+            var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
             var options = null;
             this.sceneRenderer = Object.create(SceneRenderer);
-            this.sceneRenderer.init(webGLContext, options);
+            this.sceneRenderer.init(webGLRenderer, options);
             this.sceneRenderer.webGLRenderer.resourceManager.observers.push(this);
-
             if (this._scene)
                 this.applyScene(this._scene);
-/*
-*/
+
+            //setup gradient
+            var self = this;
+            var techniquePromise = BuiltInAssets.assetWithName("gradient");
+            techniquePromise.then(function (scene) {
+                self.gradientRenderer = Object.create(SceneRenderer);
+                self.gradientRenderer.init(webGLRenderer, null);
+                self.gradientRenderer.scene = scene;
+                self.needsDraw = true;
+            }, function (error) {
+            }, function (progress) {
+            });
+
             this.needsDraw = true;
 
             // TODO the camera does its own listening but doesn't know about our draw system
@@ -337,7 +349,6 @@ exports.View = Component.specialize( {
             document.addEventListener('touchcancel', this.end.bind(this), true);
             document.addEventListener('touchmove', this.move.bind(this), true);
             document.addEventListener('gesturechange', this, true);
-
             this.canvas.addEventListener('mousedown', this.start.bind(this), true);
             document.addEventListener('mouseup', this.end.bind(this), true);
             document.addEventListener('mousemove', this.move.bind(this), true);
@@ -475,108 +486,19 @@ exports.View = Component.specialize( {
         },
         set: function(flag) {
             this._showReflection = flag;
-
             //if reflection (e.g floor) is enabled, then we constrain the rotation
             if (flag && this.camera)
                 this.camera.constrainXOrbit = flag;
         }
-
     },
-
 
     drawGradient: {
         value: function() {
-            if (!this.showGradient)
-                return;
-            if (!this.sceneRenderer || !this.scene)
-                return;
-            if (!this.sceneRenderer.technique.rootPass.viewPoint)
-                return;
-            var gl = this.getWebGLContext();
-            var self = this;
-
-            this.sceneRenderer.webGLRenderer.bindedProgram = null;
-
-            var orthoMatrix = mat4.ortho(-1, 1, 1.0, -1, 0, 1000);
-
-            gl.disable(gl.DEPTH_TEST);
-            gl.disable(gl.CULL_FACE);
-            gl.enable(gl.BLEND);
-            gl.blendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-            if (!this._gradientProgram) {
-                this._gradientProgram = Object.create(GLSLProgram);
-
-                var vertexShader =  "precision highp float;" +
-                                        "attribute vec3 vert;"  +
-                                        "attribute vec3 color;"  +
-                                         "uniform mat4 u_projMatrix; " +
-                                        "varying vec3 v_color;"  +
-                                        "void main(void) { " +
-                                        "v_color = color;" +
-                                        "gl_Position = u_projMatrix * vec4(vert,1.0); }"
-
-                var fragmentShader =    "precision highp float;" +
-                                            "varying vec3 v_color;"  +
-                                            " void main(void) { " +
-                                            " gl_FragColor = vec4(v_color, 0.7); }";
-
-                this._gradientProgram.initWithShaders( { "x-shader/x-vertex" : vertexShader , "x-shader/x-fragment" : fragmentShader } );
-                if (!this._gradientProgram.build(gl))
-                    console.log(this._gradientProgram.errorLogs);
+            if (this.gradientRenderer) {
+                this.gradientRenderer.render();
             }
-
-            if (!this.vertexBuffer) {
-                    /*
-                        2/3----5
-                        | \   |
-                        |  \  |
-                        |   \ |
-                        0----1/4
-                    */
-                var c2 = [.8, .8, .8];
-                var c1 = [0., 0., 0.];
-                var vertices = [
-                        - 1.0,-1, 0.0,       c1[0], c1[1], c1[2],
-                        1.0,-1, 0.0,        c1[0], c1[1], c1[2],
-                        -1.0, 1.0, 0.0,     c2[0], c2[1], c2[2],
-                        -1.0, 1.0, 0.0,     c2[0], c2[1], c2[2],
-                        1.0,-1, 0.0,        c1[0], c1[1], c1[2],
-                        1.0, 1.0, 0.0,      c2[0], c2[1], c2[2]];
-
-                    // Init the buffer
-                this.vertexBuffer = gl.createBuffer();
-                gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            }
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-
-            var vertLocation = this._gradientProgram.getLocationForSymbol("vert");
-            if (typeof vertLocation !== "undefined") {
-                gl.enableVertexAttribArray(vertLocation);
-                gl.vertexAttribPointer(vertLocation, 3, gl.FLOAT, false, 24, 0);
-            }
-            var colorLocation = this._gradientProgram.getLocationForSymbol("color");
-            if (typeof colorLocation !== "undefined") {
-                gl.enableVertexAttribArray(colorLocation);
-                gl.vertexAttribPointer(colorLocation, 3, gl.FLOAT, false, 24, 12);
-            }
-
-            this.sceneRenderer.webGLRenderer.bindedProgram = this._gradientProgram;
-
-            var projectionMatrixLocation = this._gradientProgram.getLocationForSymbol("u_projMatrix");
-            if (projectionMatrixLocation) {
-                this._gradientProgram.setValueForSymbol("u_projMatrix",orthoMatrix);
-            }
-
-            this._gradientProgram.commit(gl);
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
-            gl.disableVertexAttribArray(vertLocation);
-            gl.disableVertexAttribArray(colorLocation);
         }
     },
-
 
     displayBBOX: {
         value: function(bbox, cameraMatrix, modelMatrix) {
@@ -822,6 +744,7 @@ exports.View = Component.specialize( {
     draw: {
         value: function() {
             var self = this;
+            this.drawGradient();
 
             var webGLContext = this.getWebGLContext(),
                 renderer,

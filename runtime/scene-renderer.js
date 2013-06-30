@@ -24,10 +24,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 require("runtime/dependencies/gl-matrix");
-var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
 var Technique = require("runtime/technique").Technique;
 var ScenePass = require("runtime/pass").ScenePass;
-var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
 var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
 
 exports.SceneRenderer = Object.create(Object.prototype, {
@@ -202,8 +200,8 @@ exports.SceneRenderer = Object.create(Object.prototype, {
 
 
     init: {
-        value: function( webGLContext, options) {
-            this.webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
+        value: function( webGLRenderer, options) {
+            this.webGLRenderer = webGLRenderer;
             this.createTechniqueIfNeeded();
             this.loadPickingTechnique();
             return this;

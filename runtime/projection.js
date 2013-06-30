@@ -168,16 +168,14 @@ var global = window;
                         if (yfov === 0) {
                             yfov = this.aspectRatio * this.xfov;
                         }
-
                         if (this.aspectRatio !== 0.) {
                             aspectRatio = this.aspectRatio;
                         } else  if ((this.xfov !== 0.) && ( this.yfov !== 0.)) {
                             aspectRatio = this.xfov/this.yfov;
                         }
-
                         this._matrix = mat4.perspective(yfov, this.aspectRatio, this.znear, this.zfar);
-                    } else if (this.type == "orthographic") {
-                        //TODO:
+                    } else if (this.projection === "orthographic") {
+                        this._matrix = mat4.ortho(-this.xmag, this.xmag, -this.ymag, this.ymag, this.znear, this.zfar);
                     } else {
                         console.log("WARNING: unhandled camera type:"+type)
                     }
@@ -197,9 +195,9 @@ var global = window;
                 this.projection = description.projection ? description.projection : null;
                 this.xfov = description.xfov ? description.xfov : 0;
                 this.yfov = description.yfov ? description.yfov : 0;
-                this.xmag = description.xmag ? description.xmag : 0;
-                this.ymag = description.ymag ? description.ymag : 0;
-                this.znear = description.znear ? description.znear : 1;
+                this.xmag = description.xmag ? description.xmag : 1;
+                this.ymag = description.ymag ? description.ymag : 1;
+                this.znear = typeof description.znear !== "undefined" ? description.znear : 1;
                 this.zfar = description.zfar ? description.zfar : 100;
                 this.aspectRatio = description.aspect_ratio ? description.aspect_ratio : 0; //deprecate this one
                 if (!this.aspectRatio)
@@ -215,8 +213,8 @@ var global = window;
                 this.projection = null;
                 this.xfov = 0;
                 this.yfov = 0;
-                this.xmag = 0;
-                this.ymag = 0;
+                this.xmag = 1;
+                this.ymag = 1;
                 this.znear = 1;
                 this.zfar = 100;
                 this.aspectRatio = 4./3;

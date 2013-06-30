@@ -150,31 +150,33 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
 
             var parameters =  material.technique.parameters;
             material.parameters = JSON.parse(JSON.stringify(parameters)); //clone parameters
-            values.forEach( function(value) {
-                var parameter = parameters[value.parameter];
-                if (parameter) {
-                    var paramValue = null;
-                    switch (parameter.type) {
-                        case "SAMPLER_2D": {
-                            var image = value.value.image;
-                            if (image) {
-                                var imageID = image + this.loaderContext() + "_sampler";
-                                var sampler2D = Object.create(ResourceDescription).init(imageID, value.value);
-                                sampler2D.type = parameter.type;
-                                value.value.image = this.getEntry(value.value.image).entry;
-                                value.value = sampler2D;
+            if (values) {
+                values.forEach( function(value) {
+                    var parameter = parameters[value.parameter];
+                    if (parameter) {
+                        var paramValue = null;
+                        switch (parameter.type) {
+                            case "SAMPLER_2D": {
+                                var image = value.value.image;
+                                if (image) {
+                                    var imageID = image + this.loaderContext() + "_sampler";
+                                    var sampler2D = Object.create(ResourceDescription).init(imageID, value.value);
+                                    sampler2D.type = parameter.type;
+                                    value.value.image = this.getEntry(value.value.image).entry;
+                                    value.value = sampler2D;
+                                    paramValue = value;
+                                }
+                            }
+                                break;
+                            default: {
                                 paramValue = value;
+                                break;
                             }
                         }
-                            break;
-                        default: {
-                            paramValue = value;
-                            break;
-                        }
                     }
-                }
-                material.parameters[value.parameter] = paramValue;
-            }, this);
+                    material.parameters[value.parameter] = paramValue;
+                }, this);
+            }
             return true;
         }
     },
