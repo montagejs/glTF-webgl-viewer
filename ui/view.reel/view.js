@@ -100,14 +100,14 @@ exports.View = Component.specialize( {
         }
     },
 
-    _camera: { value: null, writable: true },
+    _orbitCamera: { value: null, writable: true },
 
-    camera: {
+    orbitCamera: {
         get: function() {
-            return this._camera;
+            return this._orbitCamera;
         },
         set: function(value) {
-            this._camera = value;
+            this._orbitCamera = value;
         }
     },
 
@@ -229,7 +229,7 @@ exports.View = Component.specialize( {
             if (this.sceneRenderer) {
                 if (this.sceneRenderer.technique.rootPass) {
                     if (scene) {
-                        this.camera = null;
+                        this.orbitCamera = null;
 
                         //compute hierarchical bbox for the whole scene
                         //this will be removed from this place when node bounding box become is implemented as hierarchical
@@ -285,23 +285,23 @@ exports.View = Component.specialize( {
                     }
                     this.sceneRenderer.scene = scene;
                     if (!hasCamera && scene) {
-                        this.camera = new MontageOrbitCamera(this.canvas);
-                        this.camera.translateComposer = this.translateComposer;
-                        this.camera._hookEvents(this.canvas);
-                        this.camera.maxDistance = 200;
-                        this.camera.minDistance = 0.0;
-                        this.camera.setDistance(1.3);//0.9999542236328);
-                        this.camera.distanceStep = 0.0001;
-                        this.camera.constrainDistance = false;
-                        this.camera.setYUp(true);
-                        this.camera.orbitX = 0.675
-                        this.camera.orbitY = 1.8836293856408279;
+                        this.orbitCamera = new MontageOrbitCamera(this.canvas);
+                        this.orbitCamera.translateComposer = this.translateComposer;
+                        this.orbitCamera._hookEvents(this.canvas);
+                        this.orbitCamera.maxDistance = 200;
+                        this.orbitCamera.minDistance = 0.0;
+                        this.orbitCamera.setDistance(1.3);
+                        this.orbitCamera.distanceStep = 0.0001;
+                        this.orbitCamera.constrainDistance = false;
+                        this.orbitCamera.setYUp(true);
+                        this.orbitCamera.orbitX = 0.675
+                        this.orbitCamera.orbitY = 1.8836293856408279;
 
-                        this.camera.minOrbitX = 0.2;//this.camera.orbitX - 0.6;
-                        this.camera.maxOrbitX = 1.2;
+                        this.orbitCamera.minOrbitX = 0.2;//this.orbitCamera.orbitX - 0.6;
+                        this.orbitCamera.maxOrbitX = 1.2;
 
-                       // this.camera.constrainXOrbit = true;
-                        this.camera.setCenter(center);
+                       // this.orbitCamera.constrainXOrbit = true;
+                        this.orbitCamera.setCenter(center);
                     }
                     this.needsDraw = true;
                 }
@@ -487,8 +487,8 @@ exports.View = Component.specialize( {
         set: function(flag) {
             this._showReflection = flag;
             //if reflection (e.g floor) is enabled, then we constrain the rotation
-            if (flag && this.camera)
-                this.camera.constrainXOrbit = flag;
+            if (flag && this.orbitCamera)
+                this.orbitCamera.constrainXOrbit = flag;
         }
     },
 
@@ -628,8 +628,8 @@ exports.View = Component.specialize( {
 
     handleSelectedNode: {
         value: function(nodeID) {
-            if (this.camera)
-                this.displayAllBBOX(this.camera.getViewMat(), nodeID);
+            if (this.orbitCamera)
+                this.displayAllBBOX(this.orbitCamera.getViewMat(), nodeID);
             else {
                 var mat = mat4.create();
                 mat4.inverse(this.viewPoint.transform.matrix, mat);
@@ -699,8 +699,8 @@ exports.View = Component.specialize( {
             return this._cameraAnimating;
         },
         set:function (value) {
-            this.cameraAnimatingXVel = 0;
-            this.cameraAnimatingYVel = 0;
+            this.orbitCameraAnimatingXVel = 0;
+            this.orbitCameraAnimatingYVel = 0;
             this._cameraAnimating = value;
         }
     },
@@ -725,15 +725,15 @@ exports.View = Component.specialize( {
             if (!this._scene)
                 return;
 
-           if(this.camera && this.cameraAnimating) {
-                if (this.cameraAnimatingXVel < 0.0013) {
-                    this.cameraAnimatingXVel += 0.00001
+           if(this.orbitCamera && this.orbitCameraAnimating) {
+                if (this.orbitCameraAnimatingXVel < 0.0013) {
+                    this.orbitCameraAnimatingXVel += 0.00001
                 }
-                if (this.cameraAnimatingYVel > -0.0005) {
-                    this.cameraAnimatingYVel -= 0.000005
+                if (this.orbitCameraAnimatingYVel > -0.0005) {
+                    this.orbitCameraAnimatingYVel -= 0.000005
                 }
 
-                this.camera.orbit(this.cameraAnimatingXVel, this.cameraAnimatingYVel);
+                this.orbitCamera.orbit(this.orbitCameraAnimatingXVel, this.orbitCameraAnimatingYVel);
                 this.needsDraw = true;
             }
                 //FIXME: shouldn't be needed
@@ -762,7 +762,7 @@ exports.View = Component.specialize( {
                             - enable depth testing
                             - enable culling
                      ------------------------------------------------------------------------------------------------------------ */
-                    if(this.showReflection && this.camera) {
+                    if(this.showReflection && this.orbitCamera) {
                         webGLContext.depthFunc(webGLContext.LESS);
                         webGLContext.enable(webGLContext.DEPTH_TEST);
                         webGLContext.frontFace(webGLContext.CW);
@@ -862,8 +862,8 @@ exports.View = Component.specialize( {
                 //this.viewPoint.cameras[0].projection.znear = 0.01;
             }
 
-            if (this.camera) {
-                var cameraMatrix = this.camera.getViewMat();
+            if (this.orbitCamera) {
+                var cameraMatrix = this.orbitCamera.getViewMat();
                 mat4.inverse(cameraMatrix, this.viewPoint.transform.matrix);
             }
 
