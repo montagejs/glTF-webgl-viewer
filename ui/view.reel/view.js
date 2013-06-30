@@ -744,7 +744,6 @@ exports.View = Component.specialize( {
     draw: {
         value: function() {
             var self = this;
-            this.drawGradient();
 
             var webGLContext = this.getWebGLContext(),
                 renderer,
