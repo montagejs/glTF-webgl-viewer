@@ -257,7 +257,7 @@ exports.View = Component.specialize( {
                             return modelMatrix;
                         }, true, ctx);
 
-                        if (sceneBBox) {
+                        if (sceneBBox && !hasCamera) {
                             var sceneSize = [(sceneBBox[1][0] - sceneBBox[0][0]) ,
                                 (sceneBBox[1][1] - sceneBBox[0][1]) ,
                                 (sceneBBox[1][2] - sceneBBox[0][2]) ];
@@ -502,9 +502,6 @@ exports.View = Component.specialize( {
 
     displayBBOX: {
         value: function(bbox, cameraMatrix, modelMatrix) {
-            //var bbox = mesh.boundingBox;
-            //if (mesh.step === 0)
-             //   return;
 
             if (!this.sceneRenderer || !this.scene)
                 return;
@@ -517,12 +514,7 @@ exports.View = Component.specialize( {
 
             var viewPoint = this.viewPoint;
             var projectionMatrix = viewPoint.cameras[0].projection.matrix;
-/*
-            if (mesh.step < 1.) {
-                gl.enable(gl.BLEND);
-                gl.blendFunc (gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-            }
-*/
+
             gl.disable(gl.CULL_FACE);
 
             if (!this._BBOXProgram) {
@@ -556,8 +548,6 @@ exports.View = Component.specialize( {
             var Z = 2;
 
             if (!this._BBOXIndices) {
-                //should be strip that but couldn't figure yet why I can't couldn't close the strip
-                // i was expecting that repeating the index (like for triangles) would work
                 var indices = [ 0, 1,
                                 1, 2,
                                 2, 3,
@@ -584,17 +574,6 @@ exports.View = Component.specialize( {
             }
             gl.bindBuffer(gl.ARRAY_BUFFER, this._BBOXVertexBuffer);
 
-            //var incrBox = (1 - mesh.step) * 5.;
-
-            //if (mesh.loaded) {
-            /*    min[X] -= incrBox;
-                min[Y] -= incrBox;
-                min[Z] -= incrBox;
-                max[X] += incrBox;
-                max[Y] += incrBox;
-                max[Z] += incrBox;
-                */
-            //}
             var vertices = [
                     max[X], min[Y], min[Z], 
                     max[X], max[Y], min[Z], 
@@ -642,7 +621,6 @@ exports.View = Component.specialize( {
 
             gl.disable(gl.BLEND);
             gl.enable(gl.CULL_FACE);
-
         }
     },
 
@@ -650,13 +628,12 @@ exports.View = Component.specialize( {
 
     handleSelectedNode: {
         value: function(nodeID) {
-            this.selectedNode = this.scene.rootNode.nodeWithID(nodeID);
             if (this.camera)
                 this.displayAllBBOX(this.camera.getViewMat(), nodeID);
             else {
-                var camMat = mat4.create();
-                mat4.inverse(this.viewPoint.transform.matrix, camMat);
-                this.displayAllBBOX(camMat, nodeID);
+                var mat = mat4.create();
+                mat4.inverse(this.viewPoint.transform.matrix, mat);
+                this.displayAllBBOX(mat, nodeID);
             }
         }
     },
@@ -674,13 +651,7 @@ exports.View = Component.specialize( {
                 var modelMatrix = mat4.create();
                 mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
                 if (node.boundingBox && node.id == selectedNodeID) {
-                    var nodeMatrix = mat4.create();
-                    var scaledModelMatrix = mat4.create();
-                    var scale = 1.0
-                    var scaleMatrix = mat4.scale(mat4.identity(), vec3.createFrom(scale,scale,scale));
-                    mat4.multiply( node.transform.matrix, scaleMatrix , nodeMatrix);
-                    mat4.multiply( parentTransform, nodeMatrix, scaledModelMatrix);
-                    self.displayBBOX(node.boundingBox, cameraMatrix, scaledModelMatrix);
+                    self.displayBBOX(node.boundingBox, cameraMatrix, modelMatrix);
                 }
                 return modelMatrix;
             }, true, ctx);
