@@ -482,9 +482,9 @@ var SceneRenderer = Object.create(Object.prototype, {
                 //create camera
                 var camera = Object.create(Camera).init();
                 camera.projection = projection;
-
                 //create node to hold the camera
                 var cameraNode = Object.create(Node).init();
+                camera.name = cameraNode.name = "camera01";
                 cameraNode.id = "__default_camera";
                 cameraNode.cameras.push(camera);
                 this.scene.rootNode.children.push(cameraNode);
@@ -514,16 +514,12 @@ var SceneRenderer = Object.create(Object.prototype, {
             var viewMatrix = mat4.create();
 
             //FIXME: hack, need to properly expose world matrix, the app can't currently access it.
-            if (this.viewPoint.flipped) {
-                mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
+            var pathID = this._pathIDsForNodeID[this.viewPoint.id];
+            if (pathID) {
+                var pathInfo = this._pathsInfos[pathID];
+                mat4.inverse(pathInfo[WebGLRenderer.WORLD], viewMatrix);
             } else {
-                var pathID = this._pathIDsForNodeID[this.viewPoint.id];
-                if (pathID) {
-                    var pathInfo = this._pathsInfos[pathID];
-                    mat4.inverse(pathInfo[WebGLRenderer.WORLD], viewMatrix);
-                } else {
-                    mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
-                }
+                mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
             }
 
             //to be cached
