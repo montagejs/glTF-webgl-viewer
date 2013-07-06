@@ -1,24 +1,23 @@
-var WebGLTFLoader, ResourceDescription, Technique, ProgramPass, Pass, ScenePass,
-    GLSLProgram, Material, Mesh, Node, Primitive, Projection, Camera, Scene, Transform, Animation, AnimationManager;
 
 require("runtime/dependencies/gl-matrix");
-WebGLTFLoader = require("runtime/webgl-tf-loader").WebGLTFLoader;
-ResourceDescription = require("runtime/resource-description").ResourceDescription;
-Technique = require("runtime/technique").Technique;
-ProgramPass = require("runtime/pass").ProgramPass;
-Pass = require("runtime/pass").Pass;
-ScenePass = require("runtime/pass").ScenePass;
-GLSLProgram = require("runtime/glsl-program").GLSLProgram;
-Material = require("runtime/material").Material;
-Mesh = require("runtime/mesh").Mesh;
-Node = require("runtime/node").Node;
-Primitive = require("runtime/primitive").Primitive;
-Projection = require("runtime/projection").Projection;
-Camera = require("runtime/camera").Camera;
-Scene = require("runtime/scene").Scene;
-Transform = require("runtime/transform").Transform;
-Animation = require("runtime/animation").Animation;
-AnimationManager = require("runtime/animation-manager").AnimationManager;
+var WebGLTFLoader = require("runtime/webgl-tf-loader").WebGLTFLoader;
+var ResourceDescription = require("runtime/resource-description").ResourceDescription;
+var Technique = require("runtime/technique").Technique;
+var ProgramPass = require("runtime/pass").ProgramPass;
+var Pass = require("runtime/pass").Pass;
+var ScenePass = require("runtime/pass").ScenePass;
+var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
+var Material = require("runtime/material").Material;
+var Mesh = require("runtime/mesh").Mesh;
+var Node = require("runtime/node").Node;
+var Primitive = require("runtime/primitive").Primitive;
+var Projection = require("runtime/projection").Projection;
+var Camera = require("runtime/camera").Camera;
+var Skin = require("runtime/skin").Skin;
+var Scene = require("runtime/scene").Scene;
+var Transform = require("runtime/transform").Transform;
+var Animation = require("runtime/animation").Animation;
+var AnimationManager = require("runtime/animation-manager").AnimationManager;
 
 exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
 
@@ -317,6 +316,44 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
         }
     },
 
+    buildSkeletons: {
+        value: function(node) {
+            return;
+            if (node.instanceSkin) {
+                var skin = node.instanceSkin.skin;
+                if (skin) {
+                    node.instanceSkin.skeletons.forEach(function(skeleton) {
+                        var nodeEntry = this.getEntry(skeleton);
+                        if (nodeEntry) {
+                            var rootSkeleton = nodeEntry.entry;
+                            var jointsIds = skin.jointsIds;
+                            var joints = [];
+
+                            jointsIds.forEach(function(jointId) {
+                                var joint = rootSkeleton.nodeWithJointID(jointId);
+                                if (joint) {
+                                    joints.push(joint);
+                                } else {
+                                    console.log("WARNING: jointId:"+jointId+" cannot be found in skeleton:"+skeleton);
+                                }
+                            }, this);
+
+                            skin.nodesForSkeleton[skeleton] = joints;
+                        }
+                    }, this);
+                }
+            }
+
+            var children = node.children;
+            if (children) {
+                children.forEach( function(child) {
+                    this.buildSkeletons(child);
+                }, this);
+            }
+        }
+    },
+
+
     handleScene: {
         value: function(entryID, description, userInfo) {
 
@@ -344,11 +381,23 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                 }, this);
             }
 
+            this.buildSkeletons(rootNode);
             scene.rootNode = rootNode;
             this._scenes.push(scene);
             //now build the hirerarchy
 
             return true;
+        }
+    },
+
+    handleSkin: {
+        value: function(entryID, description, userInfo) {
+            debugger;
+            var skin = Object.create(Skin).init();
+            skin.bindShapeMatrix = mat4.create(description.bindShapeMatrix);
+            skin.jointsIds = description.joints;
+
+            this.storeEntry(entryID, skin, description);
         }
     },
 
@@ -359,6 +408,7 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
 
             var node = Object.create(Node).init();
             node.id = entryID;
+            node.jointId = description.jointId;
             node.name = description.name;
 
             this.storeEntry(entryID, node, description);
@@ -383,6 +433,11 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                 var cameraEntry = this.getEntry(description.camera);
                 if (cameraEntry)
                     node.cameras.push(cameraEntry.entry);
+            }
+
+            if (description.instanceSkin) {
+                description.instanceSkin.skin = this.getEntry(description.instanceSkin.skin).entry;
+                node.instanceSkin = description.instanceSkin;
             }
 
             return true;

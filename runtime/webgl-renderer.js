@@ -83,6 +83,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
         value: function(value) {
             this._GLEnumFromString = [];
             var GL = this.webGLContext;
+            //var maxUniforms = GL.getParameter(GL.MAX_VERTEX_UNIFORM_VECTORS);
 
             /* BeginMode */
             this._GLEnumFromString["POINTS"] = GL.POINTS;

@@ -66,7 +66,7 @@ var global = window;
 }(this, function (root) {
     "use strict";
 
-    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "programs", "techniques", "materials", "indices", "attributes", "meshes", "cameras", "lights", "nodes", "scenes", "animations"];
+    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "programs", "techniques", "materials", "indices", "attributes", "meshes", "cameras", "lights", "skins", "nodes", "scenes", "animations"];
 
     var categoryForType = {
         "buffer" : "buffers",
@@ -83,7 +83,8 @@ var global = window;
         "scene" : "scenes",
         "animation" : "animations",
         "attribute" : "attributes",
-        "indices" : "indices"
+        "indices" : "indices",
+        "skin" : "skins"
     };
 
     var typeForCategory = {
@@ -101,7 +102,8 @@ var global = window;
         "scenes" : "scene",
         "animations" : "animation",
         "indices" : "indices",
-        "attributes" : "attribute"
+        "attributes" : "attribute",
+        "skins" : "skin"
     };
 
     var WebGLTFLoader = Object.create(Object.prototype, {
@@ -258,7 +260,8 @@ var global = window;
                     "image" : this.handleImage,
                     "animation" : this.handleAnimation,
                     "indices" : this.handleIndices,
-                    "attribute" : this.handleAttribute
+                    "attribute" : this.handleAttribute,
+                    "skin" : this.handleSkin
                 };
 
                 var success = true;
@@ -268,6 +271,12 @@ var global = window;
                     var keys = categoryState.keys;
                     if (!keys) {
                         categoryState.keys = keys = Object.keys(this.rootDescription[category]);
+                        if (keys) {
+                            if (keys.length == 0) {
+                                this._stepToNextDescription();
+                                continue;
+                            }
+                        }
                     }
 
                     var type = typeForCategory[category];

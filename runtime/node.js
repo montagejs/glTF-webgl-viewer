@@ -269,6 +269,31 @@ var global = window;
             }
         },
 
+        nodeWithJointID: {
+            value: function(id) {
+                return this._nodeWithJointID(id);
+            }
+        },
+
+        _nodeWithJointID: {
+            value: function( id) {
+                if (this.jointId === id)
+                    return this;
+
+                if (this.children) {
+                    for (var i = 0 ; i < this.children.length ; i++) {
+                        var node = this.children[i];
+                        var res = node._nodeWithJointID(id);
+                        if (res) {
+                            return res;
+                        }
+                    }
+                }
+
+                return null;
+            }
+        },
+
         nodeWithID: {
             value: function(id) {
                 return this._nodeWithID(id);

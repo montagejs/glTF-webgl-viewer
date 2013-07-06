@@ -403,6 +403,8 @@ var SceneRenderer = Object.create(Object.prototype, {
                     var parentMatrix = context;
                     mat4.multiply(parentMatrix, node.transform.matrix , worldMatrix);
 
+                    node.worldTransform = worldMatrix;
+
                     return worldMatrix;
                 } , true, context);
             }
@@ -501,7 +503,6 @@ var SceneRenderer = Object.create(Object.prototype, {
                 return;
 
             var picking = options ? ((options.picking == true) && (options.coords)) : false;
-
             if (picking) {
                 this.pickingRenderTarget.extras.coords = options.coords;
                 webGLRenderer.bindRenderTarget(this.pickingRenderTarget);
