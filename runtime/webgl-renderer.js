@@ -736,6 +736,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 var symbol = allUniforms[i];
                 var parameter = pass.instanceProgram.uniforms[symbol];
                 parameter = parameters[parameter];
+
                 if (parameter.semantic) {
                     if (parameter.semantic == this.PROJECTION) {
                         value = this.projectionMatrix;
@@ -746,22 +747,27 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 }
 
                 if (value) {
-                    var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
-                    if (uniformIsSampler2D) {
-                        var image = value;
-                        this.textureDelegate.webGLContext = this.webGLContext;
-                        var texture = this.resourceManager.getResource(image, this.textureDelegate, this.webGLContext);
-                        if (texture) {
-                            gl.activeTexture(gl.TEXTURE0 + currentTexture);
-                            gl.bindTexture(gl.TEXTURE_2D, texture);
-                            var samplerLocation = program.getLocationForSymbol(symbol);
-                            if (typeof samplerLocation !== "undefined") {
-                                program.setValueForSymbol(symbol, currentTexture);
-                                currentTexture++;
-                            }
-                        }
+                    if (symbol == "u_jointMat") {
+                        var loc = program.getLocationForSymbol("u_jointMat");
+                       gl.uniformMatrix4fv(loc, false, value);
                     } else {
-                        program.setValueForSymbol(symbol, value);
+                        var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
+                        if (uniformIsSampler2D) {
+                            var image = value;
+                            this.textureDelegate.webGLContext = this.webGLContext;
+                            var texture = this.resourceManager.getResource(image, this.textureDelegate, this.webGLContext);
+                            if (texture) {
+                                gl.activeTexture(gl.TEXTURE0 + currentTexture);
+                                gl.bindTexture(gl.TEXTURE_2D, texture);
+                                var samplerLocation = program.getLocationForSymbol(symbol);
+                                if (typeof samplerLocation !== "undefined") {
+                                    program.setValueForSymbol(symbol, currentTexture);
+                                    currentTexture++;
+                                }
+                            }
+                        } else {
+                            program.setValueForSymbol(symbol, value);
+                        }
                     }
                 }
 
@@ -847,11 +853,13 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
             //should be called only once
             convert: function (resource, ctx) {
-                var gl = ctx;
+                var gl = ctx.gl;
+                var instanceProgram = ctx.instanceProgram;
                 var glslProgram = Object.create(GLSLProgram);
                 glslProgram.initWithShaders( resource );
-                if (!glslProgram.build(ctx)) {
-                    console.log(resource)
+                if (!glslProgram.build(gl, Object.keys(instanceProgram.attributes),
+                                            Object.keys(instanceProgram.uniforms))) {
+                    console.log(resource);
                     console.log(glslProgram.errorLogs);
                 }
 
@@ -966,7 +974,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             var count = primitives.length;
             var gl = this.webGLContext;
             if (pass.instanceProgram) {
-                var glProgram = this.resourceManager.getResource(pass.instanceProgram.program, this.programDelegate, gl);
+                var ctx = { "gl" : gl, "instanceProgram" : pass.instanceProgram };
+                var glProgram = this.resourceManager.getResource(pass.instanceProgram.program, this.programDelegate, ctx);
                 if (glProgram) {
                     var blending = false;
                     var depthTest = true;

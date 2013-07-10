@@ -300,6 +300,30 @@ var global = window;
             }
         },
 
+        nodeWithJointID: {
+            value: function(id) {
+                return this._nodeWithJointID(id);
+            }
+        },
+
+        nodeWithPropertyNamed: {
+            value: function( propertyName) {
+                if ((typeof this[propertyName] !== "undefined") && (this[propertyName] != null))
+                    return this;
+
+                if (this.children) {
+                    for (var i = 0 ; i < this.children.length ; i++) {
+                        var node = this.children[i];
+                        var res = node.nodeWithPropertyNamed(propertyName);
+                        if (res) {
+                            return res;
+                        }
+                    }
+                }
+
+                return null;
+            }
+        },
 
 
     });

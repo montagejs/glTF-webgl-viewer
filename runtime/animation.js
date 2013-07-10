@@ -136,7 +136,7 @@ var Channel = exports.Channel = Object.create(Base, {
                         var AXIS_ANGLE_INTERP_NAIVE = 1;
                         var QUATERNION = 2;
 
-                        var interpolationType = AXIS_ANGLE_INTERP_NAIVE;
+                        var interpolationType = QUATERNION;//AXIS_ANGLE_INTERP_NAIVE;
 
                         var axisAngle1 = vec4.createFrom(outputArray[idx1 + 0],outputArray[idx1 + 1],outputArray[idx1 + 2],outputArray[idx1 + 3]);
                         var axisAngle2 = vec4.createFrom(outputArray[idx2 + 0],outputArray[idx2 + 1],outputArray[idx2 + 2],outputArray[idx2 + 3]);

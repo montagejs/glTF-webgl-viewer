@@ -429,7 +429,7 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
     },
 
     build: {
-        value: function(GL) {
+        value: function(GL, attributes, uniforms) {
             var i;
             var vertexShaderSource = this.shaders[GLSLProgram.VERTEX_SHADER];
             var fragmentShaderSource = this.shaders[GLSLProgram.FRAGMENT_SHADER];
@@ -473,9 +473,17 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
                 var uniformsCount = GL.getProgramParameter(this.GLProgram,GL.ACTIVE_UNIFORMS);
                 for (i = 0 ; i < uniformsCount ; i++) {
                     activeInfo = GL.getActiveUniform(this.GLProgram, i);
-                    this.symbolToActiveInfo[activeInfo.name] = activeInfo;
-                    this.symbolToLocation[activeInfo.name] = GL.getUniformLocation(this.GLProgram,activeInfo.name);
-                    this.uniformSymbols.push(activeInfo.name);
+
+                    var name = activeInfo.name;
+                    //when an array is retrieve, the symbol we got comes as symbol[0] which is surprising...
+                    var arrayIndex = name.indexOf("[0]");
+                    if (arrayIndex != -1) {
+                        name = name.substring(0,arrayIndex);
+                    }
+
+                    this.symbolToActiveInfo[name] = activeInfo;
+                    this.symbolToLocation[name] = GL.getUniformLocation(this.GLProgram,name);
+                    this.uniformSymbols.push(name);
                 }
 
                 var attributesCount = GL.getProgramParameter(this.GLProgram,GL.ACTIVE_ATTRIBUTES);

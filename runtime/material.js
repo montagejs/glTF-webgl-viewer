@@ -31,8 +31,6 @@ var Pass = require("runtime/pass").Pass;
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
 var ResourceDescription = require("runtime/resource-description").ResourceDescription;
 
-
-
 exports.Material = Object.create(Base, {
 
     /*

@@ -318,7 +318,6 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
 
     buildSkeletons: {
         value: function(node) {
-            return;
             if (node.instanceSkin) {
                 var skin = node.instanceSkin.skin;
                 if (skin) {
@@ -341,9 +340,18 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                             skin.nodesForSkeleton[skeleton] = joints;
                         }
                     }, this);
+
+                    var meshSources = [];
+                    node.instanceSkin.sources.forEach(function(source) {
+                        var sourceEntry = this.getEntry(source);
+                        if (sourceEntry) {
+                            meshSources.push(sourceEntry.entry);
+                        }
+                    }, this);
+                    skin.sources = meshSources;
+
                 }
             }
-
             var children = node.children;
             if (children) {
                 children.forEach( function(child) {
@@ -392,11 +400,12 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
 
     handleSkin: {
         value: function(entryID, description, userInfo) {
-            debugger;
             var skin = Object.create(Skin).init();
             skin.bindShapeMatrix = mat4.create(description.bindShapeMatrix);
             skin.jointsIds = description.joints;
-
+            skin.inverseBindMatricesDescription = description.inverseBindMatrices;
+            skin.inverseBindMatricesDescription.id = entryID + "_inverseBindMatrices";
+            skin.inverseBindMatricesDescription.bufferView = this.getEntry(skin.inverseBindMatricesDescription.bufferView).entry;
             this.storeEntry(entryID, skin, description);
         }
     },
@@ -438,6 +447,14 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
             if (description.instanceSkin) {
                 description.instanceSkin.skin = this.getEntry(description.instanceSkin.skin).entry;
                 node.instanceSkin = description.instanceSkin;
+                var sources = node.instanceSkin.sources;
+                if (sources) {
+                    sources.forEach( function(meshID) {
+                        meshEntry = this.getEntry(meshID);
+                        if (meshEntry)
+                            node.meshes.push(meshEntry.entry);
+                    }, this);
+                }
             }
 
             return true;
