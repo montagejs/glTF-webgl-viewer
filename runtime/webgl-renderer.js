@@ -721,7 +721,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             var renderVertices = false;
             //var worldMatrix = primitiveDescription.worldViewMatrix;
             //var projectionMatrix = this.projectionMatrix;
-
+            var value = null;
             var primitive = primitiveDescription.primitive;
             var newMaxEnabledArray = -1;
             var gl = this.webGLContext;
@@ -740,34 +740,33 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 if (parameter.semantic) {
                     if (parameter.semantic == this.PROJECTION) {
                         value = this.projectionMatrix;
-                    } else
+                    } else {
                         value = primitiveDescription[parameter.semantic];
+                        if (value == null) {
+                            value = parameter.value;
+                        }
+                    }
                 } else {
                     value = parameter.value;
                 }
 
-                if (value) {
-                    if (symbol == "u_jointMat") {
-                        var loc = program.getLocationForSymbol("u_jointMat");
-                       gl.uniformMatrix4fv(loc, false, value);
-                    } else {
-                        var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
-                        if (uniformIsSampler2D) {
-                            var image = value;
-                            this.textureDelegate.webGLContext = this.webGLContext;
-                            var texture = this.resourceManager.getResource(image, this.textureDelegate, this.webGLContext);
-                            if (texture) {
-                                gl.activeTexture(gl.TEXTURE0 + currentTexture);
-                                gl.bindTexture(gl.TEXTURE_2D, texture);
-                                var samplerLocation = program.getLocationForSymbol(symbol);
-                                if (typeof samplerLocation !== "undefined") {
-                                    program.setValueForSymbol(symbol, currentTexture);
-                                    currentTexture++;
-                                }
+                if (value != null) {
+                    var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
+                    if (uniformIsSampler2D) {
+                        var image = value;
+                        this.textureDelegate.webGLContext = this.webGLContext;
+                        var texture = this.resourceManager.getResource(image, this.textureDelegate, this.webGLContext);
+                        if (texture) {
+                            gl.activeTexture(gl.TEXTURE0 + currentTexture);
+                            gl.bindTexture(gl.TEXTURE_2D, texture);
+                            var samplerLocation = program.getLocationForSymbol(symbol);
+                            if (typeof samplerLocation !== "undefined") {
+                                program.setValueForSymbol(symbol, currentTexture);
+                                currentTexture++;
                             }
-                        } else {
-                            program.setValueForSymbol(symbol, value);
                         }
+                    } else {
+                        program.setValueForSymbol(symbol, value);
                     }
                 }
 
