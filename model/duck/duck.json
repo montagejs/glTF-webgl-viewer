@@ -112,7 +112,7 @@
                         }
                     },
                     {
-                        "parameter": "shininesss",
+                        "parameter": "shininess",
                         "value": 38.4
                     }
                 ]
