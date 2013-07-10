@@ -296,25 +296,34 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             var existingValue = this.symbolToValue[symbol];
             var type = this.getTypeForSymbol(symbol);
             var GL = this._GLTypes;
+
             if ((typeof existingValue !== "undefined") && (existingValue !== "null")) {
                 if (type === GL.FLOAT_MAT4) {
-                    if (mat4.equal(existingValue, value)) {
-                        return;
+                    if (value.length == 16) {
+                        if (mat4.equal(existingValue, value)) {
+                            return;
+                        }
                     }
                 }
                 if (type === GL.FLOAT_MAT3) {
-                    if (mat3.equal(existingValue, value)) {
-                        return;
+                    if (value.length == 9) {
+                        if (mat3.equal(existingValue, value)) {
+                            return;
+                        }
                     }
                 }
                 if (type === GL.FLOAT_VEC3) {
-                    if (vec3.equal(existingValue, value)) {
-                        return;
+                    if (value.length == 3) {
+                        if (vec3.equal(existingValue, value)) {
+                            return;
+                        }
                     }
                 }
                 if (type === GL.FLOAT_VEC4) {
-                    if (vec4.equal(existingValue, value)) {
-                        return;
+                    if (value.length == 4) {
+                        if (vec4.equal(existingValue, value)) {
+                            return;
+                        }
                     }
                 }
             }
@@ -328,21 +337,28 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             if ((typeof value !== "undefined") && (value !== "null")) {
                 var temp;
                 if (type === GL.FLOAT_MAT4) {
-                    temp = mat4.create();
-                    value = mat4.set(value,temp);
-
+                    if (value.length == 16) {
+                        temp = mat4.create();
+                        value = mat4.set(value,temp);
+                    }
                 }
                 if (type === GL.FLOAT_MAT3) {
-                    temp = mat3.create();
-                    value = mat3.set(value,temp);
+                    if (value.length == 9) {
+                        temp = mat3.create();
+                        value = mat3.set(value,temp);
+                    }
                 }
                 if (type === GL.FLOAT_VEC3) {
-                    temp = vec3.create();
-                    value = vec3.set(value,temp);
+                    if (value.length == 3) {
+                        temp = vec3.create();
+                        value = vec3.set(value,temp);
+                    }
                 }
                 if (type === GL.FLOAT_VEC4) {
-                    temp = vec4.create();
-                    value = vec4.set(value,temp);
+                    if (value.length == 4) {
+                        temp = vec4.create();
+                        value = vec4.set(value,temp);
+                    }
                 }
             }
 
