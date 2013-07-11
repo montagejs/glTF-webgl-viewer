@@ -774,14 +774,6 @@
                 "technique": "technique1",
                 "values": [
                     {
-                        "parameter": "ambient",
-                        "value": [
-                            0.2,
-                            0.2,
-                            0.2
-                        ]
-                    },
-                    {
                         "parameter": "diffuse",
                         "value": {
                             "image": "image_1",
@@ -790,6 +782,14 @@
                             "wrapS": "REPEAT",
                             "wrapT": "REPEAT"
                         }
+                    },
+                    {
+                        "parameter": "reflective",
+                        "value": [
+                            0,
+                            0,
+                            0
+                        ]
                     }
                 ]
             },
@@ -800,19 +800,19 @@
                 "technique": "technique2",
                 "values": [
                     {
-                        "parameter": "ambient",
-                        "value": [
-                            0.2,
-                            0.2,
-                            0.2
-                        ]
-                    },
-                    {
                         "parameter": "diffuse",
                         "value": [
                             0.564706,
                             0.972549,
                             0.835294
+                        ]
+                    },
+                    {
+                        "parameter": "reflective",
+                        "value": [
+                            0,
+                            0,
+                            0
                         ]
                     },
                     {
@@ -828,14 +828,6 @@
                 "technique": "technique1",
                 "values": [
                     {
-                        "parameter": "ambient",
-                        "value": [
-                            0.2,
-                            0.2,
-                            0.2
-                        ]
-                    },
-                    {
                         "parameter": "diffuse",
                         "value": {
                             "image": "image_2",
@@ -844,6 +836,14 @@
                             "wrapS": "REPEAT",
                             "wrapT": "REPEAT"
                         }
+                    },
+                    {
+                        "parameter": "reflective",
+                        "value": [
+                            0,
+                            0,
+                            0
+                        ]
                     }
                 ]
             },
@@ -854,19 +854,19 @@
                 "technique": "technique3",
                 "values": [
                     {
-                        "parameter": "ambient",
-                        "value": [
-                            0.2,
-                            0.2,
-                            0.2
-                        ]
-                    },
-                    {
                         "parameter": "diffuse",
                         "value": [
                             1,
                             1,
                             1
+                        ]
+                    },
+                    {
+                        "parameter": "reflective",
+                        "value": [
+                            0,
+                            0,
+                            0
                         ]
                     }
                 ]
@@ -878,14 +878,6 @@
                 "technique": "technique1",
                 "values": [
                     {
-                        "parameter": "ambient",
-                        "value": [
-                            0.2,
-                            0.2,
-                            0.2
-                        ]
-                    },
-                    {
                         "parameter": "diffuse",
                         "value": {
                             "image": "image_0",
@@ -894,6 +886,14 @@
                             "wrapS": "REPEAT",
                             "wrapT": "REPEAT"
                         }
+                    },
+                    {
+                        "parameter": "reflective",
+                        "value": [
+                            0,
+                            0,
+                            0
+                        ]
                     }
                 ]
             },
@@ -11684,6 +11684,9 @@
                     "semantic": "PROJECTION",
                     "type": "FLOAT_MAT4"
                 },
+                "reflective": {
+                    "type": "FLOAT_VEC3"
+                },
                 "texcoord0": {
                     "semantic": "TEXCOORD_0",
                     "type": "FLOAT_VEC2"
@@ -11707,6 +11710,7 @@
                             "u_diffuse": "diffuse",
                             "u_normalMatrix": "normalMatrix",
                             "u_projectionMatrix": "projectionMatrix",
+                            "u_reflective": "reflective",
                             "u_worldViewMatrix": "worldViewMatrix"
                         }
                     },
@@ -11740,6 +11744,9 @@
                     "semantic": "PROJECTION",
                     "type": "FLOAT_MAT4"
                 },
+                "reflective": {
+                    "type": "FLOAT_VEC3"
+                },
                 "transparency": {
                     "type": "FLOAT"
                 },
@@ -11761,6 +11768,7 @@
                             "u_diffuse": "diffuse",
                             "u_normalMatrix": "normalMatrix",
                             "u_projectionMatrix": "projectionMatrix",
+                            "u_reflective": "reflective",
                             "u_transparency": "transparency",
                             "u_worldViewMatrix": "worldViewMatrix"
                         }
@@ -11800,6 +11808,9 @@
                     "semantic": "PROJECTION",
                     "type": "FLOAT_MAT4"
                 },
+                "reflective": {
+                    "type": "FLOAT_VEC3"
+                },
                 "worldViewMatrix": {
                     "semantic": "WORLDVIEW",
                     "type": "FLOAT_MAT4"
@@ -11818,6 +11829,7 @@
                             "u_diffuse": "diffuse",
                             "u_normalMatrix": "normalMatrix",
                             "u_projectionMatrix": "projectionMatrix",
+                            "u_reflective": "reflective",
                             "u_worldViewMatrix": "worldViewMatrix"
                         }
                     },
