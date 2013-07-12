@@ -155,15 +155,16 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                     if (parameter) {
                         var paramValue = null;
                         switch (parameter.type) {
-                            case "SAMPLER_2D": {
-                                var image = value.value.image;
-                                if (image) {
-                                    var imageID = image + this.loaderContext() + "_sampler";
-                                    var sampler2D = Object.create(ResourceDescription).init(imageID, value.value);
-                                    sampler2D.type = parameter.type;
-                                    value.value.image = this.getEntry(value.value.image).entry;
-                                    value.value = sampler2D;
+                            case "SAMPLER_2D":
+                            {
+                                var entry = this.getEntry(value.value);
+                                if (entry) {
+                                    //this looks stupid, I need to get rid at least of .entry and treat within the getEntry method.
+                                    value.value = entry.entry;
                                     paramValue = value;
+
+                                } else {
+                                    console.log("ERROR: can't find texture:"+value.value);
                                 }
                             }
                                 break;
@@ -556,6 +557,27 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
         }
     },
 
+    handleTexture: {
+        value: function(entryID, description, userInfo) {
+            if (description.source && description.sampler) {
+                description.type = "texture";
+                description.source = this.getEntry(description.source).entry;
+                description.sampler = this.getEntry(description.sampler).entry;
+                description.id = entryID; //because the resource manager needs this
+                this.storeEntry(entryID, description, description);
+            } else {
+                console.log("ERROR: texture"+entryID+" must contain both source and sampler properties");
+            }
+        }
+    },
+
+    handleSampler: {
+        value: function(entryID, description, userInfo) {
+            description.id = description;
+            this.storeEntry(entryID, description, description);
+        }
+    },
+
     handleError: {
         value: function(reason) {
             //TODO: propagate in the delegate
@@ -608,7 +630,6 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
             }
 
             id += this.loaderContext();
-
             if (!id) {
                 console.log("ERROR: not id provided, cannot store");
                 return;

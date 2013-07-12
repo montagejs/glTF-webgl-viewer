@@ -619,11 +619,11 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 var canvas = document.createElement("canvas");
 
                 //TODO: add compressed textures
-                //set default values
-                var minFilter = this.getGLFilter(resource.description.minFilter);
-                var magFilter = this.getGLFilter(resource.description.magFilter);
-                var wrapS = this.getGLWrapMode(resource.description.wrapS);
-                var wrapT = this.getGLWrapMode(resource.description.wrapT);
+                var sampler = resource.sampler;
+                var minFilter = this.getGLFilter(sampler.minFilter);
+                var magFilter = this.getGLFilter(sampler.magFilter);
+                var wrapS = this.getGLWrapMode(sampler.wrapS);
+                var wrapT = this.getGLWrapMode(sampler.wrapT);
                 if ((wrapS === gl.REPEAT) || (wrapT === gl.REPEAT)) {
                     var width = parseInt(image.width);
                     var height = parseInt(image.height);
@@ -749,13 +749,12 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 } else {
                     value = parameter.value;
                 }
-
                 if (value != null) {
                     var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
                     if (uniformIsSampler2D) {
-                        var image = value;
+                        var texture = value;
                         this.textureDelegate.webGLContext = this.webGLContext;
-                        var texture = this.resourceManager.getResource(image, this.textureDelegate, this.webGLContext);
+                        var texture = this.resourceManager.getResource(texture, this.textureDelegate, this.webGLContext);
                         if (texture) {
                             gl.activeTexture(gl.TEXTURE0 + currentTexture);
                             gl.bindTexture(gl.TEXTURE_2D, texture);

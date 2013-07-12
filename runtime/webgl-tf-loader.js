@@ -66,7 +66,7 @@ var global = window;
 }(this, function (root) {
     "use strict";
 
-    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "shaders", "programs", "techniques", "materials", "indices", "attributes", "meshes", "cameras", "lights", "skins", "nodes", "scenes", "animations"];
+    var categoriesDepsOrder = ["buffers", "bufferViews", "images", "samplers", "textures", "shaders", "programs", "techniques", "materials", "indices", "attributes", "meshes", "cameras", "lights", "skins", "nodes", "scenes", "animations"];
 
     var categoryForType = {
         "buffer" : "buffers",
@@ -84,7 +84,10 @@ var global = window;
         "animation" : "animations",
         "attribute" : "attributes",
         "indices" : "indices",
-        "skin" : "skins"
+        "skin" : "skins",
+        "sampler" : "samplers",
+        "texture" : "textures"
+
     };
 
     var typeForCategory = {
@@ -103,7 +106,9 @@ var global = window;
         "animations" : "animation",
         "indices" : "indices",
         "attributes" : "attribute",
-        "skins" : "skin"
+        "skins" : "skin",
+        "samplers" : "sampler",
+        "textures" : "texture"
     };
 
     var WebGLTFLoader = Object.create(Object.prototype, {
@@ -261,7 +266,9 @@ var global = window;
                     "animation" : this.handleAnimation,
                     "indices" : this.handleIndices,
                     "attribute" : this.handleAttribute,
-                    "skin" : this.handleSkin
+                    "skin" : this.handleSkin,
+                    "sampler" : this.handleSampler,
+                    "texture" : this.handleTexture
                 };
 
                 var success = true;

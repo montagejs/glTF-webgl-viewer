@@ -826,7 +826,7 @@ var global = window;
             }
         },
 
-        _handleSampler2DLoading: {
+        _handleTextureLoading: {
             value: function(resource, delegate, ctx) {
                 //TODO: unify with binaries
                 var resourceStatus = this._resourcesStatus[resource.id];
@@ -838,18 +838,20 @@ var global = window;
                 this._resourcesStatus[resource.id] = { status: "loading" };
 
                 var self = this;
-                if (resource.description.image) {
-                    this._handleImageLoading(resource.description.image, 
-                    function(image, id, ctx) {
-                        var gl = ctx;
-                        var convertedResource = delegate.convert(resource, image);
+                if (resource.source) {
+                    if (resource.source.type === "image") {
+                        this._handleImageLoading(resource.source,
+                            function(image, id, ctx) {
+                                var gl = ctx;
+                                var convertedResource = delegate.convert(resource, image);
 
-                        delete self._resourcesStatus[resource.id];
+                                delete self._resourcesStatus[resource.id];
 
-                        self._storeResource(resource.id, convertedResource);
-                        delegate.resourceAvailable(convertedResource, gl);
-                        self.fireResourceAvailable.call(self, resource.id);
-                    }, ctx);
+                                self._storeResource(resource.id, convertedResource);
+                                delegate.resourceAvailable(convertedResource, gl);
+                                self.fireResourceAvailable.call(self, resource.id);
+                            }, ctx);
+                    }
                 }
             }
         },
@@ -875,8 +877,8 @@ var global = window;
                     this._handleShaderLoading(resource, delegate, ctx);
                 } else if (resource.type === "image") {
                     this._handleImageLoading(resource, delegate, ctx);
-                } else if (resource.type === "SAMPLER_2D") {
-                    this._handleSampler2DLoading(resource, delegate, ctx);
+                } else if (resource.type === "texture") {
+                    this._handleTextureLoading(resource, delegate, ctx);
                 } else {
                     this._handleWrappedBufferViewResourceLoading(resource, delegate, ctx);
                 }
