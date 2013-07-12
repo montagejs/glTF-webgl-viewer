@@ -57,42 +57,17 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
             this.camerasController = new RangeController().initWithContent([]);
             this.camerasController.selectAddedContent = true;
 
-            this.defineBinding("modelPath" ,{"<-": "modelsController.selection.0.path"});
-            this.defineBinding("camera" ,{"<-": "camerasController.selection.0.node"});
+            this.defineBinding("model" ,{"<-": "modelsController.selection.0"});
+            this.defineBinding("camera" ,{"<-": "camerasController.selection.0"});
 
-            this.addOwnPropertyChangeListener("modelPath", this.handleModelPathBeforeChange.bind(this), true);
-            this.addOwnPropertyChangeListener("modelPath", this.handleModelPathChange.bind(this), false);
+            this.addOwnPropertyChangeListener("model", this);
+            this.addOwnPropertyChangeListener("camera", this);
         }
     },
 
     view: {
         get: function() {
             return this.templateObjects ? this.templateObjects.view : null;
-        }
-    },
-
-    handleOptionsReload: {
-        value: function() {
-            var self = this;
-            var view = this.view;
-            if (view) {
-                if (view.sceneRenderer) {
-                    if (view.sceneRenderer.scene) {
-                        view.sceneRenderer.technique.rootPass.scene.rootNode.apply( function(node, parent) {
-                            if (node.meshes) {
-                                if (node.meshes.length) {
-                                    node.meshes.forEach( function(mesh) {
-                                        mesh.loadedPrimitivesCount = 0;
-                                        mesh.step = 0;
-                                    }, self);
-                                }
-                            }
-                            return null;
-                        } , true, null);
-                    }
-                }
-                this.loadingProgress.value = 0;
-            }
         }
     },
 
@@ -106,18 +81,29 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
     enterDocument: {
         value: function(firstTime) {
-            this.modelsController.content = [
-                { "name": "duck", "path": "model/duck/duck.json"},
-                { "name": "Buggy", "path": "model/rambler/Rambler.json"},
-                { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
-                { "name": "Wine", "path": "model/wine/wine.json"}
-            ];
-            this.modelPath = this.modelsController.content[0].path;
+            if(firstTime) {
+                this.modelsController.content = [
+                    { "name": "duck", "path": "model/duck/duck.json"},
+                    { "name": "Buggy", "path": "model/rambler/Rambler.json"},
+                    { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
+                    { "name": "Wine", "path": "model/wine/wine.json"}
+                ];
+                this.modelPath = this.modelsController.content[0].path;
+            }
             if (this.fillViewport) {
                 window.addEventListener("resize", this, true);
             }
         }
     },
+
+    exitDocument: {
+        value: function() {
+            if (this.fillViewport) {
+                window.removeEventListener("resize", this, true);
+            }
+        }
+    },
+
 
     willDraw: {
         value: function() {
@@ -151,19 +137,12 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
             return this._fillViewport;
         },
         set: function(value) {
-            if (value === this._fillViewport) {
-                return;
+            if (value && ! this._fillViewport) {
+                window.addEventListener("resize", this, true);
+            } else if (! value && this._fillViewport) {
+                window.removeEventListener("resize", this, true);
             }
-
             this._fillViewport = value;
-
-            if (this._isComponentExpanded) {
-                if (this._fillViewport) {
-                    window.addEventListener("resize", this, true);
-                } else {
-                    window.removeEventListener("resize", this, true);
-                }
-            }
         }
     },
 
@@ -176,16 +155,61 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
+    handleOptionsReload: {
+        value: function() {
+            this.loadScene();
+        }
+    },
+
+    handleModelChange: {
+        value: function() {
+            this.run(this.model.path);
+            this.loading = true;
+        }
+    },
+
+    handleCameraChange: {
+        value: function() {
+            //Change the camera...
+        }
+    },
+
     run: {
         value: function(scenePath) {
-            this.handleOptionsReload();
+            this.loadScene();
             if (this.view) {
                 this.view.scenePath = scenePath;
             }
         }
     },
 
-    handleModelPathBeforeChange: {
+    loadScene: {
+        value: function() {
+            var self = this;
+            var view = this.view;
+            if (view) {
+                if (view.sceneRenderer) {
+                    if (view.sceneRenderer.scene) {
+                        view.sceneRenderer.technique.rootPass.scene.rootNode.apply( function(node, parent) {
+                            if (node.meshes) {
+                                if (node.meshes.length) {
+                                    node.meshes.forEach( function(mesh) {
+                                        mesh.loadedPrimitivesCount = 0;
+                                        mesh.step = 0;
+                                    }, self);
+                                }
+                            }
+                            return null;
+                        } , true, null);
+                    }
+                }
+            }
+        }
+    },
+
+    /* View delegate methods*/
+
+    sceneWillChange: {
         value: function() {
             var resourceManager = this.view.getResourceManager();
             if (resourceManager) {
@@ -196,10 +220,10 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
-    handleModelPathChange: {
+    sceneDidChange: {
         value: function() {
             if(this.view.scene) {
-                this.handleOptionsReload();
+                this.loadScene();
                  var resourceManager = this.view.getResourceManager();
                  if (resourceManager) {
                      if (resourceManager.observers.length === 1) { //FIXME:...
@@ -221,19 +245,16 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                      this.camerasController.content.push( { "name": cameraNode.name, "node": cameraNode} );
                  }, this);
             }
-           this.run(this.modelPath);
         }
     },
 
     resourceAvailable: {
         value: function(resource) {
-            var progress = this.progress;
-            if (progress) {
-                if (resource.range) {
-                    this.loadingProgress += (resource.range[1] - resource.range[0])/this.view.totalBufferSize;
-                    if (this.loadingProgress >= 1) {
-                        this.loadingProgress = 0;
-                    }
+            if (resource.range && this.loading) {
+                this.loadingProgress += ((resource.range[1] - resource.range[0])/this.view.totalBufferSize)*100;
+                if (this.loadingProgress >= 99) {
+                    this.loadingProgress = 0;
+                    this.loading = false;
                 }
             }
         }
