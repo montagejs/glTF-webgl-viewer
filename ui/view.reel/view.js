@@ -191,7 +191,6 @@ exports.View = Component.specialize( {
                     value = URL.resolve(packages[0], value);
                 }
             }
-            console.log("scenePath:"+value);
             if (value !== this._scenePath) {
                 if (0) {
                     this.loadMultipleScenesTest();
@@ -825,14 +824,6 @@ exports.View = Component.specialize( {
         }
     },
 
-    didDraw: {
-        value: function() {
-            if (this.delegate && typeof this.delegate.didDraw === "function") {
-                this.delegate.didDraw(this);
-            }
-        }
-    },
-
     resourceAvailable: {
         value: function(resource) {
             this.needsDraw = true;
@@ -866,11 +857,6 @@ exports.View = Component.specialize( {
             if (this.orbitCamera) {
                 var cameraMatrix = this.orbitCamera.getViewMat();
                 mat4.inverse(cameraMatrix, this.viewPoint.transform.matrix);
-            }
-
-            if (this.delegate) {
-                if (this.delegate.willDraw)
-                    this.delegate.willDraw(this);
             }
         }
     },
