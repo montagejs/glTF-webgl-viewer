@@ -218,6 +218,7 @@ exports.View = Component.specialize( {
 
                 this._scenePath = value;
             }
+            this.needsDraw = true;
         }, 
         get: function() {
             return this._scenePath;

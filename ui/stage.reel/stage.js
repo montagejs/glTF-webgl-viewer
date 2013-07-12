@@ -33,8 +33,9 @@ POSSIBILITY OF SUCH DAMAGE.
     @requires montage
     @requires montage/ui/component
 */
-var Montage = require("montage").Montage,
-    Component = require("montage/ui/component").Component;
+var Montage = require("montage").Montage;
+var Component = require("montage/ui/component").Component;
+var RangeController = require("montage/core/range-controller").RangeController;
 var Utilities = require("runtime/utilities").Utilities;
 var Node = require("runtime/node").Node;
 var Camera = require("runtime/camera").Camera;
@@ -48,34 +49,29 @@ var glMatrix = require("runtime/dependencies/gl-matrix").glMatrix;
 */
 exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.reel".Stage# */ {
 
+    constructor: {
+        value: function Stage () {
+            this.super();
+            this.modelsController = new RangeController().initWithContent([]);
+            this.modelsController.selectAddedContent = true;
+            this.camerasController = new RangeController().initWithContent([]);
+            this.camerasController.selectAddedContent = true;
+
+            this.defineBinding("modelPath" ,{"<-": "modelsController.selection.0.path"});
+            this.defineBinding("camera" ,{"<-": "camerasController.selection.0.node"});
+
+            this.addOwnPropertyChangeListener("modelPath", this.handleModelPathBeforeChange.bind(this), true);
+            this.addOwnPropertyChangeListener("modelPath", this.handleModelPathChange.bind(this), false);
+        }
+    },
+
     view: {
         get: function() {
             return this.templateObjects ? this.templateObjects.view : null;
         }
     },
 
-    progress: {
-        get: function() {
-            var options = this.templateObjects.options;
-            return options ? options.progress : null;
-        }
-    },
-
-    selectModel: {
-        get: function() {
-            var options = this.templateObjects.options;
-            return options ? options.selectModel : null;
-        }
-    },
-
-    selectCamera: {
-        get: function() {
-            var options = this.templateObjects.options;
-            return options ? options.selectCamera : null;
-        }
-    },
-
-    restart: {
+    handleOptionsReload: {
         value: function() {
             var self = this;
             var view = this.view;
@@ -95,58 +91,56 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                         } , true, null);
                     }
                 }
-                var progress = this.progress;
-                if (progress) {
-                    progress.value = 0;
-                    progress.element.style.opacity = 1;
-                }
+                this.loadingProgress.value = 0;
             }
         }
     },
 
     /**
-     @param
-         @returns
      */
     templateDidLoad:{
         value:function () {
-            var listenerObj = {};
-            var self = this;
-            listenerObj.handleRestartAction = function(event) {
-                self.restart.call(self);
-            }
-
-            this.templateObjects.options.addEventListener("action", listenerObj, false);
             this.view.delegate = this;
         }
     },
 
-    viewPoint: {
-        get: function() {
-            return this.view.viewPoint;
-        },
-        set: function(value) {
-            if (value !== this._model) {
-                this.view.viewPoint = value;
+    enterDocument: {
+        value: function(firstTime) {
+            this.modelsController.content = [
+                { "name": "duck", "path": "model/duck/duck.json"},
+                { "name": "Buggy", "path": "model/rambler/Rambler.json"},
+                { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
+                { "name": "Wine", "path": "model/wine/wine.json"}
+            ];
+            this.modelPath = this.modelsController.content[0].path;
+            if (this.fillViewport) {
+                window.addEventListener("resize", this, true);
             }
         }
     },
 
-    _model: {value: null, writable:true},
-
-    model: {
-        get: function() {
-            return this._model;
-        },
-        set: function(value) {
-            if (value !== this._model) {
-                this._model = value;
-                this.run(this.model);
-            }
+    willDraw: {
+        value: function() {
+            this.view.width = this.width = window.innerWidth - 270;
+            this.view.height = this.height = window.innerHeight;
         }
     },
 
-    location: {value: null, writable: true},
+    bytesLimit: { value: 250},
+
+    concurrentRequests: { value: 6},
+
+    modelPath: {
+        value: null
+    },
+
+    loadingProgress: {
+        value: 0
+    },
+
+    location: {
+        value: null
+    },
 
     _fillViewport: {
         value: true
@@ -173,28 +167,8 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
-    height: {value: null, writable:true},
-    width: {value: null, writable:true},
-
-    enterDocument: {
-        value: function(firstTime) {
-            if (this.selectModel) {
-                ///this.selectModel.content.push( { "name": "layout", "path":"model/remi/layout/LayOut.json"} );
-
-                this.selectModel.content.push( { "name": "duck", "path":"model/duck/duck.json"} );
-                this.selectModel.content.push( { "name": "Buggy", "path":"model/rambler/Rambler.json"} );
-                this.selectModel.content.push( { "name": "SuperMurdoch", "path":"model/SuperMurdoch/SuperMurdoch.json"} );
-                this.selectModel.content.push( { "name": "Wine", "path":"model/wine/wine.json"} );
-
-                this.selectModel.needsDraw = true;
-                this.model = this.selectModel.content[0].path;
-            }
-
-            if (this.fillViewport) {
-                window.addEventListener("resize", this, true);
-            }
-        }
-    },
+    height: {value: null},
+    width: {value: null},
 
     captureResize: {
         value: function(evt) {
@@ -202,93 +176,52 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
-    willDraw: {
-        value: function() {
-            this.view.width = this.width = window.innerWidth - 270;
-            this.view.height = this.height = window.innerHeight;
-        }
-    },
-
-    _bytesLimit: { value: 0, writable: true },
-
-    bytesLimit: {
-        set: function(value) {
-            if (this._bytesLimit !== value) {
-                this._bytesLimit = value ;
-            }
-        }, 
-        get: function(value) {
-            return this._bytesLimit;
-        }
-    },
-
-    _concurrentRequests: { value: 6, writable: true },
-
-    concurrentRequests: {
-        set: function(value) {
-            if (value) {
-                this._concurrentRequests = Math.floor(parseInt(value));
-            }
-        },
-        get: function(value) {
-            return this._concurrentRequests;
-        }
-    },
-
     run: {
         value: function(scenePath) {
-            this.restart();
+            this.handleOptionsReload();
             if (this.view) {
                 this.view.scenePath = scenePath;
-                this.view.needsDraw = true;
             }
         }
     },
 
-    sceneWillChange: {
+    handleModelPathBeforeChange: {
         value: function() {
             var resourceManager = this.view.getResourceManager();
             if (resourceManager) {
                 resourceManager.maxConcurrentRequests = this.concurrentRequests;
-                resourceManager.bytesLimit = this.bytesLimit * 1000;
+                resourceManager.bytesLimit = this.bytesLimit * 1024;
                 resourceManager.reset();
             }
         }
     },
 
-    sceneDidChange: {
+    handleModelPathChange: {
         value: function() {
-            var progress = this.progress;
-            if (progress) {
-                progress.element.style["-webkit-transition-duration"] = "1s";
-                progress.element.style.opacity = 1;
-                progress.max = this.view.totalBufferSize;
-                progress.value = 0;
+            if(this.view.scene) {
+                this.handleOptionsReload();
+                 var resourceManager = this.view.getResourceManager();
+                 if (resourceManager) {
+                     if (resourceManager.observers.length === 1) { //FIXME:...
+                         resourceManager.observers.push(this);
+                     }
+                 }
+                 this.camerasController.content = [];
 
-                this.restart();
-                var resourceManager = this.view.getResourceManager();
-                if (resourceManager) {
-                    if (resourceManager.observers.length === 1) { //FIXME:...
-                        resourceManager.observers.push(this);
-                    }
-                }
-                this.selectCamera.content = [];
+                 var cameraNodes = [];
+                 this.view.scene.rootNode.apply( function(node, parent, context) {
+                     if (node.cameras) {
+                         if (node.cameras.length)
+                             cameraNodes = cameraNodes.concat(node);
+                     }
+                     return context;
+                 } , true, null);
 
-                var cameraNodes = [];
-                this.view.scene.rootNode.apply( function(node, parent, context) {
-                    if (node.cameras) {
-                        if (node.cameras.length)
-                            cameraNodes = cameraNodes.concat(node);
-                    }
-                    return context;
-                } , true, null);
-
-                cameraNodes.forEach( function(cameraNode) {
-                    this.selectCamera.content.push( { "name": cameraNode.name, "node":cameraNode} );
-                }, this);
-                this.selectCamera.needsDraw = true;
-
+                 cameraNodes.forEach( function(cameraNode) {
+                     this.camerasController.content.push( { "name": cameraNode.name, "node": cameraNode} );
+                 }, this);
             }
+           this.run(this.modelPath);
         }
     },
 
@@ -297,18 +230,14 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
             var progress = this.progress;
             if (progress) {
                 if (resource.range) {
-                    progress.value += resource.range[1] - resource.range[0];
-                    if (progress.value >= progress.max) {
-                        progress.element.style.opacity = 0;
-                        setTimeout(function() { 
-                            progress.value = 0;
-                        },1000);
-
+                    this.loadingProgress += (resource.range[1] - resource.range[0])/this.view.totalBufferSize;
+                    if (this.loadingProgress >= 1) {
+                        this.loadingProgress = 0;
                     }
                 }
             }
         }
-    },
+    }
 
 
 });

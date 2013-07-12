@@ -39,6 +39,12 @@
     width: 100%;
     box-sizing: border-box;
     background-color: hsl(0,0%,97%);
+    opacity: 0;
+}
+
+.options .progress.shown {
+    -webkit-transition-duration: 1s;
+    opacity: 1;
 }
 
 .options .progress .montage-progress-bar {

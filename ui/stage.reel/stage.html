@@ -39,37 +39,42 @@ POSSIBILITY OF SUCH DAMAGE.
                 "prototype": "ui/stage.reel",
                 "properties": {
                     "element": {"#": "component"}
-                },
-                "bindings": {
-                    "bytesLimit": {"<-" : "@options.range.value"},
-                    "concurrentRequests" : {"<-" : "@options.requests.value"},
-                    "model" : {"<->" : "@options.selectModel.value"},
-                    "viewPoint" : {"<->" : "@options.selectCamera.value"}
-        }
+                }
             },
             "view": {
                 "prototype": "ui/view.reel",
                 "properties": {
                     "element": {"#": "view"},
                     "showGradient" : true
-                },
-                "bindings": {
-                    "showReflection": {"<->": "@options.showReflection.checked"},
-                    "showBBOX": {"<->": "@options.showBBOX.checked"}
                 }
             },
             "options": {
                 "prototype": "ui/options.reel",
                 "properties": {
                     "element": {"#": "options"}
-                }
+                },
+                "bindings": {
+                    "loadingProgress": {"<->": "@owner.loadingProgress"},
+                    "showReflection": {"<->": "@view.showReflection"},
+                    "showBBOX": {"<->": "@view.showBBOX"},
+                    "bytesLimit": {"<->" : "@owner.bytesLimit"},
+                    "concurrentRequests" : {"<->" : "@owner.concurrentRequests"},
+                    "modelsController" : {"<-" : "@owner.modelsController"},
+                    "camerasController" : {"<-" : "@owner.camerasController"}
+                },
+                "listeners": [
+                    {
+                        "type": "reload",
+                        "listener": {"@":"owner"}
+                    }
+                ]
             }
         }
     </script>
 
 </head>
 <body>
-    <div data-montage-id="component" class="stage">
+    <div data-montage-id="component" class="stage" data-montage-skin="light">
         <div data-montage-id="view"></div>
         <div data-montage-id="options"></div>
     </div>
