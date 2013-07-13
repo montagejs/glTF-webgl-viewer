@@ -38,23 +38,34 @@ var Montage = require("montage").Montage,
 
 exports.Options = Montage.create(Component, /** @lends module:"montage/ui/stage.reel".Stage# */ {
 
-    range: { value: null, writable:true },
-    requests: { value: null, writable:true },
-    progress: { value: null, writable:true },
-    selectModel: { value: null, writable: true },
-    selectCamera: { value: null, writable: true },
-    showReflection: { value: null, writable:true },
-    showBBOX: { value: null, writable:true },
+    bytesLimit: {
+        value: 100
+    },
+    
+    concurrentRequests: {
+        value: 0
+    },
+    
+    showReflection: {
+        value: false
+    },
 
-    templateDidLoad:{
-        value:function () {
-            this.range = this.templateObjects.range;
-            this.requests = this.templateObjects.requests;
-            this.progress = this.templateObjects.progress;
-            this.selectModel = this.templateObjects.selectModel;
-            this.showReflection = this.templateObjects.showReflection;
-            this.showBBOX = this.templateObjects.showBBOX;
-            this.selectCamera = this.templateObjects.selectCamera;
+    showBBOX: {
+        value: false
+    },
+
+    modelsController: {
+        value: null
+    },
+
+    camerasController: {
+        value: null
+    },
+
+    handleRestartAction: {
+        value: function () {
+            this.dispatchEventNamed("reload");
         }
     }
+
 });
