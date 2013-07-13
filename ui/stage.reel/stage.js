@@ -170,7 +170,7 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
     handleCameraChange: {
         value: function() {
-            //Change the camera...
+            this.view.viewPoint = camera.node;
         }
     },
 
