@@ -733,6 +733,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             var allUniforms = program.uniformSymbols;
 
             for (i = 0; i < allUniforms.length ; i++) {
+                value = null;
                 var symbol = allUniforms[i];
                 var parameter = pass.instanceProgram.uniforms[symbol];
                 parameter = parameters[parameter];
@@ -742,13 +743,24 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         value = this.projectionMatrix;
                     } else {
                         value = primitiveDescription[parameter.semantic];
-                        if (value == null) {
-                            value = parameter.value;
-                        }
                     }
-                } else {
-                    value = parameter.value;
                 }
+
+                if (value == null) {
+                    if (parameter.source) {
+                        //FIXME: assume WORLDMATRIX at the moment, need to clarify how to use semantic and the whole source syntax
+                        if (parameter.worldViewMatrix == null) {
+                            parameter.worldViewMatrix = mat4.create();
+                        }
+
+                        mat4.multiply(this.viewMatrix, parameter.source.worldTransform, parameter.worldViewMatrix);
+                        value = parameter.worldViewMatrix;
+
+                    } else {
+                        value = parameter.value;
+                    }
+                }
+
                 if (value != null) {
                     var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
                     if (uniformIsSampler2D) {
