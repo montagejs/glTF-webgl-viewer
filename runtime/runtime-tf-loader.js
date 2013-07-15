@@ -21,6 +21,8 @@ var AnimationManager = require("runtime/animation-manager").AnimationManager;
 
 exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
 
+    _materials:  { writable:true, value: null },
+
     _scenes: { writable:true, value: null },
 
     _animations: { writable:true, value: null },
@@ -177,6 +179,12 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                     material.parameters[value.parameter] = paramValue;
                 }, this);
             }
+
+            if (!this._materials) {
+                this._materials = [];
+            }
+            this._materials.push(material);
+
             return true;
         }
     },
@@ -317,6 +325,28 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
         }
     },
 
+    /*
+        Typically for lights we need to points to other nodes in the scene graph in order to get their transform
+        When this happens, a parameter as a source property pointing to the node to be used
+     */
+    resolveParameterSources: {
+        value: function() {
+            if (this._materials) {
+                this._materials.forEach(function(material) {
+                    if (material.parameters) {
+                        var parameterKeys = Object.keys(material.parameters);
+                        parameterKeys.forEach(function(parameterKey) {
+                            var parameter = material.parameters[parameterKey];
+                            if (parameter.source) {
+                                parameter.source = this.getEntry(parameter.source).entry;
+                            }
+                        }, this);
+                    }
+                }, this);
+            }
+        }
+    },
+
     buildSkeletons: {
         value: function(node) {
             if (node.instanceSkin) {
@@ -389,7 +419,7 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                     this.buildNodeHirerachy(nodeEntry);
                 }, this);
             }
-
+            this.resolveParameterSources();
             this.buildSkeletons(rootNode);
             scene.rootNode = rootNode;
             this._scenes.push(scene);

@@ -209,7 +209,7 @@
       <reflectivity>
        <float>1</float>
       </reflectivity>
-      <transparent opaque="RGB_ZERO">
+      <transparent opaque="A_ONE">
        <color>0.85098 0.85098 0.85098 0.85098</color>
       </transparent>
       <transparency>

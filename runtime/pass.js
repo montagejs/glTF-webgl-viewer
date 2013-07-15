@@ -527,7 +527,7 @@ var SceneRenderer = Object.create(Object.prototype, {
             } else {
                 mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
             }
-
+            webGLRenderer.viewMatrix = viewMatrix;
             //to be cached
             var count = this._pathsInfosArray.length;
 
