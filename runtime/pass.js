@@ -348,6 +348,8 @@ var SceneRenderer = Object.create(Object.prototype, {
                                             var WORLDVIEWINVERSETRANSPOSE = WebGLRenderer.WORLDVIEWINVERSETRANSPOSE;
 
                                             var renderPrimitive = {};
+                                            if (mesh.compression)
+                                                renderPrimitive.compressed = true;
                                             renderPrimitive["primitive"] = primitive;
                                             renderPrimitive[WORLD] = pathInfo[WORLD];
                                             renderPrimitive[WORLDVIEWINVERSETRANSPOSE] = pathInfo[WORLDVIEWINVERSETRANSPOSE];
@@ -497,7 +499,7 @@ var SceneRenderer = Object.create(Object.prototype, {
 
 
     render: {
-        value: function(webGLRenderer, options) {
+        value: function(webGLRenderer, time, options) {
             if (!this.scene)
                 return;
 
@@ -553,13 +555,13 @@ var SceneRenderer = Object.create(Object.prototype, {
                     nonOpaquePassesWithPrimitives.push(passWithPrimitives);
                 } else {
                     if (this.pickingTechnique)
-                        webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, this.pickingTechnique.parameters);
+                        webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, this.pickingTechnique.parameters, time);
                 }
             }, this);
 
             if (!picking) {
                 nonOpaquePassesWithPrimitives.forEach( function(passWithPrimitives) {
-                    webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass);
+                    webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass, time);
                 }, this);
             } else {
                 webGLRenderer.unbindRenderTarget(this.pickingRenderTarget);
@@ -704,9 +706,9 @@ var ScenePass = exports.ScenePass = Object.create(Pass, {
     },
 
     execute: {
-        value: function(webGLRenderer, options) {
+        value: function(webGLRenderer, time, options) {
             //pickingRenderTarget
-            this.sceneRenderer.render(webGLRenderer, options);
+            this.sceneRenderer.render(webGLRenderer, time, options);
         }
     },
 

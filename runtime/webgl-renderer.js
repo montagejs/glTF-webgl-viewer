@@ -433,8 +433,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, previousBuffer);
 
             glResource.count = indices.length;
-            this.resourceManager.setResource(primitive.indices, glResource);
-            primitive.indices = { "id" : primitive.indices, "count" : glResource.count }; //HACK
+            this.resourceManager.setResource(primitive.indices.id, glResource);
+            primitive.indices = { "id" : primitive.indices.id, "count" : glResource.count }; //HACK
 
             //deinterleave for now, I now it is a bad and this will not be needed anymore soon
             var count = attribs.length / 8;     //8 = (3pos + 2uv + 3normals)
@@ -464,8 +464,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             glResource.componentType = gl.FLOAT;
             glResource.componentsPerAttribute = 3;
 
-            this.resourceManager.setResource(primitive.semantics["POSITION"], glResource);
-            primitive.semantics["POSITION"] = { "id" : primitive.semantics["POSITION"] , "count" : count, "byteStride" : 12}; //HACK
+            this.resourceManager.setResource(primitive.semantics["POSITION"].id, glResource);
+            primitive.semantics["POSITION"] = { "id" : primitive.semantics["POSITION"].id , "count" : count, "byteStride" : 12}; //HACK
 
 
             glResource =  gl.createBuffer();
@@ -474,22 +474,79 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             glResource.componentType = gl.FLOAT;
             glResource.componentsPerAttribute = 3;
 
-            this.resourceManager.setResource(primitive.semantics["NORMAL"], glResource);
-            primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"], "count" : count, "byteStride" : 12}; //HACK
+            this.resourceManager.setResource(primitive.semantics["NORMAL"].id, glResource);
+            primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"].id, "count" : count, "byteStride" : 12}; //HACK
 
             glResource =  gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
             gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
             glResource.componentType = gl.FLOAT;
             glResource.componentsPerAttribute = 2;
-            this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"], glResource);
-            primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"], "count" : count, "byteStride" : 8}; //HACK
+            this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"].id, glResource);
+            primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"].id, "count" : count, "byteStride" : 8}; //HACK
 
             gl.bindBuffer(gl.ARRAY_BUFFER, previousBuffer);
 
 
         }
     },
+
+    setupCompressedMesh2: {
+        value: function(mesh, vertexCount, positions, normals, texcoords, indices) {
+            var primitive = mesh.primitives[0];
+            var gl = this.webGLContext;
+            //create indices
+            var previousBuffer = gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING);
+            var glResource =  gl.createBuffer();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glResource);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, previousBuffer);
+
+            glResource.count = indices.length;
+            this.resourceManager.setResource(primitive.indices.id, glResource);
+            primitive.indices = { "id" : primitive.indices.id, "count" : glResource.count }; //HACK
+
+            var count = vertexCount;
+
+            positions = new Float32Array(positions, 0, count * 3);
+            normals = new Float32Array(normals, 0, count * 3);
+            texcoords = new Float32Array(texcoords, 0, count * 2);
+
+            previousBuffer = gl.getParameter(gl.ARRAY_BUFFER_BINDING);
+
+            glResource =  gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+            gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+            glResource.componentType = gl.FLOAT;
+            glResource.componentsPerAttribute = 3;
+
+            this.resourceManager.setResource(primitive.semantics["POSITION"].id, glResource);
+            primitive.semantics["POSITION"] = { "id" : primitive.semantics["POSITION"].id , "count" : count, "byteStride" : 12}; //HACK
+
+
+            glResource =  gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+            gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
+            glResource.componentType = gl.FLOAT;
+            glResource.componentsPerAttribute = 3;
+
+            this.resourceManager.setResource(primitive.semantics["NORMAL"].id, glResource);
+            primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"].id, "count" : count, "byteStride" : 12}; //HACK
+
+            glResource =  gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+            gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
+            glResource.componentType = gl.FLOAT;
+            glResource.componentsPerAttribute = 2;
+            this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"].id, glResource);
+            primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"].id, "count" : count, "byteStride" : 8}; //HACK
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, previousBuffer);
+
+
+        }
+    },
+
 
     vertexAttributeBufferDelegate: {
         value: {
@@ -536,6 +593,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             },
 
             convert: function (resource, ctx) {
+
                 var attribute = ctx;
                 var gl = this.webGLContext;
                 var previousBuffer = gl.getParameter(gl.ARRAY_BUFFER_BINDING);
@@ -614,8 +672,25 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
             //should be called only once
             convert: function (resource, ctx) {
-                var image = ctx;
                 var gl = this.webGLContext;
+
+                //for now, naive handling of videos
+                if (resource.source.type == "video") {
+                    resource.source.videoElement = ctx;
+                    var texture = gl.createTexture();
+                    gl.bindTexture(gl.TEXTURE_2D, texture);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, resource.source.videoElement);
+                    gl.bindTexture(gl.TEXTURE_2D, null);
+
+                    return texture;
+                }
+
+
+                var image = ctx;
                 var canvas = document.createElement("canvas");
 
                 //TODO: add compressed textures
@@ -717,7 +792,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
     },
 
     renderPrimitive: {
-        value: function(primitiveDescription, pass, parameters) {
+        value: function(primitiveDescription, pass, time, parameters) {
             var renderVertices = false;
             //var worldMatrix = primitiveDescription.worldViewMatrix;
             //var projectionMatrix = this.projectionMatrix;
@@ -737,16 +812,17 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 var symbol = allUniforms[i];
                 var parameter = pass.instanceProgram.uniforms[symbol];
                 parameter = parameters[parameter];
-
-                if (parameter.semantic) {
-                    if (parameter.semantic == this.PROJECTION) {
-                        value = this.projectionMatrix;
-                    } else {
-                        value = primitiveDescription[parameter.semantic];
+                if (parameter) {
+                    if (parameter.semantic) {
+                        if (parameter.semantic == this.PROJECTION) {
+                            value = this.projectionMatrix;
+                        } else {
+                            value = primitiveDescription[parameter.semantic];
+                        }
                     }
                 }
 
-                if (value == null) {
+                if ((value == null) && parameter != null) {
                     if (parameter.source) {
                         //FIXME: assume WORLDMATRIX at the moment, need to clarify how to use semantic and the whole source syntax
                         if (parameter.worldViewMatrix == null) {
@@ -770,6 +846,15 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         if (texture) {
                             gl.activeTexture(gl.TEXTURE0 + currentTexture);
                             gl.bindTexture(gl.TEXTURE_2D, texture);
+
+                            if (parameter.value.source.videoElement) {
+                                if (parameter.value.source.timeStamp != time) {
+                                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,
+                                        gl.UNSIGNED_BYTE, parameter.value.source.videoElement);
+                                    parameter.value.source.timeStamp = time;
+                                }
+                            }
+
                             var samplerLocation = program.getLocationForSymbol(symbol);
                             if (typeof samplerLocation !== "undefined") {
                                 program.setValueForSymbol(symbol, currentTexture);
@@ -798,8 +883,15 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 var semantic = parameter.semantic;
                 var accessor = primitive.semantics[semantic];
 
-                var glResource = this.resourceManager.getResource(  accessor, this.vertexAttributeBufferDelegate, accessor);
-                // this call will bind the resource when available
+                var glResource = null;
+                if (primitiveDescription.compressed) {
+                    glResource = this.resourceManager._getResource(  accessor.id);
+                }
+                else {
+                    glResource = this.resourceManager.getResource(  accessor, this.vertexAttributeBufferDelegate, accessor);
+                }
+
+                    // this call will bind the resource when available
                 if (glResource) {
                     gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
                     var attributeLocation = program.getLocationForSymbol(symbol);
@@ -840,7 +932,13 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 var glIndices = null;
                 //FIXME should not assume 2 bytes per indices (WebGL supports one byte too…)
                 this.indicesDelegate.webGLContext = this.webGLContext;
-                glIndices = this.resourceManager.getResource(primitive.indices, this.indicesDelegate, primitive);
+
+                if (primitiveDescription.compressed)
+                    glIndices = this.resourceManager._getResource(primitive.indices.id);
+                else
+                    glIndices = this.resourceManager.getResource(primitive.indices, this.indicesDelegate, primitive);
+
+
                 if (glIndices && available) {
                     //if (!primitiveDescription.mesh.loaded) {
                     //    primitiveDescription.mesh.loadedPrimitivesCount++;
@@ -980,7 +1078,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
     },
 
     renderPrimitivesWithPass: {
-        value: function(primitives, pass, parameters) {
+        value: function(primitives, pass, parameters, time) {
             var count = primitives.length;
             var gl = this.webGLContext;
             if (pass.instanceProgram) {
@@ -1045,11 +1143,11 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                                 }
                             }
                             this.bindedProgram.setValueForSymbol("u_pickingColor", primitive.pickingColor);
-                            this.renderPrimitive(primitive, pass, parameters);
+                            this.renderPrimitive(primitive, pass, time, parameters);
                         }
                     } else {
                         for (var i = 0 ; i < count ; i++) {
-                            this.renderPrimitive(primitives[i], pass);
+                            this.renderPrimitive(primitives[i], pass, time);
                         }
                     }
                 }

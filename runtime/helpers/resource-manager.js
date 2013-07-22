@@ -232,7 +232,6 @@ var global = window;
             }
         },
 
-
         insert: {
             value: function(requests, bytesLimit) {
                 //insert before ?
@@ -410,7 +409,7 @@ var global = window;
         XMLHTTPREQUEST_STATUS_ERROR: { value: "XMLHTTPREQUEST_STATUS_ERROR" },
         NOT_FOUND: { value: "NOT_FOUND" },
         // misc constants
-        ARRAY_BUFFER: { value: "ArrayBuffer" },
+        ARRAY_BUFFER: { value: "arraybuffer" },
 
         _resources: { value: null, writable: true },
 
@@ -461,10 +460,21 @@ var global = window;
                     }, this);
                 }
 
+                var resourcesKeys = Object.keys(this._resources);
+                resourcesKeys.forEach(function(resourceKey) {
+                    var resource = this._resources[resourceKey];
+                    if (resource) {
+                        if (resource.nodeName === "VIDEO") {
+                            resource.pause();
+                        }
+                    }
+                }, this);
+
                 this._resources = {};
                 this._requestTrees = {};
                 this._resourcesStatus = {};
                 this._resourcesBeingProcessedCount = 0;
+                this._wholeBuffers = {};
             }
         },
 
@@ -630,7 +640,7 @@ var global = window;
                     status = resourceStatus.status;
                 }
 
-                if ((this._resourcesBeingProcessedCount >= this.maxConcurrentRequests) && (request.type === "ArrayBuffer")) {
+                if ((this.wholeBuffer >= this.maxConcurrentRequests) && (request.type === "arraybuffer")) {
                     if (!status) {
                         var trNode = null;
                         var contRequests;
@@ -692,9 +702,8 @@ var global = window;
                             if (requestTree) {
                                 delete resourceManager.requestTrees[req_.path];
                             }
-                        };
+                        }
                     } 
-
                 };
 
                 processResourceDelegate.handleError = function(errorCode, info) {
@@ -732,21 +741,108 @@ var global = window;
             }
         },
 
+        //--- mode to not use range request
+        _allowRangedRequests: { value: false, writable: false },
+
+        _wholeBuffers: { value: null, writable: true },
+
         _handleWrappedBufferViewResourceLoading: {
             value: function(wrappedBufferView, delegate, ctx) {
+
                 var bufferView = wrappedBufferView.bufferView;
                 if (bufferView) {
                     var buffer = bufferView.buffer;
                     var byteOffset = wrappedBufferView.byteOffset + bufferView.description.byteOffset;
                     var range = [byteOffset , (this._elementSizeForGLType(wrappedBufferView.type) * wrappedBufferView.count) + byteOffset];
 
-                    this._handleRequest({   "id" : wrappedBufferView.id,
+                    var wrappedBufferRequest = {
+                        "id" : wrappedBufferView.id,
                         "range" : range,
                         "type" : wrappedBufferView.requestType ? wrappedBufferView.requestType : buffer.description.type,
                         "path" : buffer.description.path,
                         "delegate" : delegate,
                         "ctx" : ctx,
-                        "kind" : "single-part" }, null);
+                        "kind" : "single-part"
+                    };
+                }
+
+                if (this._allowRangedRequests) {
+                    this._handleRequest(wrappedBufferRequest, null);
+                } else {
+                    if (!this._wholeBuffers) {
+                        this._wholeBuffers = {};
+                    }
+
+                    var bufferView = wrappedBufferView.bufferView;
+                    if (bufferView) {
+                        var self = this;
+                        var buffer = bufferView.buffer;
+                        var wholeBuffer = this._wholeBuffers[buffer.id];
+                        if (wholeBuffer == null) {
+                            var bufferDelegate = {};
+
+                            bufferDelegate.resourceAvailable = function(resourceManager, req_, res_) {
+                                var wholeBuffer = self._wholeBuffers[req_.id];
+
+                                resourceManager._storeResource(req_.id, res_);
+
+                                if (wholeBuffer.pendingRequests) {
+                                    wholeBuffer.pendingRequests.forEach(function(request) {
+                                        delete self._resourcesStatus[request.id];
+
+                                        var subArray = res_.slice(request.range[0], request.range[1]);
+
+                                        var delegate = request.delegate;
+                                        var convertedResource = delegate.convert(subArray, request.ctx);
+                                        resourceManager._storeResource(request.id, convertedResource);
+                                        delegate.resourceAvailable(convertedResource, request.ctx);
+
+                                    }, self);
+                                    wholeBuffer.pendingRequests = [];
+                                }
+
+                            }
+
+                            bufferDelegate.handleError = function(errorCode, info) {
+                                //FIXME:
+                            }
+
+                            var bufferRequest = {
+                                "id" : buffer.id,
+                                "type" : "arraybuffer",
+                                "path" : buffer.description.path,
+                                "delegate" : delegate,
+                                "ctx" : ctx,
+                                "kind" : "single-part" };
+
+                            self._resourcesBeingProcessedCount++;
+
+                            this._loadResource(bufferRequest, bufferDelegate);
+
+                            wholeBuffer = { "activeRequest" : "bufferRequest", "pendingRequests" : [] };
+                            this._wholeBuffers[buffer.id] = wholeBuffer;
+                        } else {
+                            var res_ = this._getResource(buffer.id);
+                            if (res_) {
+                                var subArray = res_.slice(wrappedBufferRequest.range[0], wrappedBufferRequest.range[1]);
+                                var delegate = wrappedBufferRequest.delegate;
+                                var convertedResource = delegate.convert(subArray, wrappedBufferRequest.ctx);
+                                self._storeResource(wrappedBufferRequest.id, convertedResource);
+                                delegate.resourceAvailable(convertedResource, wrappedBufferRequest.ctx);
+                                return;
+                            }
+                        }
+
+
+                        var resourceStatus = this._resourcesStatus[wrappedBufferRequest.id];
+                        if (resourceStatus) {
+                            if (resourceStatus.status === "loading" )
+                                return;
+                        }
+                        wholeBuffer.pendingRequests.push(wrappedBufferRequest);
+                        this._resourcesStatus[wrappedBufferRequest.id] =  { "status": "loading"};
+
+                    }
                 }
             }
         },
@@ -800,9 +896,39 @@ var global = window;
             }
         },
 
+        _handleVideoLoading: {
+            value: function(resource, textureLoadedCallback, ctx) {
+                //TODO: unify with binaries
+                var resourceStatus = this._resourcesStatus[resource.id];
+                var status = null;
+                if (resourceStatus) {
+                    if (resourceStatus.status === "loading" )
+                        return;
+                }
+                this._resourcesStatus[resource.id] = { status: "loading" };
+                var self = this;
+
+                if (resource.description.path) {
+                    var videoElement = document.createElement('video');
+                    videoElement.preload = "auto";
+                    videoElement.loop = "loop";
+                    videoElement.addEventListener("canplaythrough", function() {
+                        videoElement.play();
+
+                        delete self._resourcesStatus[resource.id];
+                        self._storeResource(resource.id, videoElement);
+                        textureLoadedCallback(videoElement, resource.id, ctx);
+                    });
+
+                    videoElement.src = resource.description.path;
+                }
+
+            }
+        },
+
         _handleImageLoading: {
             value: function(resource, textureLoadedCallback, ctx) {
-                //TODO: unify with binariesw
+                //TODO: unify with binaries
                 var resourceStatus = this._resourcesStatus[resource.id];
                 var status = null;
                 if (resourceStatus) {
@@ -844,14 +970,25 @@ var global = window;
                             function(image, id, ctx) {
                                 var gl = ctx;
                                 var convertedResource = delegate.convert(resource, image);
-
                                 delete self._resourcesStatus[resource.id];
-
                                 self._storeResource(resource.id, convertedResource);
                                 delegate.resourceAvailable(convertedResource, gl);
                                 self.fireResourceAvailable.call(self, resource.id);
                             }, ctx);
                     }
+
+                    if (resource.source.type === "video") {
+                        this._handleVideoLoading(resource.source,
+                            function(video, id, ctx) {
+                                var gl = ctx;
+                                var convertedResource = delegate.convert(resource, video);
+                                delete self._resourcesStatus[resource.id];
+                                self._storeResource(resource.id, convertedResource);
+                                delegate.resourceAvailable(convertedResource, gl);
+                                self.fireResourceAvailable.call(self, resource.id);
+                            }, ctx);
+                    }
+
                 }
             }
         },

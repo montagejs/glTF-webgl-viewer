@@ -294,13 +294,17 @@ exports.View = Component.specialize( {
                         this.orbitCamera.distanceStep = 0.0001;
                         this.orbitCamera.constrainDistance = false;
                         this.orbitCamera.setYUp(true);
-                        this.orbitCamera.orbitX = 0.675
-                        this.orbitCamera.orbitY = 1.8836293856408279;
+                        //this.orbitCamera.orbitX = 0.675
+                        //this.orbitCamera.orbitY = 1.8836293856408279;
 
-                        this.orbitCamera.minOrbitX = 0.2;//this.orbitCamera.orbitX - 0.6;
-                        this.orbitCamera.maxOrbitX = 1.2;
+                        //this.orbitCamera.minOrbitX = 0.2;//this.orbitCamera.orbitX - 0.6;
+                        //this.orbitCamera.maxOrbitX = 1.2;
 
-                       // this.orbitCamera.constrainXOrbit = true;
+                        this.orbitCamera.constrainXOrbit = false;
+                        this.orbitCamera.constrainYOrbit = false;
+
+
+                        // this.orbitCamera.constrainXOrbit = true;
                         this.orbitCamera.setCenter(center);
                     }
                     this.needsDraw = true;
@@ -487,8 +491,8 @@ exports.View = Component.specialize( {
         set: function(flag) {
             this._showReflection = flag;
             //if reflection (e.g floor) is enabled, then we constrain the rotation
-            if (flag && this.orbitCamera)
-                this.orbitCamera.constrainXOrbit = flag;
+            //if (flag && this.orbitCamera)
+            //    this.orbitCamera.constrainXOrbit = flag;
         }
     },
 
@@ -715,6 +719,33 @@ exports.View = Component.specialize( {
     draw: {
         value: function() {
             var self = this;
+            var time = Date.now();
+            if (this.sceneRenderer && this.scene) {
+                if (this.scene.animationManager)
+                    this.scene.animationManager.updateTargetsAtTime(time, this.sceneRenderer.webGLRenderer.resourceManager);
+            }
+
+            var webGLContext = this.getWebGLContext();
+            webGLContext.viewport(0, 0, this._width, this._height);
+            if (webGLContext) {
+                //webGLContext.clearColor(0,0,0,0.);
+                //webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
+            }
+
+            //this.canvas.setAttribute("width", this._width + "px");
+            //this.canvas.setAttribrenderTargetute("height", this._height + "px");
+            //----
+            if (this.viewPoint) {
+                this.viewPoint.cameras[0].projection.aspectRatio = this._width / this._height;
+                //this.viewPoint.cameras[0].projection.zfar = 100;
+                //this.viewPoint.cameras[0].projection.znear = 0.01;
+            }
+
+            if (this.orbitCamera) {
+                var cameraMatrix = this.orbitCamera.getViewMat();
+                mat4.inverse(cameraMatrix, this.viewPoint.transform.matrix);
+            }
+
 
             var webGLContext = this.getWebGLContext(),
                 renderer,
@@ -781,7 +812,7 @@ exports.View = Component.specialize( {
                         //FIXME: passing a matrix was the proper to do this, but right now matrix updates are disabled (temporarly)
                         this.sceneRenderer.technique.rootPass.viewPoint.flipped = true;
 
-                        this.sceneRenderer.render();
+                        this.sceneRenderer.render(time);
                         webGLContext.depthMask(true);
                         this.sceneRenderer.technique.rootPass.viewPoint.flipped = false;
 
@@ -803,15 +834,15 @@ exports.View = Component.specialize( {
                     webGLContext.disable(webGLContext.BLEND);
 
                     if (this._mousePosition) {
-                        this.sceneRenderer.render({    "picking" : true,
+                        this.sceneRenderer.render(time, {    "picking" : true,
                             "coords" : this._mousePosition,
                             "delegate" : this
                         });
                     }
 
-                    this.sceneRenderer.render();
+                    this.sceneRenderer.render(time);
 
-                    //webGLContext.flush();
+                    webGLContext.flush();
 
                     var error = webGLContext.getError();
                     if (error != webGLContext.NO_ERROR) {
@@ -833,31 +864,6 @@ exports.View = Component.specialize( {
     willDraw: {
         value: function() {
 
-            if (this.sceneRenderer && this.scene) {
-                if (this.scene.animationManager)
-                    this.scene.animationManager.updateTargetsAtTime(Date.now(), this.sceneRenderer.webGLRenderer.resourceManager);
-            }
-
-            var webGLContext = this.getWebGLContext();
-            webGLContext.viewport(0, 0, this._width, this._height);
-            if (webGLContext) {
-                //webGLContext.clearColor(0,0,0,0.);
-                //webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
-            }
-
-            //this.canvas.setAttribute("width", this._width + "px");
-            //this.canvas.setAttribrenderTargetute("height", this._height + "px");
-            //----
-            if (this.viewPoint) {
-                this.viewPoint.cameras[0].projection.aspectRatio = this._width / this._height;
-                //this.viewPoint.cameras[0].projection.zfar = 100;
-                //this.viewPoint.cameras[0].projection.znear = 0.01;
-            }
-
-            if (this.orbitCamera) {
-                var cameraMatrix = this.orbitCamera.getViewMat();
-                mat4.inverse(cameraMatrix, this.viewPoint.transform.matrix);
-            }
         }
     },
 

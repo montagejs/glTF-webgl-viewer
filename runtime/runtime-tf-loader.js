@@ -1,6 +1,6 @@
 
 require("runtime/dependencies/gl-matrix");
-var WebGLTFLoader = require("runtime/webgl-tf-loader").WebGLTFLoader;
+var glTFParser = require("runtime/glTF-parser").glTFParser;
 var ResourceDescription = require("runtime/resource-description").ResourceDescription;
 var Technique = require("runtime/technique").Technique;
 var ProgramPass = require("runtime/pass").ProgramPass;
@@ -19,7 +19,7 @@ var Transform = require("runtime/transform").Transform;
 var Animation = require("runtime/animation").Animation;
 var AnimationManager = require("runtime/animation-manager").AnimationManager;
 
-exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
+exports.RuntimeTFLoader = Object.create(glTFParser, {
 
     _materials:  { writable:true, value: null },
 
@@ -27,7 +27,7 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
 
     _animations: { writable:true, value: null },
 
-    //----- implements WebGLTFLoader ----------------------------
+    //----- implements glTFParser ----------------------------
 
     totalBufferSize: { value: 0, writable: true },
 
@@ -37,7 +37,7 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
             buffer.id = entryID;
             this.storeEntry(entryID, buffer, description);
             this.totalBufferSize += description.byteLength;
-            description.type = "ArrayBuffer";
+            description.type = "arraybuffer";
             return true;
         }
     },
@@ -87,6 +87,16 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
             var imageResource = Object.create(ResourceDescription).init(imagePath, { "path": imagePath });
             imageResource.type = "image";
             this.storeEntry(entryID, imageResource, description);
+            return true;
+        }
+    },
+
+    handleVideo: {
+        value: function(entryID, description, userInfo) {
+            var videoPath = description.path;
+            var videoResource = Object.create(ResourceDescription).init(videoPath, { "path": videoPath });
+            videoResource.type = "video";
+            this.storeEntry(entryID, videoResource, description);
             return true;
         }
     },
@@ -231,10 +241,19 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                 if (extensions["won-compression"]) {
                     isCompressedMesh = true;
                     mesh.compression = extensions["won-compression"];
-
+                    mesh.compression.type = "won-compression";
                     mesh.compression.compressedData.bufferView =  this.getEntry(mesh.compression.compressedData.bufferView).entry;
                     mesh.compression.compressedData.id = entryID + "_compressedData"
                 }
+
+                if (extensions["Open3DGC-compression"]) {
+                    isCompressedMesh = true;
+                    mesh.compression = extensions["Open3DGC-compression"];
+                    mesh.compression.type = "Open3DGC-compression";
+                    mesh.compression.compressedData.bufferView =  this.getEntry(mesh.compression.compressedData.bufferView).entry;
+                    mesh.compression.compressedData.id = entryID + "_compressedData"
+                }
+
             }
 
             this.storeEntry(entryID, mesh, description);
@@ -265,24 +284,24 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                         var attributeID = semantics[semantic];
                         var attributeEntry = this.getEntry(attributeID);
 
-                        if (!isCompressedMesh) {
+                        //if (!isCompressedMesh) {
                             primitive.addVertexAttribute( { "semantic" :  semantic,
                                 "attribute" : attributeEntry.entry });
-                        } else {
-                            primitive.addVertexAttribute( { "semantic" :  semantic,
-                                "attribute" : attributeID });
-                        }
+                        //} else {
+                        //    primitive.addVertexAttribute( { "semantic" :  semantic,
+                        //        "attribute" : attributeID });
+                        //}
 
                     }, this);
 
                     //set indices
                     var indicesID = primitiveDescription.indices;
                     var indicesEntry = this.getEntry(indicesID);
-                    if (!isCompressedMesh) {
+                    //if (!isCompressedMesh) {
                         primitive.indices = indicesEntry.entry;
-                    } else {
-                        primitive.indices = indicesID;
-                    }
+                    //} else {
+                    //    primitive.indices = indicesID;
+                    //}
                 }
             }
             return true;
@@ -337,8 +356,10 @@ exports.RuntimeTFLoader = Object.create(WebGLTFLoader, {
                         var parameterKeys = Object.keys(material.parameters);
                         parameterKeys.forEach(function(parameterKey) {
                             var parameter = material.parameters[parameterKey];
-                            if (parameter.source) {
-                                parameter.source = this.getEntry(parameter.source).entry;
+                            if (parameter) {
+                                if (parameter.source) {
+                                    parameter.source = this.getEntry(parameter.source).entry;
+                                }
                             }
                         }, this);
                     }

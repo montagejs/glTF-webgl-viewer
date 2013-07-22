@@ -144,14 +144,47 @@ exports.SceneRenderer = Object.create(Object.prototype, {
 
             convert: function (resource, ctx) {
                 var compression = ctx.mesh.compression;
-                var indexRange = compression.indexRange;
-                if (indexRange) {
-                    var meshEnd = indexRange[0] + 3*indexRange[1];
-                    var callback = null;
-                    this.decompressMesh(resource, compression, compression,
-                        function(attribsOut, indicesOut, bboxen, meshParams) {
-                            ctx.webGLRenderer.setupCompressedMesh(ctx.mesh, attribsOut, indicesOut);
-                    });
+                if (compression.type == "won-compression") {
+                    var indexRange = compression.indexRange;
+                    if (indexRange) {
+                        var meshEnd = indexRange[0] + 3*indexRange[1];
+                        var callback = null;
+                        this.decompressMesh(resource, compression, compression,
+                            function(attribsOut, indicesOut, bboxen, meshParams) {
+                                ctx.renderer.setupCompressedMesh(ctx.mesh, attribsOut, indicesOut);
+                            });
+                    }
+                } else {
+                    var outputBuffer = Module.testDecode(resource);
+
+                    var trianglesCount = 0;
+                    var vertexCount = 0;
+                    var mesh = ctx.mesh;
+                    if (compression.compressedData) {
+                        //Currently the converter guarantees that compressed mesh just have single primitive
+                        vertexCount = compression.compressedData.verticesCount;
+                        trianglesCount = compression.compressedData.indicesCount / 3;
+                    }
+                    var buf = new ArrayBuffer(outputBuffer.length); // 2 bytes for each char
+                    var bufView = new Uint8Array(buf);
+                    for (var i=0, strLen=outputBuffer.length; i<strLen; i++) {
+                        bufView[i] = outputBuffer.charCodeAt(i);
+                    }
+
+                    var indicesShort = new Uint16Array(buf, 0, trianglesCount * 3);
+
+                    var bufPos = buf.slice(Uint16Array.BYTES_PER_ELEMENT * trianglesCount * 3 , (Uint16Array.BYTES_PER_ELEMENT * trianglesCount * 3 ) + Float32Array.BYTES_PER_ELEMENT * vertexCount * 3);
+                    var positions = new Float32Array(bufPos);
+
+                    var offsetNormal = (Uint16Array.BYTES_PER_ELEMENT * trianglesCount * 3) + Float32Array.BYTES_PER_ELEMENT * vertexCount * 3;
+                    var normPos = buf.slice(offsetNormal, offsetNormal + Float32Array.BYTES_PER_ELEMENT * vertexCount * 3);
+                    var normals = new Float32Array(normPos);
+
+                    var offsetTexcoord = offsetNormal + Float32Array.BYTES_PER_ELEMENT * vertexCount * 3;
+                    var texCoordPos = buf.slice(offsetTexcoord, offsetTexcoord + Float32Array.BYTES_PER_ELEMENT * vertexCount * 2);
+                    var texCoords = new Float32Array(texCoordPos);
+
+                    ctx.renderer.setupCompressedMesh2(ctx.mesh, vertexCount, positions, normals, texCoords, indicesShort);
                 }
 
                 return resource;
@@ -176,7 +209,14 @@ exports.SceneRenderer = Object.create(Object.prototype, {
                     if (node.meshes) {
                         node.meshes.forEach(function (mesh) {
                             if (mesh.compression) {
-                                mesh.compression.compressedData.requestType = "text";
+                                var requestType = "text";
+                                if (mesh.compression.compressedData.mode) {
+                                    if (mesh.compression.compressedData.mode == "binary") {
+                                        requestType = "arraybuffer";
+                                    }
+                                }
+
+                                mesh.compression.compressedData.requestType = requestType;
 
                                 self.webGLRenderer.resourceManager.getResource(mesh.compression.compressedData, self.compressedMeshDelegate,
                                     { "mesh" : mesh, "renderer" : self.webGLRenderer});
@@ -209,9 +249,9 @@ exports.SceneRenderer = Object.create(Object.prototype, {
     },
 
     render: {
-        value: function(options) {
+        value: function(time, options) {
             if (this.technique)
-                this.technique.execute(this.webGLRenderer, options);
+                this.technique.execute(this.webGLRenderer, time, options);
         }
     }
 

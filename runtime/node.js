@@ -122,6 +122,7 @@ var global = window;
         boundingBox: {
             enumerable: true,
             get: function() {
+
                 this._computeBBOXIfNeeded();
                 return this._boundingBox;
             },
