@@ -481,9 +481,11 @@ exports.View = Component.specialize( {
             return this._showGradient;
         },
         set: function(flag) {
-            this._showGradient = flag;
+            if (flag != this._showGradient) {
+                this._showGradient = flag;
+                this.needsDraw = true;
+            }
         }
-
     },
 
     showReflection: {
@@ -500,8 +502,10 @@ exports.View = Component.specialize( {
 
     drawGradient: {
         value: function() {
-            if (this.gradientRenderer) {
-                this.gradientRenderer.render();
+            if (this.showGradient) {
+                if (this.gradientRenderer) {
+                    this.gradientRenderer.render();
+                }
             }
         }
     },
