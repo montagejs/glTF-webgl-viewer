@@ -132,8 +132,10 @@ exports.View = Component.specialize( {
 
         set: function(value) {
             if (this.scene !== value) {
-                if (this.delegate.sceneWillChange) {
-                    this.delegate.sceneWillChange();
+                if (this.delegate) {
+                    if (this.delegate.sceneWillChange) {
+                        this.delegate.sceneWillChange();
+                    }
                 }
 
                 this._scene = value;
