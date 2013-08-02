@@ -39,18 +39,18 @@ var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
 var ResourceManager = require("runtime/helpers/resource-manager").ResourceManager;
+var glTFScene = require("runtime/glTF-scene").glTFScene;
 var Scene = require("runtime/scene").Scene;
 var SceneRenderer = require("runtime/scene-renderer").SceneRenderer;
-var Material = require("runtime/material").Material;
+var glTFMaterial = require("runtime/glTF-material").glTFMaterial;
 var Utilities = require("runtime/utilities").Utilities;
 var dom = require("montage/core/dom");
 var Point = require("montage/core/geometry/point").Point;
 var OrbitCamera = require("runtime/dependencies/camera.js").OrbitCamera;
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
-var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
-var URL = require("montage/core/url");
 var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
 var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
+var URL = require("montage/core/url");
 
 /**
     Description TODO
@@ -122,25 +122,48 @@ exports.View = Component.specialize( {
         }
     },
 
+    handleStatusChange: {
+        value: function(status, key, object) {
+            if (status === "loaded") {
+                this.scene = object;
+                this.needsDraw = true;
+                console.log("scene :"+this.scene);
+            }
+        }
+    },
+
+    _scene: { value: null, writable: true },
+
     scene: {
         get: function() {
-            if (this.sceneRenderer) {
-                return this.sceneRenderer.scene;
-            }
-            return null;
+            return this._scene;
         },
 
         set: function(value) {
+            console.log("attempt to set scene :"+value);
+
             if (this.scene !== value) {
-                if (this.delegate) {
+                var sceneReady = value != null ? (value.status == "loaded") : true; //force true if null
+
+                //sort of a hack, only set the scene when ready
+                if (!sceneReady) {
+                    value.addOwnPropertyChangeListener("status", this);
+                    return;
+                }
+
+                if (this.delegate && sceneReady) {
                     if (this.delegate.sceneWillChange) {
                         this.delegate.sceneWillChange();
                     }
                 }
+                console.log("set scene :"+this.scene);
 
                 this._scene = value;
-                this.applyScene(value);
-                if (this.delegate) {
+                if (value.status == "loaded") {
+                    this.applyScene(value.glTFElement);
+                }
+
+                if (this.delegate && sceneReady) {
                     if (this.delegate.sceneDidChange) {
                         this.delegate.sceneDidChange();
                     }
@@ -149,9 +172,8 @@ exports.View = Component.specialize( {
        }
     },
 
-    _scenePath: { value: null, writable: true },
-
     //Test for https://github.com/KhronosGroup/glTF/issues/67
+    /*
     loadMultipleScenesTest: {
         value: function() {
             var paths = [];
@@ -160,8 +182,7 @@ exports.View = Component.specialize( {
             paths.push( "model/parts/Part3.json" );
 
             var pathsIndex = 0;
-
-            var mainScene = Object.create(Scene).init();
+            var mainScene = Object.create(glTFScene).init();
             var readerDelegate = {};
             readerDelegate.loadCompleted = function (scene) {
                 mainScene.rootNode.children.push(scene.rootNode);
@@ -177,12 +198,13 @@ exports.View = Component.specialize( {
                 var loader = Object.create(RuntimeTFLoader);
                 loader.initWithPath(path);
                 loader.delegate = readerDelegate;
-                loader.load(null /* userInfo */, null /* options */);
+                loader.load(null, null );
             }, this);
-
         }
     },
+    */
 
+    //scenePath is legacy and is kept just for compatibility for now
     scenePath: {
         set: function(value) {
             if (value) {
@@ -193,36 +215,21 @@ exports.View = Component.specialize( {
                     value = URL.resolve(packages[0], value);
                 }
             }
-            if (value !== this._scenePath) {
-                if (0) {
-                    this.loadMultipleScenesTest();
-                } else {
-                    var loader = Object.create(RuntimeTFLoader);
 
-                    var readerDelegate = {};
-                    readerDelegate.loadCompleted = function (scene) {
-                        this.totalBufferSize =  loader.totalBufferSize;
-                        this.scene = scene;
-                        this.needsDraw = true;
-                        //FIXME:HACK: loader should be passed as arg, also multiple observers should pluggable here so that the top level could just pick that size info. (for the progress)
-                    }.bind(this);
-
-                    if (value) {
-                        var loader = Object.create(RuntimeTFLoader);
-                        loader.initWithPath(value);
-                        loader.delegate = readerDelegate;
-                        loader.load(null /* userInfo */, null /* options */);
-                    } else {
-                        this.scene = null;
-                    }
+            if (this.scene) {
+                if (value == this.scene.path) {
+                    return;
                 }
-
-                this._scenePath = value;
             }
-            this.needsDraw = true;
-        }, 
+
+            var scene = Montage.create(Scene).init();
+            //this.scene = scene;
+            scene.addOwnPropertyChangeListener("status", this);
+            scene.path = value;
+        },
+
         get: function() {
-            return this._scenePath;
+            return this.scene ? this.scene.path : null;
         }
     },
                         
@@ -329,8 +336,9 @@ exports.View = Component.specialize( {
             this.sceneRenderer = Object.create(SceneRenderer);
             this.sceneRenderer.init(webGLRenderer, options);
             this.sceneRenderer.webGLRenderer.resourceManager.observers.push(this);
-            if (this._scene)
-                this.applyScene(this._scene);
+
+            if (this.scene)
+                this.applyScene(this.scene.glTFElement);
 
             //setup gradient
             var self = this;
@@ -645,6 +653,7 @@ exports.View = Component.specialize( {
                 mat4.inverse(this.viewPoint.transform.matrix, mat);
                 this.displayAllBBOX(mat, nodeID);
             }
+
         }
     },
 
@@ -652,22 +661,22 @@ exports.View = Component.specialize( {
         value: function(cameraMatrix, selectedNodeID) {
             if (!this.scene || !this.showBBOX)
                 return;
+            if (this.scene.glTFElement) {
+                var ctx = mat4.identity();
+                var node = this.scene.glTFElement.rootNode;
+                var self = this;
 
-            var ctx = mat4.identity();
-            var node = this.scene.rootNode;
-            var self = this;
-
-            node.apply( function(node, parent, parentTransform) {
-                var modelMatrix = mat4.create();
-                mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
-                if (node.boundingBox && node.id == selectedNodeID) {
-                    self.displayBBOX(node.boundingBox, cameraMatrix, modelMatrix);
-                }
-                return modelMatrix;
-            }, true, ctx);
+                node.apply( function(node, parent, parentTransform) {
+                    var modelMatrix = mat4.create();
+                    mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
+                    if (node.boundingBox && node.id == selectedNodeID) {
+                        self.displayBBOX(node.boundingBox, cameraMatrix, modelMatrix);
+                    }
+                    return modelMatrix;
+                }, true, ctx);
+            }
         }
     },
-
 
     _width: {
         value: null
@@ -727,10 +736,9 @@ exports.View = Component.specialize( {
             var self = this;
             var time = Date.now();
             if (this.sceneRenderer && this.scene) {
-                if (this.scene.animationManager)
-                    this.scene.animationManager.updateTargetsAtTime(time, this.sceneRenderer.webGLRenderer.resourceManager);
+                if (this.scene.glTFElement.animationManager)
+                    this.scene.glTFElement.animationManager.updateTargetsAtTime(time, this.sceneRenderer.webGLRenderer.resourceManager);
             }
-
             var webGLContext = this.getWebGLContext();
             webGLContext.viewport(0, 0, this._width, this._height);
             if (webGLContext) {
@@ -793,7 +801,6 @@ exports.View = Component.specialize( {
                     if (!viewPoint) {
                         return;
                     }
-
                     /* ------------------------------------------------------------------------------------------------------------
                         Draw reflected scene
                             - enable depth testing
@@ -805,15 +812,17 @@ exports.View = Component.specialize( {
                         webGLContext.frontFace(webGLContext.CW);
                         var savedTr = mat4.create();
 
-                        var node = this.scene.rootNode;
+                        var rootNode = this.scene.glTFElement.rootNode;
+
+                        var node = rootNode;
                         //save car matrix
-                        mat4.set(this.scene.rootNode.transform.matrix, savedTr);
+                        mat4.set(rootNode.transform.matrix, savedTr);
                         webGLContext.depthMask(true);
 
                         var translationMatrix = mat4.translate(mat4.identity(), [0, 0, 0 ]);
                         var scaleMatrix = mat4.scale(translationMatrix, [1, 1, -1]);
                         mat4.multiply(scaleMatrix, node.transform.matrix) ;
-                        this.scene.rootNode.transform.matrix = scaleMatrix;
+                        rootNode.transform.matrix = scaleMatrix;
 
                         //FIXME: passing a matrix was the proper to do this, but right now matrix updates are disabled (temporarly)
                         this.sceneRenderer.technique.rootPass.viewPoint.flipped = true;
@@ -822,7 +831,7 @@ exports.View = Component.specialize( {
                         webGLContext.depthMask(true);
                         this.sceneRenderer.technique.rootPass.viewPoint.flipped = false;
 
-                        this.scene.rootNode.transform.matrix = savedTr;
+                        rootNode.transform.matrix = savedTr;
                     }
                     
                     //restore culling order

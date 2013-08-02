@@ -39,7 +39,7 @@
 
 require("runtime/dependencies/gl-matrix");
 var Montage = require("montage").Montage;
-var Node = require("runtime/node").Node;
+var glTFNode = require("runtime/glTF-node").glTFNode;
 var Projection = require("runtime/projection").Projection;
 var Camera = require("runtime/camera").Camera;
 var Utilities = require("runtime/utilities").Utilities;
@@ -293,7 +293,7 @@ var ProgramPass = exports.ProgramPass = Montage.create(Pass, {
 
 });
 
-var SceneRenderer = Object.create(Object.prototype, {
+var ScenePassRenderer = Object.create(Object.prototype, {
 
     _pathsInfosArray: { value: null, writable: true },
 
@@ -475,6 +475,7 @@ var SceneRenderer = Object.create(Object.prototype, {
             if (cameraNodes.length) {
                 this.viewPoint = cameraNodes[0];
             } else {
+                debugger;
                 //TODO: make that a default projection method
                 var projection = Object.create(Projection);
                 projection.initWithDescription( {   "projection":"perspective",
@@ -487,7 +488,7 @@ var SceneRenderer = Object.create(Object.prototype, {
                 var camera = Object.create(Camera).init();
                 camera.projection = projection;
                 //create node to hold the camera
-                var cameraNode = Object.create(Node).init();
+                var cameraNode = Object.create(glTFNode).init();
                 camera.name = cameraNode.name = "camera01";
                 cameraNode.id = "__default_camera";
                 cameraNode.cameras.push(camera);
@@ -554,14 +555,17 @@ var SceneRenderer = Object.create(Object.prototype, {
                 if (states.blendEnable && !picking) {
                     nonOpaquePassesWithPrimitives.push(passWithPrimitives);
                 } else {
-                    if (this.pickingTechnique)
+                    if (picking && this.pickingTechnique)
                         webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, this.pickingTechnique.parameters, time);
+                    else
+                        webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, null, time);
+
                 }
             }, this);
 
             if (!picking) {
                 nonOpaquePassesWithPrimitives.forEach( function(passWithPrimitives) {
-                    webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass, time);
+                    webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass, null, time);
                 }, this);
             } else {
                 webGLRenderer.unbindRenderTarget(this.pickingRenderTarget);
@@ -667,7 +671,7 @@ var ScenePass = exports.ScenePass = Object.create(Pass, {
     createSceneRendererIfNeeded: {
         value: function() {
             if (!this._sceneRenderer) {
-                this._sceneRenderer = Object.create(SceneRenderer).init();
+                this._sceneRenderer = Object.create(ScenePassRenderer).init();
             }
         }
     },
@@ -691,6 +695,7 @@ var ScenePass = exports.ScenePass = Object.create(Pass, {
         },
         set: function(viewpoint) {
             if (this.sceneRenderer) {
+                debugger;
                 this.sceneRenderer.viewPoint = viewpoint;
             }
         }

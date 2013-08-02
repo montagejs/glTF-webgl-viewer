@@ -1,0 +1,52 @@
+{
+    "opacity_property": {
+        "prototype": "montage/core/meta/property-blueprint",
+        "properties": {
+            "name": "opacity",
+            "valueType": "number",
+            "blueprint": {
+                "@": "root"
+            }
+        }
+    },
+
+    "blueprint_parent": {
+        "prototype": "montage/core/meta/blueprint-reference",
+        "properties": {
+            "valueReference": {
+                "blueprintName": "Component3D",
+                "blueprintModule": {
+                    "%": "runtime/component-3d.meta"
+                },
+                "prototypeName": "Component3D"
+            }
+        }
+    },
+
+    "root": {
+        "prototype": "montage/core/meta/module-blueprint",
+        "properties": {
+            "parent": {"@": "blueprint_parent"},
+            "name": "Material",
+            "propertyBlueprints": [
+                {
+                    "@": "opacity_property"
+                }
+            ],
+            "propertyBlueprintGroups": {
+                "Material": [
+                    {
+                        "@": "opacity_property"
+                    }
+                ]
+            },
+            "blueprintModule": {
+                "%": "runtime/material.meta"
+            },
+            "exportName": "Material",
+            "module": {
+                "%": "runtime/material"
+            }
+        }
+    }
+}

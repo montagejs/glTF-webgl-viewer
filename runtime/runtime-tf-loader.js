@@ -7,14 +7,14 @@ var ProgramPass = require("runtime/pass").ProgramPass;
 var Pass = require("runtime/pass").Pass;
 var ScenePass = require("runtime/pass").ScenePass;
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
-var Material = require("runtime/material").Material;
+var glTFMaterial = require("runtime/glTF-material").glTFMaterial;
 var Mesh = require("runtime/mesh").Mesh;
-var Node = require("runtime/node").Node;
+var glTFNode = require("runtime/glTF-node").glTFNode;
 var Primitive = require("runtime/primitive").Primitive;
 var Projection = require("runtime/projection").Projection;
 var Camera = require("runtime/camera").Camera;
 var Skin = require("runtime/skin").Skin;
-var Scene = require("runtime/scene").Scene;
+var glTFScene = require("runtime/glTF-scene").glTFScene;
 var Transform = require("runtime/transform").Transform;
 var Animation = require("runtime/animation").Animation;
 var AnimationManager = require("runtime/animation-manager").AnimationManager;
@@ -145,7 +145,7 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
 
     handleMaterial: {
         value: function(entryID, description, userInfo) {
-            var material = Object.create(Material).init(entryID);
+            var material = Object.create(glTFMaterial).init(entryID);
             this.storeEntry(entryID, material, description);
             //Simplification - Just take the selected technique
             var instanceTechnique = description.instanceTechnique;
@@ -426,12 +426,13 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                 return false;
             }
 
-            var scene = Object.create(Scene).init();
+            var scene = Object.create(glTFScene).init();
+            scene.ids = this._ids;
             scene.id = entryID;
             scene.name = description.name;
             this.storeEntry(entryID, scene, description);
 
-            var rootNode = Object.create(Node).init();
+            var rootNode = Object.create(glTFNode).init();
 
             if (description.nodes) {
                 description.nodes.forEach(function(nodeUID) {
@@ -467,7 +468,7 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
             var childIndex = 0;
             var self = this;
 
-            var node = Object.create(Node).init();
+            var node = Object.create(glTFNode).init();
             node.id = entryID;
             node.jointId = description.jointId;
             node.name = description.name;
@@ -676,9 +677,21 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
     storeEntry: {
         enumerable: false,
         value: function(id, entry, description) {
-            if (!this._entries) {
+            if (this._entries == null) {
                 this._entries = {};
             }
+
+            //FIXME: unify with entries
+            if (this._ids == null) {
+                this._ids = {};
+            }
+            /*
+            console.log("id:"+id);
+            if (entry.name) {
+                console.log("name:"+id);
+            }
+            */
+            this._ids[id] = entry;
 
             id += this.loaderContext();
             if (!id) {

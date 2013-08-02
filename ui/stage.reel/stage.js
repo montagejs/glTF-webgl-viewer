@@ -37,7 +37,7 @@ var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
 var RangeController = require("montage/core/range-controller").RangeController;
 var Utilities = require("runtime/utilities").Utilities;
-var Node = require("runtime/node").Node;
+var glTFNode = require("runtime/glTF-node").glTFNode;
 var Camera = require("runtime/camera").Camera;
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
 var glMatrix = require("runtime/dependencies/gl-matrix").glMatrix;
@@ -245,7 +245,7 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                  this.camerasController.content = [];
 
                  var cameraNodes = [];
-                 this.view.scene.rootNode.apply( function(node, parent, context) {
+                 this.view.scene.glTFElement.rootNode.apply( function(node, parent, context) {
                      if (node.cameras) {
                          if (node.cameras.length)
                              cameraNodes = cameraNodes.concat(node);

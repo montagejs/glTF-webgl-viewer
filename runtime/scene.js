@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Motorola Mobility, Inc.
+// Copyright (c) 2013, Fabrice Robinet
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -9,9 +9,6 @@
 //  * Redistributions in binary form must reproduce the above copyright
 //    notice, this list of conditions and the following disclaimer in the
 //    documentation and/or other materials provided with the distribution.
-//  * Neither the name of the Motorola Mobility, Inc. nor the names of its
-//    contributors may be used to endorse or promote products derived from this
-//    software without specific prior written permission.
 //
 //  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 // AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -25,9 +22,11 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var Montage = require("montage").Montage;
-var Node = require("runtime/node").Node;
+var Component3D = require("runtime/component-3d").Component3D;
+var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
+var URL = require("montage/core/url");
 
-exports.Scene = Montage.specialize( {
+exports.Scene = Component3D.specialize( {
 
     constructor: {
         value: function Scene() {
@@ -35,59 +34,51 @@ exports.Scene = Montage.specialize( {
         }
     },
 
-    _rootNode: { value : null, writable: true },
+    status: { value: 0, writable:true},
 
-    rootNode: {
-        get: function() {
-            return this._rootNode;
-        },
+    path: {
         set: function(value) {
-            this._rootNode = value;
-        }
-    },
+            if (value) {
+                var URLObject = URL.parse(value);
+                if (!URLObject.scheme) {
+                    var packages = Object.keys(require.packages);
+                    //HACK: for demo, packages[0] is guaranted to be the entry point
+                    value = URL.resolve(packages[0], value);
+                }
+            }
 
-    _id: { value: null, writable: true },
+            if (value !== this._path) {
+                var readerDelegate = {};
+                readerDelegate.loadCompleted = function (scene) {
+                    this.totalBufferSize =  loader.totalBufferSize;
+                    this.glTFElement = scene;
+                    this.status = "loaded";
+                    console.log("scene loaded:"+this._path);
+                }.bind(this);
 
-    id: {
-        get: function() {
-            return this._id;
+                if (value) {
+                    var loader = Object.create(RuntimeTFLoader);
+                    this.status = "loading";
+                    loader.initWithPath(value);
+                    loader.delegate = readerDelegate;
+                    loader.load(null /* userInfo */, null /* options */);
+                } else {
+                    this.scene = null;
+                }
+
+                this._path = value;
+            }
         },
-        set: function(value) {
-            this._id = value;
-        }
-    },
 
-    _animationManager: { value: null, writable: true },
-
-    animationManager: {
         get: function() {
-            return this._animationManager;
-        },
-        set: function(value) {
-            this._animationManager = value;
+            return this._path;
         }
     },
 
     init: {
-        value: function() {
-            this.rootNode = Object.create(Node);
-            this.rootNode.init();
-            return this;
-        }
-    },
-
-    _name: {
-        value: null,
-        writable: true
-    },
-
-    name: {
-        enumerable: true,
-        get: function() {
-            return this._name;
-        },
-        set: function(value) {
-            this._name = value;
+        value:function() {
+            return this.initWithScene(this);
         }
     }
+
 });

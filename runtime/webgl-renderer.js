@@ -882,7 +882,10 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 parameter = parameters[parameter];
                 var semantic = parameter.semantic;
                 var accessor = primitive.semantics[semantic];
-
+                if (accessor == null) {
+                    //FIXME: converter should never generate something that puts us in this situation
+                    continue;
+                }
                 var glResource = null;
                 if (primitiveDescription.compressed) {
                     glResource = this.resourceManager._getResource(  accessor.id);
@@ -1097,14 +1100,14 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
                     //FIXME: make a clever handling of states, For now this is incomplete and inefficient.(but robust)
                     if (states) {
-                        if (states.blendEnable)
+                        if (states.blendEnable === true)
                             blending = true;
-                        if (!states.depthTestEnable)
+                        if (states.depthTestEnable === false)
                             depthTest = false;
-                        if (!states.depthMask)
+                        if (states.depthMask === false)
                             depthMask = false;
-                        if (typeof states["cullFaceEnable"] != "undefined")
-                            cullFaceEnable = states["cullFaceEnable"];
+                        if (states.cullFaceEnable === false)
+                            cullFaceEnable = false;
                         if(states.blendEquation) {
                             var blendFunc = states.blendFunc;
                             if (blendFunc) {
@@ -1147,7 +1150,36 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         }
                     } else {
                         for (var i = 0 ; i < count ; i++) {
-                            this.renderPrimitive(primitives[i], pass, time);
+                            var primitive = primitives[i];
+
+                            var globalIntensity = 1;
+                            if (!parameters) {
+                                parameters = primitive.primitive.material.parameters;
+                            }
+                            var transparency = parameters["transparency"];
+                            if (transparency) {
+                                if (transparency.value)
+                                    globalIntensity *= transparency.value;
+                            }
+
+                            var filterColor = parameters["filterColor"];
+                            if (filterColor) {
+                                if (filterColor.value) {
+                                    globalIntensity *= filterColor.value[3];
+                                }
+                            }
+
+                            if ((globalIntensity < 1) && !blending) {
+                                blending = true;
+                                this.setState(gl.BLEND, true);
+                                gl.blendEquation(gl.FUNC_ADD);
+                                gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+                            } else if (blending && (globalIntensity === 1)) {
+                                this.setState(gl.BLEND, false);
+                                blending = false;
+                            }
+
+                            this.renderPrimitive(primitive, pass, time, parameters);
                         }
                     }
                 }
