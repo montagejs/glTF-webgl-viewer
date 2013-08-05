@@ -38,7 +38,12 @@ exports.Scene = Component3D.specialize( {
 
     path: {
         set: function(value) {
+            //Work-around until montage implements textfield that do not send continous input..
+
             if (value) {
+                if (value.indexOf(".json") === -1)
+                    return;
+
                 var URLObject = URL.parse(value);
                 if (!URLObject.scheme) {
                     var packages = Object.keys(require.packages);
