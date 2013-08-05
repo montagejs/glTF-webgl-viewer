@@ -1153,9 +1153,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             var primitive = primitives[i];
 
                             var globalIntensity = 1;
-                            if (!parameters) {
-                                parameters = primitive.primitive.material.parameters;
-                            }
+                            parameters = primitive.primitive.material.parameters;
                             var transparency = parameters["transparency"];
                             if (transparency) {
                                 if (transparency.value)
@@ -1178,8 +1176,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                                 this.setState(gl.BLEND, false);
                                 blending = false;
                             }
-
-                            this.renderPrimitive(primitive, pass, time, parameters);
+                            this.renderPrimitive(primitive, pass, time);
                         }
                     }
                 }
