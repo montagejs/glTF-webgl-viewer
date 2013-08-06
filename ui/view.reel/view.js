@@ -65,6 +65,58 @@ exports.View = Component.specialize( {
         }
     },
 
+    _sceneTime: { value: 0, writable: true },
+    _lastTime: { value: 0, writable: true },
+
+    play: {
+        value: function() {
+            switch (this._state) {
+                case this.PAUSE:
+                case this.STOP:
+                    this._lastTime = Date.now();
+                    this._state = this.PLAY;
+                    this.needsDraw = true;
+                    break;
+                default:
+                    break;
+            }
+
+            this._state = this.PLAY;
+        }
+    },
+
+    pause: {
+        value: function() {
+            this._state = this.PAUSE;
+        }
+    },
+
+    loops: { value: false, writable: true},
+
+    stop: {
+        value: function() {
+            this._sceneTime = 0;
+            this._state = this.STOP;
+            this.needsDraw = true;
+        }
+    },
+
+    STOP: { value: 0, writable: true },
+    PLAY: { value: 1, writable: true },
+    PAUSE: { value: 2, writable: true },
+
+    _state: { value: 0, writable: true },
+
+    viewPoint: {
+        get: function() {
+            return this.sceneRenderer ? this.sceneRenderer.technique.rootPass.viewPoint : null;
+        },
+        set: function(value) {
+            this.sceneRenderer.technique.rootPass.viewPoint = value;
+        }
+    },
+
+
     translateComposer: {
         value: null
     },
@@ -76,15 +128,6 @@ exports.View = Component.specialize( {
     update: {
         value: function() {
             this.needsDraw = true;
-        }
-    },
-
-    viewPoint: {
-        get: function() {
-            return this.sceneRenderer ? this.sceneRenderer.technique.rootPass.viewPoint : null;
-        },
-        set: function(value) {
-            this.sceneRenderer.technique.rootPass.viewPoint = value;
         }
     },
 
@@ -736,9 +779,13 @@ exports.View = Component.specialize( {
             var self = this;
             var time = Date.now();
             if (this.sceneRenderer && this.scene) {
-                if (this.scene.glTFElement.animationManager)
-                    this.scene.glTFElement.animationManager.updateTargetsAtTime(time, this.sceneRenderer.webGLRenderer.resourceManager);
+                if (this._state == this.PLAY && this.scene.glTFElement.animationManager) {
+                    this._sceneTime += time - this._lastTime;
+                    this.scene.glTFElement.animationManager.updateTargetsAtTime(this._sceneTime, this.sceneRenderer.webGLRenderer.resourceManager);
+                }
             }
+            this._lastTime = time;
+
             var webGLContext = this.getWebGLContext();
             webGLContext.viewport(0, 0, this._width, this._height);
             if (webGLContext) {
@@ -781,7 +828,7 @@ exports.View = Component.specialize( {
                 this.orbitCamera.orbit(this.orbitCameraAnimatingXVel, this.orbitCameraAnimatingYVel);
                 this.needsDraw = true;
             }
-                //FIXME: shouldn't be needed
+            if (this._state == this.PLAY)
                 this.needsDraw = true;
 
             if (this.scene) {
