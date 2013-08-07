@@ -91,7 +91,7 @@ exports.View = Component.specialize( {
         }
     },
 
-    loops: { value: false, writable: true},
+    loops: { value: true, writable: true},
 
     stop: {
         value: function() {
@@ -105,7 +105,7 @@ exports.View = Component.specialize( {
     PLAY: { value: 1, writable: true },
     PAUSE: { value: 2, writable: true },
 
-    _state: { value: 0, writable: true },
+    _state: { value: 1, writable: true },
 
     viewPoint: {
         get: function() {
@@ -170,7 +170,6 @@ exports.View = Component.specialize( {
             if (status === "loaded") {
                 this.scene = object;
                 this.needsDraw = true;
-                console.log("scene :"+this.scene);
             }
         }
     },
@@ -183,8 +182,6 @@ exports.View = Component.specialize( {
         },
 
         set: function(value) {
-            console.log("attempt to set scene :"+value);
-
             if (this.scene !== value) {
                 var sceneReady = value != null ? (value.status == "loaded") : true; //force true if null
 
@@ -199,7 +196,6 @@ exports.View = Component.specialize( {
                         this.delegate.sceneWillChange();
                     }
                 }
-                console.log("set scene :"+this.scene);
 
                 this._scene = value;
                 if (value.status == "loaded") {
@@ -781,6 +777,16 @@ exports.View = Component.specialize( {
             if (this.sceneRenderer && this.scene) {
                 if (this._state == this.PLAY && this.scene.glTFElement.animationManager) {
                     this._sceneTime += time - this._lastTime;
+                    if (this.scene.glTFElement.duration !== -1) {
+                        if (this._sceneTime / 1000. > this.scene.glTFElement.duration) {
+                            if (this.loops) {
+                                this._sceneTime = this._sceneTime % this.scene.glTFElement.duration;
+                            } else {
+                                this.stop();
+                            }
+                        }
+                    }
+
                     this.scene.glTFElement.animationManager.updateTargetsAtTime(this._sceneTime, this.sceneRenderer.webGLRenderer.resourceManager);
                 }
             }
@@ -789,8 +795,8 @@ exports.View = Component.specialize( {
             var webGLContext = this.getWebGLContext();
             webGLContext.viewport(0, 0, this._width, this._height);
             if (webGLContext) {
-                //webGLContext.clearColor(0,0,0,0.);
-                //webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
+                webGLContext.clearColor(0,0,0,0.);
+                webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
 
             //this.canvas.setAttribute("width", this._width + "px");

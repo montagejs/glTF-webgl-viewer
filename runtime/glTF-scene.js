@@ -73,6 +73,20 @@ exports.glTFScene = Montage.specialize( {
         }
     },
 
+    //FIXME: naive - assume all animations have same length and just take the first one.
+    duration: {
+        get: function() {
+            if (this.animationManager) {
+                var animations = this.animationManager.animations;
+                if (animations) {
+                    if (animations.length) {
+                        return animations[0].duration;
+                    }
+                }
+            }
+        }
+    },
+
     _name: {
         value: null,
         writable: true

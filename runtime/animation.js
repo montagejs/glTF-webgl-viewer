@@ -26,6 +26,21 @@ var Base = require("runtime/base").Base;
 
 var Channel = exports.Channel = Object.create(Base, {
 
+    duration: { value: -1, writable:true
+        /*
+         get: function() {
+
+            var inputParameter = this.sampler.input;
+            var inputArray = this.getParameterArray(inputParameter, resourceManager);
+            if (inputArray) {
+                var count = inputParameter.count;
+                return inputArray[count - 1];
+            }
+            return -1;
+        }
+         */
+    },
+
     _sampler: { value: null, writable: true },
 
     sampler: {
@@ -92,8 +107,8 @@ var Channel = exports.Channel = Object.create(Base, {
             if (inputArray && outputArray) {
                 time /= 1000;
                 var count = inputParameter.count;
-                var duration = inputArray[count - 1];
-                time %= duration;
+                this.duration = inputArray[count - 1];
+                time %= this.duration;
                 var lastKeyIndex = 0;
                 var i;
                 var keyIndex = 0;
@@ -208,8 +223,7 @@ var Channel = exports.Channel = Object.create(Base, {
             this.__Base_init();
             return this;
         }
-    },
-
+    }
 
 });
 
@@ -303,10 +317,11 @@ exports.Animation = Object.create(Base, {
 
     duration: {
         get: function() {
-            return this._duration;
-        },
-        set: function(value ) {
-            this._duration = value;
+            if (this.channels) {
+                if (this.channels.length) {
+                    return this.channels[0].duration;
+                }
+            }
         }
     },
 
