@@ -40,7 +40,9 @@ var Component = require("montage/ui/component").Component;
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
 var ResourceManager = require("runtime/helpers/resource-manager").ResourceManager;
 var glTFScene = require("runtime/glTF-scene").glTFScene;
+var glTFNode = require("runtime/glTF-node").glTFNode;
 var Scene = require("runtime/scene").Scene;
+var Node = require("runtime/node").Node;
 var SceneRenderer = require("runtime/scene-renderer").SceneRenderer;
 var glTFMaterial = require("runtime/glTF-material").glTFMaterial;
 var Utilities = require("runtime/utilities").Utilities;
@@ -51,6 +53,8 @@ var TranslateComposer = require("montage/composer/translate-composer").Translate
 var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
 var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
 var URL = require("montage/core/url");
+var Projection = require("runtime/projection").Projection;
+var Camera = require("runtime/camera").Camera;
 
 /**
     Description TODO
@@ -91,6 +95,8 @@ exports.View = Component.specialize( {
         }
     },
 
+    automaticallyCycleThroughViewPoints: { value: true, writable: true },
+
     loops: { value: true, writable: true},
 
     stop: {
@@ -107,15 +113,19 @@ exports.View = Component.specialize( {
 
     _state: { value: 1, writable: true },
 
+    _viewPoint: { value: null, writable: true },
+
     viewPoint: {
         get: function() {
-            return this.sceneRenderer ? this.sceneRenderer.technique.rootPass.viewPoint : null;
+            return this._viewPoint;
         },
         set: function(value) {
-            this.sceneRenderer.technique.rootPass.viewPoint = value;
+            if (this._viewPoint != value) {
+                this._viewPoint = value;
+                this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
+            }
         }
     },
-
 
     translateComposer: {
         value: null
@@ -199,7 +209,7 @@ exports.View = Component.specialize( {
 
                 this._scene = value;
                 if (value.status == "loaded") {
-                    this.applyScene(value.glTFElement);
+                    this.applyScene(value);
                 }
 
                 if (this.delegate && sceneReady) {
@@ -271,13 +281,41 @@ exports.View = Component.specialize( {
             return this.scene ? this.scene.path : null;
         }
     },
-                        
+
+    //we don't want to cache this to avoid synchronization here, so we don't want to call it often either :)
+    _getViewPoints: {
+        value: function(scene) {
+            var viewPoints = [];
+            var node = scene.glTFElement.rootNode;
+            node.apply( function(node, parent, parentTransform) {
+                if (node.cameras) {
+                    if (node.cameras.length)
+                        viewPoints = viewPoints.concat(node);
+                }
+                return null;
+            }, true, null);
+
+            var m3dNodes = [];
+            viewPoints.forEach( function(viewPoint) {
+                var m3dNode = Montage.create(Node)
+                m3dNode.scene = scene;
+                m3dNode.id = viewPoint.baseId;
+                m3dNodes.push(m3dNode);
+            }, this);
+
+            return m3dNodes;
+        }
+    },
+
     applyScene: {
-        value:function (scene) {
+        value:function (m3dScene) {
+            var scene = m3dScene.glTFElement;
             if (this.sceneRenderer) {
                 if (this.sceneRenderer.technique.rootPass) {
                     if (scene) {
                         this.orbitCamera = null;
+                        var viewPoints= this._getViewPoints(m3dScene);
+                        var hasCamera = viewPoints.length > 0;
 
                         //compute hierarchical bbox for the whole scene
                         //this will be removed from this place when node bounding box become is implemented as hierarchical
@@ -285,14 +323,9 @@ exports.View = Component.specialize( {
                         var node = scene.rootNode;
                         var sceneBBox = null;
                         var self = this;
-                        var hasCamera = false;
                         node.apply( function(node, parent, parentTransform) {
                             var modelMatrix = mat4.create();
                             mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
-                            if (node.cameras) {
-                                hasCamera |= (node.cameras.length > 0);
-                            }
-
                             if (node.boundingBox) {
                                 var bbox = Utilities.transformBBox(node.boundingBox, modelMatrix);
                                 if (sceneBBox) {
@@ -301,9 +334,39 @@ exports.View = Component.specialize( {
                                     sceneBBox = bbox;
                                 }
                             }
-
                             return modelMatrix;
                         }, true, ctx);
+
+                        // arbitry set first coming camera as the view point
+                        if (viewPoints.length) {
+                            this.viewPoint = viewPoints[0];
+                        } else {
+                            //TODO: make that a default projection method
+                            var projection = Object.create(Projection);
+                            projection.initWithDescription( {   "projection":"perspective",
+                                "yfov":45,
+                                "aspectRatio":1,
+                                "znear":0.1,
+                                "zfar":1000});
+
+                            //create camera
+                            var camera = Object.create(Camera).init();
+                            camera.projection = projection;
+                            //create node to hold the camera
+                            var cameraNode = Object.create(glTFNode).init();
+                            camera.name = cameraNode.name = "camera01";
+                            cameraNode.id = "__default_camera";
+                            cameraNode.baseId = cameraNode.id;
+                            scene.ids[cameraNode.baseId] = cameraNode;
+                            cameraNode.cameras.push(camera);
+                            this.scene.glTFElement.rootNode.children.push(cameraNode);
+
+                            var m3dNode = Montage.create(Node)
+                            m3dNode.scene = m3dScene;
+                            m3dNode.id = cameraNode.baseId;
+                            debugger;
+                            this.viewPoint = m3dNode;
+                        }
 
                         if (sceneBBox && !hasCamera) {
                             var sceneSize = [(sceneBBox[1][0] - sceneBBox[0][0]) ,
@@ -344,13 +407,11 @@ exports.View = Component.specialize( {
                         this.orbitCamera.setYUp(true);
                         //this.orbitCamera.orbitX = 0.675
                         //this.orbitCamera.orbitY = 1.8836293856408279;
-
                         //this.orbitCamera.minOrbitX = 0.2;//this.orbitCamera.orbitX - 0.6;
                         //this.orbitCamera.maxOrbitX = 1.2;
 
                         this.orbitCamera.constrainXOrbit = false;
                         this.orbitCamera.constrainYOrbit = false;
-
 
                         // this.orbitCamera.constrainXOrbit = true;
                         this.orbitCamera.setCenter(center);
@@ -377,7 +438,7 @@ exports.View = Component.specialize( {
             this.sceneRenderer.webGLRenderer.resourceManager.observers.push(this);
 
             if (this.scene)
-                this.applyScene(this.scene.glTFElement);
+                this.applyScene(this.scene);
 
             //setup gradient
             var self = this;
@@ -689,7 +750,7 @@ exports.View = Component.specialize( {
                 this.displayAllBBOX(this.orbitCamera.getViewMat(), nodeID);
             else {
                 var mat = mat4.create();
-                mat4.inverse(this.viewPoint.transform.matrix, mat);
+                mat4.inverse(this.viewPoint.glTFElement.transform.matrix, mat);
                 this.displayAllBBOX(mat, nodeID);
             }
 
@@ -795,22 +856,22 @@ exports.View = Component.specialize( {
             var webGLContext = this.getWebGLContext();
             webGLContext.viewport(0, 0, this._width, this._height);
             if (webGLContext) {
-                webGLContext.clearColor(0,0,0,0.);
-                webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
+                //webGLContext.clearColor(0,0,0,0.);
+                //webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
 
             //this.canvas.setAttribute("width", this._width + "px");
             //this.canvas.setAttribrenderTargetute("height", this._height + "px");
             //----
             if (this.viewPoint) {
-                this.viewPoint.cameras[0].projection.aspectRatio = this._width / this._height;
+                this.viewPoint.glTFElement.cameras[0].projection.aspectRatio = this._width / this._height;
                 //this.viewPoint.cameras[0].projection.zfar = 100;
                 //this.viewPoint.cameras[0].projection.znear = 0.01;
             }
 
             if (this.orbitCamera) {
                 var cameraMatrix = this.orbitCamera.getViewMat();
-                mat4.inverse(cameraMatrix, this.viewPoint.transform.matrix);
+                mat4.inverse(cameraMatrix, this.viewPoint.glTFElement.transform.matrix);
             }
 
 
@@ -834,8 +895,8 @@ exports.View = Component.specialize( {
                 this.orbitCamera.orbit(this.orbitCameraAnimatingXVel, this.orbitCameraAnimatingYVel);
                 this.needsDraw = true;
             }
-            if (this._state == this.PLAY)
-                this.needsDraw = true;
+            //if (this._state == this.PLAY)
+             //   this.needsDraw = true;
 
             if (this.scene) {
                 renderer = this.sceneRenderer.webGLRenderer;

@@ -426,7 +426,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
 
             //Assign a view point from available nodes with camera if none
             var self = this;
-            var cameraNodes = [];
             var WORLD = WebGLRenderer.WORLD;
             var WORLDVIEW = WebGLRenderer.WORLDVIEW;
             var WORLDVIEWINVERSETRANSPOSE = WebGLRenderer.WORLDVIEWINVERSETRANSPOSE;
@@ -459,10 +458,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 self._pathsInfosArray[pathCount++] = pathInfos;
                 self.setupNodeAtPath(node, pathID);
 
-                if (node.cameras) {
-                    if (node.cameras.length)
-                        cameraNodes = cameraNodes.concat(node);
-                }
 
                 var newContext = {};
                 newContext["path"] = path;
@@ -470,30 +465,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
 
                 return newContext;
             } , true, context);
-
-            // arbitry set first coming camera as the view point
-            if (cameraNodes.length) {
-                this.viewPoint = cameraNodes[0];
-            } else {
-                //TODO: make that a default projection method
-                var projection = Object.create(Projection);
-                projection.initWithDescription( {   "projection":"perspective",
-                    "yfov":45,
-                    "aspectRatio":1,
-                    "znear":0.1,
-                    "zfar":1000});
-
-                //create camera
-                var camera = Object.create(Camera).init();
-                camera.projection = projection;
-                //create node to hold the camera
-                var cameraNode = Object.create(glTFNode).init();
-                camera.name = cameraNode.name = "camera01";
-                cameraNode.id = "__default_camera";
-                cameraNode.cameras.push(camera);
-                this.scene.rootNode.children.push(cameraNode);
-                this.viewPoint = cameraNode;
-            }
         }
     },
 

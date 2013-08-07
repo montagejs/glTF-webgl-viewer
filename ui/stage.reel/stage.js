@@ -37,6 +37,8 @@ var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
 var RangeController = require("montage/core/range-controller").RangeController;
 var Utilities = require("runtime/utilities").Utilities;
+var Node = require("runtime/node").Node;
+
 var glTFNode = require("runtime/glTF-node").glTFNode;
 var Camera = require("runtime/camera").Camera;
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
@@ -83,10 +85,11 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(firstTime) {
             if(firstTime) {
                 this.modelsController.content = [
+                    { "name": "Nexus", "path": "model/NexusFlattened/NexusFlattened.json"},
+                    { "name": "room1", "path": "model/room/testRoom5.json"},
                     { "name": "duck", "path": "model/duck/duck.json"},
                     { "name": "megacity", "path": "model/megacity/megacityVideo.json"},
                     { "name": "minebot", "path": "model/minebot/mine_bot_anim.json"},
-                    { "name": "Nexus", "path": "model/NexusFlattened/NexusFlattened.json"},
                     { "name": "Buggy", "path": "model/rambler/Rambler.json"},
                     { "name": "BuggyFlatttened", "path": "model/rambler/RamblerFlattened.json"},
                     { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
@@ -182,7 +185,14 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
     handleCameraChange: {
         value: function(camera) {
-            this.view.viewPoint = camera.node;
+            if (camera) {
+                var m3dNode = Montage.create(Node);
+                m3dNode.scene = this.view.scene;
+                m3dNode.id = camera.node.baseId;
+                this.view.viewPoint = m3dNode;
+            } else {
+                this.view.viewPoint = null;
+            }
         }
     },
 

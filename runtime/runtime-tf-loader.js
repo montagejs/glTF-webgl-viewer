@@ -681,16 +681,13 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                 this._entries = {};
             }
 
-            //FIXME: unify with entries
+            //FIXME: unify with entries and get rid of baseId
             if (this._ids == null) {
                 this._ids = {};
             }
-            /*
-            console.log("id:"+id);
-            if (entry.name) {
-                console.log("name:"+id);
-            }
-            */
+
+            entry.baseId = id;
+
             this._ids[id] = entry;
 
             id += this.loaderContext();
@@ -698,7 +695,6 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                 console.log("ERROR: not id provided, cannot store");
                 return;
             }
-
             entry.id = id;
 
             if (this.containsEntry[id]) {
