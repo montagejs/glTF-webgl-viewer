@@ -475,14 +475,13 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             if (cameraNodes.length) {
                 this.viewPoint = cameraNodes[0];
             } else {
-                debugger;
                 //TODO: make that a default projection method
                 var projection = Object.create(Projection);
                 projection.initWithDescription( {   "projection":"perspective",
                     "yfov":45,
                     "aspectRatio":1,
                     "znear":0.1,
-                    "zfar":100});
+                    "zfar":1000});
 
                 //create camera
                 var camera = Object.create(Camera).init();
@@ -695,7 +694,6 @@ var ScenePass = exports.ScenePass = Object.create(Pass, {
         },
         set: function(viewpoint) {
             if (this.sceneRenderer) {
-                debugger;
                 this.sceneRenderer.viewPoint = viewpoint;
             }
         }
