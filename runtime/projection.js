@@ -173,7 +173,7 @@ var global = window;
                         } else  if ((this.xfov !== 0.) && ( this.yfov !== 0.)) {
                             aspectRatio = this.xfov/this.yfov;
                         }
-                        this._matrix = mat4.perspective(yfov, this.aspectRatio, this.znear, this.zfar);
+                        this._matrix = mat4.perspective(this.yfov, this.aspectRatio, this.znear, this.zfar);
                     } else if (this.projection === "orthographic") {
                         this._matrix = mat4.ortho(-this.xmag, this.xmag, -this.ymag, this.ymag, this.znear, this.zfar);
                     } else {

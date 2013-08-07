@@ -122,6 +122,7 @@ exports.View = Component.specialize( {
         set: function(value) {
             if (this._viewPoint != value) {
                 this._viewPoint = value;
+                console.log("set viewpoint:"+value);
                 this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
             }
         }
@@ -328,8 +329,12 @@ exports.View = Component.specialize( {
                             mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
                             if (node.boundingBox) {
                                 var bbox = Utilities.transformBBox(node.boundingBox, modelMatrix);
+
                                 if (sceneBBox) {
-                                    sceneBBox = Utilities.mergeBBox(bbox, sceneBBox);
+                                    if (node.meshes) {
+                                        if (node.meshes.length > 0)
+                                            sceneBBox = Utilities.mergeBBox(bbox, sceneBBox);
+                                    }
                                 } else {
                                     sceneBBox = bbox;
                                 }
@@ -347,7 +352,7 @@ exports.View = Component.specialize( {
                                 "yfov":45,
                                 "aspectRatio":1,
                                 "znear":0.1,
-                                "zfar":1000});
+                                "zfar":100});
 
                             //create camera
                             var camera = Object.create(Camera).init();
@@ -359,12 +364,11 @@ exports.View = Component.specialize( {
                             cameraNode.baseId = cameraNode.id;
                             scene.ids[cameraNode.baseId] = cameraNode;
                             cameraNode.cameras.push(camera);
-                            this.scene.glTFElement.rootNode.children.push(cameraNode);
-
-                            var m3dNode = Montage.create(Node)
+                            //FIXME: find out why even when checking that we mergeBBOX of meshes only the highest level BBOX is still wrong if camera is added to the scene.
+                            //scene.rootNode.children.push(cameraNode);
+                            var m3dNode = Montage.create(Node);
                             m3dNode.scene = m3dScene;
                             m3dNode.id = cameraNode.baseId;
-                            debugger;
                             this.viewPoint = m3dNode;
                         }
 
@@ -856,8 +860,8 @@ exports.View = Component.specialize( {
             var webGLContext = this.getWebGLContext();
             webGLContext.viewport(0, 0, this._width, this._height);
             if (webGLContext) {
-                //webGLContext.clearColor(0,0,0,0.);
-                //webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
+                webGLContext.clearColor(0,0,0,0.);
+                webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
 
             //this.canvas.setAttribute("width", this._width + "px");
@@ -895,8 +899,8 @@ exports.View = Component.specialize( {
                 this.orbitCamera.orbit(this.orbitCameraAnimatingXVel, this.orbitCameraAnimatingYVel);
                 this.needsDraw = true;
             }
-            //if (this._state == this.PLAY)
-             //   this.needsDraw = true;
+            if (this._state == this.PLAY)
+               this.needsDraw = true;
 
             if (this.scene) {
                 renderer = this.sceneRenderer.webGLRenderer;
