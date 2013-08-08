@@ -124,8 +124,10 @@ exports.View = Component.specialize( {
         set: function(value) {
             if (this._viewPoint != value) {
                 this._viewPoint = value;
-                if (this.scene && (this._viewPoint.scene == null)) {
-                    this._viewPoint.scene = this.scene;
+                if (value) {
+                    if (this.scene && (this._viewPoint.scene == null)) {
+                        this._viewPoint.scene = this.scene;
+                    }
                 }
                 if (this.sceneRenderer)
                     this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
@@ -903,7 +905,7 @@ exports.View = Component.specialize( {
             //this.canvas.setAttribrenderTargetute("height", this._height + "px");
             //----
             if (this.viewPoint) {
-                this.viewPoint.glTFElement.cameras[0].projection.aspectRatio = this._width / this._height;
+                this.viewPoint.glTFElement.cameras[0].projection.aspectRatio =  this._width / this._height;
                 //this.viewPoint.cameras[0].projection.zfar = 100;
                 //this.viewPoint.cameras[0].projection.znear = 0.01;
             }
