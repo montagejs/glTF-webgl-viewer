@@ -153,27 +153,64 @@ var global = window;
                 return this._aspectRatio;
             },
             set: function(value) {
-                if (this._aspectRatio !== value) {
+                    if (this._matrix) {
+                        if (this.yfov) {
+                            this._matrix[0] = this._scaleX / value ;
+                        } else if (this.xfov) {
+                            this._matrix[5] = this._scaleY * value ;
+
+                        }
+                    }
                     this._aspectRatio = value;
-                    this._dirtyFlag = true;
-                }
             }
         },
 
+        _scaleX : { value: 0, writable: true },
+        _scaleY : { value: 0, writable: true },
+
         matrix: {
             get: function() {
-                if (this._dirtyFlag) {
+                if (this._dirtyFlag)
+                {
                     if (this.projection === "perspective") {
-                        var yfov = this.yfov;
-                        if ((yfov === 0) || (yfov == null)) {
-                            yfov = this.aspectRatio * this.xfov;
+                        var degToRadians  = 3.14159265359 / 360.0;
+
+                        var scaleX = 0;
+                        var scaleY = 0;
+                        if (this.yfov) {
+                            scaleY =  1./Math.tan(this.yfov * degToRadians);
                         }
-                        if (this.aspectRatio !== 0.) {
-                            aspectRatio = this.aspectRatio;
-                        } else  if ((this.xfov !== 0.) && ( this.yfov !== 0.)) {
-                            aspectRatio = this.xfov/this.yfov;
+                        if (this.xfov) {
+                            scaleX = 1./Math.tan(this.xfov * degToRadians);
+                        } else {
+                            scaleX = scaleY;
                         }
-                        this._matrix = mat4.perspective(yfov, this.aspectRatio, this.znear, this.zfar);
+                        if (scaleY == 0) {
+                            scaleY = scaleX;
+                        }
+                        this._scaleX = scaleX;
+                        this._scaleY = scaleY;
+                        this._matrix = mat4.create();
+
+                        this._matrix[0] = scaleX;
+                        this._matrix[1] = 0.0;
+                        this._matrix[2] = 0.0;
+                        this._matrix[3] = 0.0;
+
+                        this._matrix[4] = 0.0;
+                        this._matrix[5]= scaleY;
+                        this._matrix[6] = 0.0;
+                        this._matrix[7] = 0.0;
+
+                        this._matrix[8] = 0.0;
+                        this._matrix[9] = 0.0;
+                        this._matrix[10] = (this.zfar + this.znear) / (this.znear - this.zfar);
+                        this._matrix[11] = -1.0;
+
+                        this._matrix[12] = 0.0;
+                        this._matrix[13] = 0.0;
+                        this._matrix[14] = (2.0 * this.zfar * this.znear) / (this.znear - this.zfar);
+                        this._matrix[15] = 0.0;
                     } else if (this.projection === "orthographic") {
                         this._matrix = mat4.ortho(-this.xmag, this.xmag, -this.ymag, this.ymag, this.znear, this.zfar);
                     } else {
@@ -188,6 +225,7 @@ var global = window;
                 this._matrix = value;
             }
         },
+
 
         initWithDescription: {
             value: function(description) {
