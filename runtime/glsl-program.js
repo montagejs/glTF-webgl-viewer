@@ -372,40 +372,47 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
         }
     },
 
+    _commitSwitch: {
+        value: (function () {
+            var theSwitch = [];
+            theSwitch[WebGLRenderingContext.FLOAT_MAT2] = function uniformMatrix2fv(GL, location , count, value) {
+                GL.uniformMatrix2fv(location , count, value);
+            };
+            theSwitch[WebGLRenderingContext.FLOAT_MAT3] = function uniformMatrix3fv(GL, location , count, value) {
+                GL.uniformMatrix3fv(location , count, value);
+            };
+            theSwitch[WebGLRenderingContext.FLOAT_MAT4] = function uniformMatrix4fv(GL, location , count, value) {
+                GL.uniformMatrix4fv(location , count, value);
+            };
+            theSwitch[WebGLRenderingContext.FLOAT] = function uniform1f(GL, location , count, value) {
+                GL.uniform1f(location,value);
+            };
+            theSwitch[WebGLRenderingContext.FLOAT_VEC3] = function uniform3fv(GL, location , count, value) {
+                GL.uniform3fv(location,value);
+            };
+            theSwitch[WebGLRenderingContext.FLOAT_VEC4] = function uniform4fv(GL, location , count, value) {
+                GL.uniform4fv(location,value);
+            };
+            theSwitch[WebGLRenderingContext.INT] = function uniform1i(GL, location , count, value) {
+                GL.uniform1i(location, value);
+            };
+            theSwitch[WebGLRenderingContext.SAMPLER_2D] = function uniform1i(GL, location , count, value) {
+                GL.uniform1i(location, value);
+            };
+            return theSwitch;
+        })()
+    },
+
     //that should be private
     commit: {
         value: function(GL) {
-            var i = 0, count = this.pendingCommits.length;
-            for (i = 0 ; i < count ; i++) {
-                var symbol = this.pendingCommits[i];
-                var type = this.getTypeForSymbol(symbol);
-                var location = GL.getUniformLocation(this.GLProgram,symbol);
-                var value = this.getValueForSymbol(symbol);
-
-                switch (type) {
-                    case GL.FLOAT_MAT2:
-                        GL.uniformMatrix2fv(location , false, value);
-                        break;
-                    case GL.FLOAT_MAT3:
-                        GL.uniformMatrix3fv(location , false, value);
-                        break;
-                    case GL.FLOAT_MAT4:
-                        GL.uniformMatrix4fv(location , false, value);
-                        break;
-                    case GL.FLOAT:
-                        GL.uniform1f(location,value);
-                        break;
-                    case GL.FLOAT_VEC3:
-                        GL.uniform3fv(location,value);
-                        break;
-                    case GL.FLOAT_VEC4:
-                        GL.uniform4fv(location,value);
-                        break;
-                    case GL.INT:
-                    case GL.SAMPLER_2D:
-                        GL.uniform1i(location, value);
-                        break;
-                }
+            var i = this.pendingCommits.length-1, symbol;
+            while (symbol = this.pendingCommits[i--]) {
+                this._commitSwitch[this.getTypeForSymbol(symbol)](
+                    GL,
+                    GL.getUniformLocation(this.GLProgram,symbol),
+                    false,
+                    this.getValueForSymbol(symbol));
             }
             this.pendingCommits = [];
         }
