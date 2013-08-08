@@ -177,8 +177,6 @@ exports.View = Component.specialize( {
         set: function(value) {
             if (value != this._sceneRenderer) {
                 this._sceneRenderer = value;
-                if (this.viewPoint && value)
-                    this._sceneRenderer.technique.rootPass.viewPoint = this.viewPoint ? this.viewPoint.glTFElement : null;
             }
         }
     },
@@ -351,7 +349,15 @@ exports.View = Component.specialize( {
 
                         // arbitry set first coming camera as the view point
                         if (viewPoints.length) {
-                            this.viewPoint = viewPoints[0];
+                            var shouldKeepViewPoint = false;
+                            if (this.viewPoint) {
+                                if (this.viewPoint.scene) {
+                                    shouldKeepViewPoint = this.viewPoint.scenePath === m3dScene.scenePath;
+                                }
+                            }
+                            if (shouldKeepViewPoint === false) {
+                                this.viewPoint = viewPoints[0];
+                            }
                         } else {
                             //TODO: make that a default projection method
                             var projection = Object.create(Projection);
