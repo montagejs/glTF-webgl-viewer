@@ -241,6 +241,7 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function() {
             var resourceManager = this.view.getResourceManager();
             if (resourceManager) {
+                this.view.viewPoint = null;
                 resourceManager.maxConcurrentRequests = this.concurrentRequests;
                 resourceManager.bytesLimit = this.bytesLimit * 1024;
                 resourceManager.reset();

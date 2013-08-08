@@ -462,6 +462,7 @@ exports.View = Component.specialize( {
         value: function(firstTime) {
             var webGLContext = this.canvas.getContext("experimental-webgl", { antialias: true}) ||this.canvas.getContext("webgl", { antialias: true});
             var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
+            webGLContext.enable(webGLContext.DEPTH_TEST);
             var options = null;
             this.sceneRenderer = Object.create(SceneRenderer);
             this.sceneRenderer.init(webGLRenderer, options);
@@ -905,7 +906,8 @@ exports.View = Component.specialize( {
             //this.canvas.setAttribrenderTargetute("height", this._height + "px");
             //----
             if (this.viewPoint) {
-                this.viewPoint.glTFElement.cameras[0].projection.aspectRatio =  this._width / this._height;
+                if (this.viewPoint.glTFElement)
+                    this.viewPoint.glTFElement.cameras[0].projection.aspectRatio =  this._width / this._height;
                 //this.viewPoint.cameras[0].projection.zfar = 100;
                 //this.viewPoint.cameras[0].projection.znear = 0.01;
             }
@@ -992,14 +994,14 @@ exports.View = Component.specialize( {
                     //restore culling order
                     webGLContext.frontFace(webGLContext.CCW);
 
-                    webGLContext.disable(webGLContext.DEPTH_TEST);
-                    webGLContext.depthMask(false);
+                   // webGLContext.disable(webGLContext.DEPTH_TEST);
+                    //webGLContext.depthMask(false);
                     this.drawGradient();
                     //this.drawFloor(cameraMatrix);
                     webGLContext.depthMask(true);
 
                     webGLContext.depthFunc(webGLContext.LESS);
-                    webGLContext.enable(webGLContext.DEPTH_TEST);
+                    //webGLContext.enable(webGLContext.DEPTH_TEST);
                     webGLContext.enable(webGLContext.CULL_FACE);
                     webGLContext.disable(webGLContext.BLEND);
 

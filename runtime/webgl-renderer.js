@@ -1119,9 +1119,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         }
                     }
 
-                    this.setState(gl.DEPTH_TEST, depthTest);
+                   // this.setState(gl.DEPTH_TEST, depthTest);
                     this.setState(gl.CULL_FACE, cullFaceEnable);
-                    gl.depthMask(depthMask);
+                    //gl.depthMask(depthMask);
                     this.setState(gl.BLEND, blending);
                     if (blending) {
                         gl.blendEquation(blendEquation);
