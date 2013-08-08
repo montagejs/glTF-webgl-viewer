@@ -471,7 +471,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
 
     render: {
         value: function(webGLRenderer, time, options) {
-            if (!this.scene)
+            if (!this.scene || !this.viewPoint)
                 return;
 
             var picking = options ? ((options.picking == true) && (options.coords)) : false;

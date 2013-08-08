@@ -113,7 +113,7 @@ exports.View = Component.specialize( {
     PLAY: { value: 1, writable: true },
     PAUSE: { value: 2, writable: true },
 
-    _state: { value: 1, writable: true },
+    _state: { value: 0, writable: true },
 
     _viewPoint: { value: null, writable: true },
 
@@ -124,7 +124,9 @@ exports.View = Component.specialize( {
         set: function(value) {
             if (this._viewPoint != value) {
                 this._viewPoint = value;
-                console.log("set viewpoint:"+value);
+                if (this.scene && (this._viewPoint.scene == null)) {
+                    this._viewPoint.scene = this.scene;
+                }
                 if (this.sceneRenderer)
                     this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
             }
@@ -434,6 +436,15 @@ exports.View = Component.specialize( {
                         this.orbitCamera.setCenter(center);
                     }
                     this.needsDraw = true;
+                    //right now, play by default
+                    if (this.viewPoint) {
+                        if (this.viewPoint.scene == null) {
+                            this.viewPoint.scene = m3dScene;
+                        }
+                        if (this.sceneRenderer)
+                            this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
+                    }
+                    this.play();
                 }
             }
         }

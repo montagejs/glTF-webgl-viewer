@@ -24,6 +24,8 @@
 var Montage = require("montage").Montage;
 var glTFNode = require("runtime/glTF-node").glTFNode;
 
+//FIXME: add a state to now that resolution of id pending to avoid adding useless listeners
+//This currently *can't* happen with the code path in use, the API would allow it.
 exports.Component3D = Montage.specialize( {
 
     constructor: {
@@ -66,6 +68,7 @@ exports.Component3D = Montage.specialize( {
                     this.glTFElement = this.scene.glTFElement.ids[this._id];
 
                     if (this.glTFElement) {
+                        this._hasUnresolvedId = false;
                         console.log("node attached to element with id:"+this._id);
                     }
                 }
@@ -85,6 +88,7 @@ exports.Component3D = Montage.specialize( {
                     if (this.scene.status === "loaded") {
                         this.glTFElement = this.scene.glTFElement.ids[this._id];
                         if (this.glTFElement) {
+                            this._hasUnresolvedId = false;
                             console.log("node attached to element with id:"+this._id);
                         }
                     }
