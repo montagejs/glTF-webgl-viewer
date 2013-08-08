@@ -9,6 +9,18 @@
             }
         }
     },
+
+    "viewPoint_property": {
+        "prototype": "montage/core/meta/property-blueprint",
+        "properties": {
+            "name": "viewPoint",
+            "valueType": "object",
+            "blueprint": {
+                "@": "root"
+            }
+        }
+    },
+
     "width_property": {
         "prototype": "montage/core/meta/property-blueprint",
         "properties": {
@@ -39,6 +51,9 @@
                     "@": "scene_property"
                 },
                 {
+                    "@": "viewPoint_property"
+                },
+                {
                     "@": "width_property"
                 },
                 {
@@ -49,6 +64,9 @@
                 "Main": [
                     {
                         "@": "scene_property"
+                    },
+                    {
+                        "@": "viewPoint_property"
                     },
                     {
                         "@": "width_property"

@@ -125,7 +125,8 @@ exports.View = Component.specialize( {
             if (this._viewPoint != value) {
                 this._viewPoint = value;
                 console.log("set viewpoint:"+value);
-                this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
+                if (this.sceneRenderer)
+                    this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
             }
         }
     },
@@ -174,7 +175,11 @@ exports.View = Component.specialize( {
             return this._sceneRenderer;
         },
         set: function(value) {
-            this._sceneRenderer = value;
+            if (value != this._sceneRenderer) {
+                this._sceneRenderer = value;
+                if (this.viewPoint && value)
+                    this._sceneRenderer.technique.rootPass.viewPoint = this.viewPoint ? this.viewPoint.glTFElement : null;
+            }
         }
     },
 
