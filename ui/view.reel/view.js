@@ -460,7 +460,7 @@ exports.View = Component.specialize( {
 
     enterDocument: {
         value: function(firstTime) {
-            var webGLContext = this.canvas.getContext("experimental-webgl", { antialias: true}) ||this.canvas.getContext("webgl", { antialias: true});
+            var webGLContext = this.canvas.getContext("experimental-webgl", { antialias: true, preserveDrawingBuffer: true}) ||this.canvas.getContext("webgl", { antialias: true});
             var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
             webGLContext.enable(webGLContext.DEPTH_TEST);
             var options = null;
