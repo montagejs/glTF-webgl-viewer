@@ -861,11 +861,14 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                                 currentTexture++;
                             }
                         }
+                        //we prefer to bail out if the texture is not ready
+                        if (texture == null) {
+                            return;
+                        }
                     } else {
                         program.setValueForSymbol(symbol, value);
                     }
                 }
-
             }
 
             program.commit(gl);
