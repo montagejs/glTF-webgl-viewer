@@ -95,6 +95,8 @@ exports.View = Component.specialize( {
         }
     },
 
+    _viewPointIndex: { value: 0, writable: true },
+
     automaticallyCycleThroughViewPoints: { value: true, writable: true },
 
     loops: { value: true, writable: true},
@@ -844,9 +846,20 @@ exports.View = Component.specialize( {
                     this._sceneTime += time - this._lastTime;
                     if (this.scene.glTFElement.duration !== -1) {
                         if (this._sceneTime / 1000. > this.scene.glTFElement.duration) {
+
+                            if (this.automaticallyCycleThroughViewPoints == true) {
+                                var viewPoints = this._getViewPoints(this.scene);
+                                if (viewPoints.length > 0) {
+                                    this._sceneTime = 0;
+                                    this._viewPointIndex++;
+                                    this._viewPointIndex = this._viewPointIndex % viewPoints.length;
+                                    this.viewPoint = viewPoints[this._viewPointIndex];
+                                }
+                            }
+
                             if (this.loops) {
                                 this._sceneTime = this._sceneTime % this.scene.glTFElement.duration;
-                            } else {
+                           } else {
                                 this.stop();
                             }
                         }
