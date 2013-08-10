@@ -29,11 +29,18 @@ exports.Material = Component3D.specialize( {
     constructor: {
         value: function Material() {
             this.super();
-            this.addRangeAtPathChangeListener("filterColor", this, "handleFilterColorChange")
+            this.addRangeAtPathChangeListener("filterColor", this, "handleFilterColorChange");
+            this.addOwnPropertyChangeListener("glTFElement", this);
         }
     },
 
-    filterColor: { value: null},
+    filterColor: { value: [1,1,1,0]},
+
+    handleGlTFElementChange: {
+        value: function() {
+            this.handleFilterColorChange();
+        }
+    },
 
     handleFilterColorChange: {
         value: function(plus, minus, index) {
