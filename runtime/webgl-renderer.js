@@ -1169,6 +1169,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                                     globalIntensity *= filterColor.value[3];
                                 }
                             }
+                            if (globalIntensity < 0.00001)
+                                continue;
 
                             if ((globalIntensity < 1) && !blending) {
                                 blending = true;
