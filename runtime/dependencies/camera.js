@@ -258,7 +258,7 @@ var global = window;
             mat4.translate(mv, this._distance);
             mat4.rotateX(mv, this.orbitX);
             mat4.rotateY(mv, this.orbitY);
-            mat4.rotateX(mv, -Math.PI * 0.5);
+            //mat4.rotateX(mv, -Math.PI * 0.5);
             mat4.translate(mv, this._center);
             if(!this._yUp) { mat4.rotateX(mv, Math.PI * 0.5); }
             

@@ -416,26 +416,39 @@ exports.View = Component.specialize( {
 
                     }
                     this.sceneRenderer.scene = scene;
-                    if (!hasCamera && scene) {
+                    if (scene) {
                         this.orbitCamera = new MontageOrbitCamera(this.canvas);
                         this.orbitCamera.translateComposer = this.translateComposer;
                         this.orbitCamera._hookEvents(this.canvas);
-                        this.orbitCamera.maxDistance = 200;
-                        this.orbitCamera.minDistance = 0.0;
-                        this.orbitCamera.setDistance(1.3);
-                        this.orbitCamera.distanceStep = 0.0001;
-                        this.orbitCamera.constrainDistance = false;
-                        this.orbitCamera.setYUp(true);
+                        this.orbitCamera.maxDistance = 15;
+                        this.orbitCamera.minDistance = -45;
+                        this.orbitCamera.setDistance(0);
+                        this.orbitCamera.distanceStep = 0.015;
+                        this.orbitCamera.constrainDistance = hasCamera;
+                        //this.orbitCamera.setYUp(true);
                         //this.orbitCamera.orbitX = 0.675
                         //this.orbitCamera.orbitY = 1.8836293856408279;
                         //this.orbitCamera.minOrbitX = 0.2;//this.orbitCamera.orbitX - 0.6;
                         //this.orbitCamera.maxOrbitX = 1.2;
 
-                        this.orbitCamera.constrainXOrbit = false;
-                        this.orbitCamera.constrainYOrbit = false;
+                        //allow small interaction when a camera is present
+                        if (hasCamera) {
+                            this.orbitCamera.minOrbitX = -0.4;
+                            this.orbitCamera.maxOrbitX = 0.4;
+                            this.orbitCamera.minOrbitY = -0.4;
+                            this.orbitCamera.maxOrbitY = 0.4;
+                            this.orbitCamera.constrainXOrbit = false;
+                            this.orbitCamera.constrainYOrbit = false;
+                        }
+
+                        this.orbitCamera.constrainXOrbit = hasCamera;
+                        this.orbitCamera.constrainYOrbit = hasCamera;
+
+
 
                         // this.orbitCamera.constrainXOrbit = true;
-                        this.orbitCamera.setCenter(center);
+                        if (center)
+                            this.orbitCamera.setCenter(center);
                     }
                     this.needsDraw = true;
                     //right now, play by default
@@ -538,6 +551,7 @@ exports.View = Component.specialize( {
         value: function (event) {
             this.needsDraw = true;
 
+
             //no drag at the moment
             this._mousePosition = null;
         }
@@ -549,6 +563,11 @@ exports.View = Component.specialize( {
             this._consideringPointerForPicking = true;
             var position = this.getRelativePositionToCanvas(event);
             this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
+
+            //if (this._state == this.PLAY) {
+            //    this.pause();
+            // }
+
         }
     },
 
@@ -558,6 +577,10 @@ exports.View = Component.specialize( {
             if (this._consideringPointerForPicking && event.target === this.canvas) {
                 event.preventDefault();
             }
+
+            //if (this._state == this.PAUSE) {
+            //    this.play();
+            //}
 
             this._consideringPointerForPicking = false;
             this._mousePosition = null;
@@ -913,8 +936,22 @@ exports.View = Component.specialize( {
             }
 
             if (this.orbitCamera) {
+                var hasAnimation = false;
                 var cameraMatrix = this.orbitCamera.getViewMat();
-                mat4.inverse(cameraMatrix, this.viewPoint.glTFElement.transform.matrix);
+
+                if (this.scene) {
+                    if (this.scene.glTFElement.animationManager) {
+                        hasAnimation = true;
+                    }
+                }
+
+                if (hasAnimation) {
+                    var cameraMat = mat4.create();
+                    mat4.inverse(cameraMatrix,cameraMat);
+                    mat4.multiply(this.viewPoint.glTFElement.transform.matrix,cameraMat, this.viewPoint.glTFElement.transform.matrix);
+                } else {
+                    mat4.inverse(cameraMatrix, this.viewPoint.glTFElement.transform.matrix);
+                }
             }
 
 
