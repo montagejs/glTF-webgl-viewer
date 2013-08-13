@@ -64,7 +64,7 @@ var global = window;
         this._center = vec3.create();
         this._viewMat = mat4.create();
         this._yUp = true;
-
+        this._rideMode = false;
         this.orbitX = 0;
         this.orbitY = 0;
         this.maxOrbitX = Math.PI * 0.5;
@@ -244,6 +244,16 @@ var global = window;
         this._dirty = true;
     };
 
+    OrbitCamera.prototype.getRideMode = function () {
+        return this._rideMode;
+    };
+
+    OrbitCamera.prototype.setRideMode = function (value) {
+        this._rideMode = value;
+        this._dirty = true;
+    };
+
+
     OrbitCamera.prototype.setCenter = function (value) {
         this._center[0] = -value[0];
         this._center[1] = -value[1];
@@ -258,10 +268,14 @@ var global = window;
             mat4.translate(mv, this._distance);
             mat4.rotateX(mv, this.orbitX);
             mat4.rotateY(mv, this.orbitY);
-            //mat4.rotateX(mv, -Math.PI * 0.5);
+
+            //HACK: to preserve legacy behavior, this is to be removed.
+            if (this._rideMode == false) {
+                mat4.rotateX(mv, -Math.PI * 0.5);
+            }
             mat4.translate(mv, this._center);
             if(!this._yUp) { mat4.rotateX(mv, Math.PI * 0.5); }
-            
+
             this._dirty = false;
         }
 

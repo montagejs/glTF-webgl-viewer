@@ -204,6 +204,7 @@ exports.View = Component.specialize( {
         set: function(value) {
             if (this.scene !== value) {
                 var sceneReady = value != null ? (value.status == "loaded") : true; //force true if null
+                this.viewPointModifierMatrix = mat4.identity();
 
                 //sort of a hack, only set the scene when ready
                 if (!sceneReady) {
@@ -420,16 +421,15 @@ exports.View = Component.specialize( {
                         this.orbitCamera = new MontageOrbitCamera(this.canvas);
                         this.orbitCamera.translateComposer = this.translateComposer;
                         this.orbitCamera._hookEvents(this.canvas);
-                        this.orbitCamera.maxDistance = 15;
-                        this.orbitCamera.minDistance = -45;
-                        this.orbitCamera.setDistance(0);
-                        this.orbitCamera.distanceStep = 0.015;
-                        this.orbitCamera.constrainDistance = hasCamera;
-                        //this.orbitCamera.setYUp(true);
-                        //this.orbitCamera.orbitX = 0.675
-                        //this.orbitCamera.orbitY = 1.8836293856408279;
-                        //this.orbitCamera.minOrbitX = 0.2;//this.orbitCamera.orbitX - 0.6;
-                        //this.orbitCamera.maxOrbitX = 1.2;
+                        this.orbitCamera.constrainDistance = true;
+
+                        this.orbitCamera.maxDistance = hasCamera ? 15 : 200;
+                        this.orbitCamera.minDistance = hasCamera ? -45 : 0;
+
+                        this.orbitCamera.setDistance(hasCamera ? 0 : 1.3);
+                        this.orbitCamera.distanceStep = hasCamera ? 0.015 : 0.0001;
+                        this.orbitCamera.setRideMode(hasCamera);
+                        this.orbitCamera.setYUp(true);
 
                         //allow small interaction when a camera is present
                         if (hasCamera) {
@@ -437,16 +437,11 @@ exports.View = Component.specialize( {
                             this.orbitCamera.maxOrbitX = 0.4;
                             this.orbitCamera.minOrbitY = -0.4;
                             this.orbitCamera.maxOrbitY = 0.4;
-                            this.orbitCamera.constrainXOrbit = false;
-                            this.orbitCamera.constrainYOrbit = false;
                         }
 
                         this.orbitCamera.constrainXOrbit = hasCamera;
                         this.orbitCamera.constrainYOrbit = hasCamera;
 
-
-
-                        // this.orbitCamera.constrainXOrbit = true;
                         if (center)
                             this.orbitCamera.setCenter(center);
                     }
@@ -564,9 +559,9 @@ exports.View = Component.specialize( {
             var position = this.getRelativePositionToCanvas(event);
             this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
 
-            //if (this._state == this.PLAY) {
-            //    this.pause();
-            // }
+            if (this._state == this.PLAY) {
+                this.pause();
+            }
 
         }
     },
@@ -578,9 +573,9 @@ exports.View = Component.specialize( {
                 event.preventDefault();
             }
 
-            //if (this._state == this.PAUSE) {
-            //    this.play();
-            //}
+            if (this._state == this.PAUSE) {
+                this.play();
+            }
 
             this._consideringPointerForPicking = false;
             this._mousePosition = null;
@@ -887,6 +882,14 @@ exports.View = Component.specialize( {
 
     draw: {
         value: function() {
+
+            if (!this._scene)
+                return;
+            var viewPoint = this.viewPoint;
+            if (!viewPoint) {
+                return;
+            }
+
             var self = this;
             var time = Date.now();
             if (this.sceneRenderer && this.scene) {
@@ -925,14 +928,10 @@ exports.View = Component.specialize( {
                 webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
 
-            //this.canvas.setAttribute("width", this._width + "px");
-            //this.canvas.setAttribrenderTargetute("height", this._height + "px");
             //----
             if (this.viewPoint) {
                 if (this.viewPoint.glTFElement)
                     this.viewPoint.glTFElement.cameras[0].projection.aspectRatio =  this._width / this._height;
-                //this.viewPoint.cameras[0].projection.zfar = 100;
-                //this.viewPoint.cameras[0].projection.znear = 0.01;
             }
 
             if (this.orbitCamera) {
@@ -941,19 +940,12 @@ exports.View = Component.specialize( {
 
                 if (this.scene) {
                     if (this.scene.glTFElement.animationManager) {
-                        hasAnimation = true;
+                        if (this.scene.glTFElement.animationManager.animations) {
+                            hasAnimation = true;
+                        }
                     }
                 }
-
-                if (hasAnimation) {
-                    var cameraMat = mat4.create();
-                    mat4.inverse(cameraMatrix,cameraMat);
-                    mat4.multiply(this.viewPoint.glTFElement.transform.matrix,cameraMat, this.viewPoint.glTFElement.transform.matrix);
-                } else {
-                    mat4.inverse(cameraMatrix, this.viewPoint.glTFElement.transform.matrix);
-                }
             }
-
 
             var webGLContext = this.getWebGLContext(),
                 renderer,
@@ -961,8 +953,7 @@ exports.View = Component.specialize( {
                 height;
 
 
-            if (!this._scene)
-                return;
+            mat4.set(cameraMatrix, this.viewPointModifierMatrix);
 
            if(this.orbitCamera && this.orbitCameraAnimating) {
                 if (this.orbitCameraAnimatingXVel < 0.0013) {
@@ -991,10 +982,6 @@ exports.View = Component.specialize( {
                     this.canvas.width = this._width;
                     this.canvas.height = this._height;
 
-                    var viewPoint = this.viewPoint;
-                    if (!viewPoint) {
-                        return;
-                    }
                     /* ------------------------------------------------------------------------------------------------------------
                         Draw reflected scene
                             - enable depth testing
@@ -1045,11 +1032,14 @@ exports.View = Component.specialize( {
                     if (this._mousePosition) {
                         this.sceneRenderer.render(time, {    "picking" : true,
                             "coords" : this._mousePosition,
-                            "delegate" : this
+                            "delegate" : this,
+                            "viewPointModifierMatrix" : this.viewPointModifierMatrix
                         });
                     }
 
-                    this.sceneRenderer.render(time);
+                    this.sceneRenderer.render(time, {
+                        "viewPointModifierMatrix" : this.viewPointModifierMatrix
+                    });
 
                     webGLContext.flush();
 

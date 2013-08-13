@@ -475,6 +475,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 return;
 
             var picking = options ? ((options.picking == true) && (options.coords)) : false;
+            var viewPointModifierMatrix = options.viewPointModifierMatrix;
             if (picking) {
                 this.pickingRenderTarget.extras.coords = options.coords;
                 webGLRenderer.bindRenderTarget(this.pickingRenderTarget);
@@ -490,16 +491,16 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             webGLRenderer.projectionMatrix = this.viewPoint.cameras[0].projection.matrix;
 
             //get view matrix
-            var viewMatrix = mat4.create();
-
-            //FIXME: hack, need to properly expose world matrix, the app can't currently access it.
-            var pathID = this._pathIDsForNodeID[this.viewPoint.id];
-            if (pathID) {
-                var pathInfo = this._pathsInfos[pathID];
-                mat4.inverse(pathInfo[WebGLRenderer.WORLD], viewMatrix);
-            } else {
-                mat4.inverse(this.viewPoint.transform.matrix, viewMatrix);
+            var viewMatrix = mat4.identity();
+            if (this.viewPoint) {
+                if (this.viewPoint.worldTransform) {
+                    mat4.multiply(this.viewPoint.worldTransform, viewPointModifierMatrix, viewMatrix)
+                    mat4.inverse(viewMatrix);
+                } else {
+                    mat4.set(viewPointModifierMatrix, viewMatrix);
+                }
             }
+
             webGLRenderer.viewMatrix = viewMatrix;
             //to be cached
             var count = this._pathsInfosArray.length;
