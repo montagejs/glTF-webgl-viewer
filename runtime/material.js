@@ -31,14 +31,16 @@ exports.Material = Component3D.specialize( {
             this.super();
             this.addRangeAtPathChangeListener("filterColor", this, "handleFilterColorChange");
             this.addOwnPropertyChangeListener("glTFElement", this);
+            this.addOwnPropertyChangeListener("image", this);
         }
     },
 
-    filterColor: { value: [1,1,1,0]},
+    filterColor: { value: [1,1,1,1]},
 
     handleGlTFElementChange: {
         value: function() {
             this.handleFilterColorChange();
+            this.handleImageChange();
         }
     },
 
@@ -49,6 +51,85 @@ exports.Material = Component3D.specialize( {
                     this.glTFElement.parameters["filterColor"].value = this.filterColor;
                 }
             }
+        }
+    },
+
+    handleImageChange: {
+        value: function() {
+            if (this.glTFElement != null) {
+                if (this.glTFElement.parameters["diffuse"]) {
+                    if (this._image) {
+                        var imagePath = this.resolvePathIfNeeded(this._image);
+                        var parameterValue = this.parameterForImagePath(imagePath);
+                        this.glTFElement.parameters["diffuse"] = parameterValue;
+                    }
+                }
+            }
+        }
+    },
+
+    parameterForImagePath: {
+        value: function(imagePath) {
+
+            var sampler = {
+                "magFilter": "LINEAR",
+                "minFilter": "LINEAR",
+                "type": "sampler",
+                "wrapS" : "REPEAT",
+                "wrapT" : "REPEAT"
+            };
+
+            var source = {
+                "id" : "source-"+ imagePath,
+                "type" : "image",
+                "baseId" : "source-"+ imagePath,
+                "description" : {
+                    "path" : imagePath
+                }
+            };
+
+            var parameterValue = {
+                "baseId": "texture-" + imagePath,
+                "id": "texture-" + imagePath,
+                "format": "RGBA",
+                "internalFormat" : "RGBA",
+                "sampler" : sampler,
+                "source" : source,
+                "type" : "texture",
+                "target" : "TEXTURE_2D"
+            };
+
+            var parameter = {
+                "parameter": "diffuse",
+                "value" : parameterValue
+            };
+
+            return parameter;
+        }
+    },
+
+    _image: { value: null , writable:true },
+
+    image: {
+        set: function(value) {
+            if (value) {
+                //FIXME: remove this when we initialized property image with the path in place when the glTFElement comes up
+                if (value.length == 0) {
+                    return;
+                }
+            } else {
+                return;
+            }
+
+            var lowerCaseImage = value.toLowerCase();
+            if ((lowerCaseImage.indexOf(".jpg") != -1) || (lowerCaseImage.indexOf(".jpeg") != -1) || (lowerCaseImage.indexOf(".png") != -1)) {
+                if (this._image != value) {
+                    this._image = value;
+                }
+            }
+        },
+        get: function() {
+            return this._image;
         }
     },
 

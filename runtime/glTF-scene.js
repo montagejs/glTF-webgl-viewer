@@ -54,6 +54,8 @@ exports.glTFScene = Montage.specialize( {
         }
     },
 
+    baseURL: { value: null, writable:true },
+
     _animationManager: { value: null, writable: true },
 
     animationManager: {

@@ -65,8 +65,31 @@ exports.Component3D = Montage.specialize( {
         }
     },
 
-    _hasUnresolvedId: { value: false, writable: true },
+    baseURL: {
+        get: function() {
+            return this.scene ? this.scene.glTFElement.baseURL : null;
+        }
+    },
 
+    _isAbsolutePath: {
+        value: function(path) {
+            var isAbsolutePathRegExp = new RegExp("^"+window.location.protocol, "i");
+
+            return path.match(isAbsolutePathRegExp) ? true : false;
+        }
+    },
+
+    resolvePathIfNeeded: {
+        value: function(path) {
+            if (this._isAbsolutePath(path)) {
+                return path;
+            }
+
+            return this.baseURL + path;
+        }
+    },
+
+    _hasUnresolvedId: { value: false, writable: true },
 
     handleStatusChange: {
         value: function(status, key, object) {

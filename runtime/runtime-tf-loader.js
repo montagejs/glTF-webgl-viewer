@@ -430,6 +430,7 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
             scene.ids = this._ids;
             scene.id = entryID;
             scene.name = description.name;
+            scene.baseURL = this.baseURL;
             this.storeEntry(entryID, scene, description);
 
             var rootNode = Object.create(glTFNode).init();
