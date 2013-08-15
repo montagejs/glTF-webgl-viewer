@@ -98,9 +98,7 @@ var global = window;
                     return path;
                 }
 
-                var pathComponents = path.split("/");
-                var lastPathComponent = pathComponents.pop();
-                return this.baseURL + path;//lastPathComponent;
+                return this.baseURL + path;
             }
         },
 
