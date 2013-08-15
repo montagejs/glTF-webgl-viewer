@@ -33,6 +33,123 @@ exports.Transform = Object.create(Base, {
     _rotation: { value: null, writable: true },
     _scale: { value: null, writable: true },
 
+
+    //utility to move out of here and be shared with same code in animations
+    interpolateVec: {
+        value: function(from, to, step, destination) {
+            for (i = 0 ; i < destination.length ; i++) {
+                var v1 = from[i];
+                var v2 = to[i];
+                destination[i] = v1 + ((v2 - v1) * step);
+            }
+        }
+    },
+
+    easeInEaseOut: {
+        value: function(x) {
+            //x = x*2 -1;
+
+            //actually, just ease out
+            var t = x;
+            var start = 0;
+            var end = 1;
+
+            t--;
+            y =  end*(t * t * t + 1.) + start - 1.;
+            y = -y;
+            y = 1 - y;
+            return y;
+
+            /*
+                        t *= 2;
+                        var y;
+                        if (t < 1.) {
+                            y = end/2. * t * t + start - 1.;
+
+                        } else {
+
+                            t--;
+                            y= -end/2. * (t*(t-2) - 1) + start - 1.;
+                        }
+                        y = -y;
+
+                        y = 1 - y;
+                        return y;
+            */
+/*
+            t *= 2.;
+            if (t < 1.)  {
+                y = end/2 * t * t * t + start - 1.;
+            } else {
+                t -= 2;
+                y = end/2*(t * t * t + 2) + start - 1.;
+            }
+*/
+            return y;
+        }
+    },
+
+    inverpolateAxisAngle : {
+        value: function(from, to, step, destination) {
+            var AXIS_ANGLE_INTERP = 0;
+            var AXIS_ANGLE_INTERP_NAIVE = 1;
+            var QUATERNION = 2;
+            var interpolationType = QUATERNION;//AXIS_ANGLE_INTERP_NAIVE;
+            var axisAngle1 = vec4.createFrom(from[0],from[1],from[2],from[3]);
+            var axisAngle2 = vec4.createFrom(to[0],to[1],to[2],to[3]);
+            if (interpolationType == AXIS_ANGLE_INTERP) {
+                vec3.normalize(axisAngle1); //FIXME: do that upfront
+                vec3.normalize(axisAngle2);
+                //get the rotation axis from the cross product
+                var rotAxis = vec3.create();
+                vec3.cross(axisAngle1, axisAngle2, rotAxis);
+
+                var lA1 = Math.sqrt(vec3.dot(axisAngle1,axisAngle1));
+                var lA2 = Math.sqrt(vec3.dot(axisAngle2,axisAngle2));
+
+                //now the rotation angle
+                var angle = Math.acos(vec3.dot(axisAngle1,axisAngle2));
+                var axisAngleRotMat = mat4.identity();
+                mat4.rotate(axisAngleRotMat, angle * step, rotAxis);
+
+                mat4.multiplyVec3(axisAngleRotMat, axisAngle1, rotAxis);
+                vec3.normalize(rotAxis);
+
+                var interpolatedAngle = axisAngle1[3]+((axisAngle2[3]-axisAngle1[3]) * step);
+                quat4.fromAngleAxis(interpolatedAngle, rotAxis, destination);
+            } else if (interpolationType == AXIS_ANGLE_INTERP_NAIVE) {
+                //direct linear interpolation of components, to be considered for small angles
+                for (i = 0 ; i < destination.length ; i++) {
+                    var v1 = axisAngle1[i];
+                    var v2 = axisAngle2[i];
+                    axisAngle2[i] = v1 + ((v2 - v1) * step);
+                }
+                quat4.fromAngleAxis(axisAngle2[3], axisAngle2, destination);
+            } else if (interpolationType == QUATERNION) {
+                var k1 = quat4.create();
+                var k2 = quat4.create();
+                quat4.fromAngleAxis(from[3],
+                    vec3.createFrom(from[0],from[1],from[2]), k1);
+                quat4.fromAngleAxis(to[3],
+                    vec3.createFrom(to[ 0],to[1],to[2]), k2);
+                quat4.slerp(from, to, step, destination);
+            }
+        }
+    },
+
+    interpolateToTransform: {
+        value: function(to, step, destination) {
+            //step = 0.5;
+            step = this.easeInEaseOut(step);
+            //debugger;
+            this.interpolateVec(this._translation, to._translation, step, destination._translation);
+            this.interpolateVec(this._scale, to._scale, step, destination._scale);
+            this.inverpolateAxisAngle(this._rotation, to._rotation, step, destination._rotation);
+            //FIXME:breaks encapsulation
+            destination._dirty = true;
+        }
+    },
+
     matrix: {
         get: function() {
             if (this._dirty) {

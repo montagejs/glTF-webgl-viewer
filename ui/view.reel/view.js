@@ -123,14 +123,23 @@ exports.View = Component.specialize( {
         },
         set: function(value) {
             if (this._viewPoint != value) {
+                var previousViewPoint = null;
+                if (this._viewPoint && value) {
+                    if (this._viewPoint.scene == value.scene) {
+                        previousViewPoint = this._viewPoint;
+                    }
+                }
+
                 this._viewPoint = value;
                 if (value) {
                     if (this.scene && (this._viewPoint.scene == null)) {
                         this._viewPoint.scene = this.scene;
                     }
                 }
-                if (this.sceneRenderer)
+                if (this.sceneRenderer) {
+                    this.interpolatingViewPoint = {"previous": previousViewPoint ? previousViewPoint.glTFElement : null, "step":0, "start" : Date.now() }
                     this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
+                }
             }
         }
     },
@@ -190,6 +199,7 @@ exports.View = Component.specialize( {
             if (status === "loaded") {
                 this.scene = object;
                 this.needsDraw = true;
+                this.interpolatingViewPoint = null;
             }
         }
     },
@@ -205,6 +215,7 @@ exports.View = Component.specialize( {
             if (this.scene !== value) {
                 var sceneReady = value != null ? (value.status == "loaded") : true; //force true if null
                 this.viewPointModifierMatrix = mat4.identity();
+                this.interpolatingViewPoint = null;
 
                 //sort of a hack, only set the scene when ready
                 if (!sceneReady) {
@@ -451,8 +462,11 @@ exports.View = Component.specialize( {
                         if (this.viewPoint.scene == null) {
                             this.viewPoint.scene = m3dScene;
                         }
-                        if (this.sceneRenderer)
+                        if (this.sceneRenderer) {
+                            this.interpolatingViewPoint = null;
+                            this.viewPoint.glTFElement.presentationTransform = null;
                             this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
+                        }
                     }
                     this.play();
                 }
@@ -880,6 +894,10 @@ exports.View = Component.specialize( {
         value: 0
     },
 
+    interpolatingViewPoint: {
+        value: null, writable:true
+    },
+
     draw: {
         value: function() {
 
@@ -893,7 +911,10 @@ exports.View = Component.specialize( {
             var self = this;
             var time = Date.now();
             if (this.sceneRenderer && this.scene) {
-                if (this._state == this.PLAY && this.scene.glTFElement.animationManager) {
+
+                var animationManager = this.scene.glTFElement.animationManager;
+
+                if (this._state == this.PLAY && animationManager) {
                     this._sceneTime += time - this._lastTime;
                     if (this.scene.glTFElement.duration !== -1) {
                         if (this._sceneTime / 1000. > this.scene.glTFElement.duration) {
@@ -901,10 +922,16 @@ exports.View = Component.specialize( {
                             if (this.automaticallyCycleThroughViewPoints == true) {
                                 var viewPoints = this._getViewPoints(this.scene);
                                 if (viewPoints.length > 0) {
-                                    this._sceneTime = 0;
-                                    this._viewPointIndex++;
-                                    this._viewPointIndex = this._viewPointIndex % viewPoints.length;
-                                    this.viewPoint = viewPoints[this._viewPointIndex];
+                                    var nextViewPoint;
+                                    var checkIdx = 0;
+                                    do {
+                                        this._sceneTime = 0;
+                                        this._viewPointIndex++;
+                                        checkIdx++;
+                                        this._viewPointIndex = this._viewPointIndex % viewPoints.length;
+                                        nextViewPoint = viewPoints[this._viewPointIndex];
+                                    } while ((checkIdx < viewPoints.length) && (animationManager.hasAnimation(nextViewPoint.id) == false));
+                                    this.viewPoint = nextViewPoint;
                                 }
                             }
 
@@ -1033,12 +1060,15 @@ exports.View = Component.specialize( {
                         this.sceneRenderer.render(time, {    "picking" : true,
                             "coords" : this._mousePosition,
                             "delegate" : this,
-                            "viewPointModifierMatrix" : this.viewPointModifierMatrix
+                            "viewPointModifierMatrix" : this.viewPointModifierMatrix,
+                            "interpolatingViewPoint" : this.interpolatingViewPoint
                         });
                     }
 
                     this.sceneRenderer.render(time, {
-                        "viewPointModifierMatrix" : this.viewPointModifierMatrix
+                        "viewPointModifierMatrix" : this.viewPointModifierMatrix,
+                        "interpolatingViewPoint" : this.interpolatingViewPoint
+
                     });
 
                     webGLContext.flush();

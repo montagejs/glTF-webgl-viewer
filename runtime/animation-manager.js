@@ -27,7 +27,33 @@ var Animation = require("runtime/animation").Animation;
 
 exports.AnimationManager = Object.create(Base, {
 
-    animations: { value: null, writable: true },
+    _animations: { value: null, writable: true },
+
+    animations: {
+        get: function() {
+            return this._animations;
+        },
+        set: function(value) {
+            if (this._animations != value) {
+                this._animations = value;
+            }
+        }
+    },
+
+    hasAnimation: {
+      value: function(targetUID) {
+          //it is a forEach, because eventually we will return all the animations for a given target.
+            var animated = false;
+            this._animations.forEach(function(animation) {
+                animation.channels.forEach(function(channel) {
+                    if (targetUID === channel.target.baseId) {
+                        animated = true;
+                    }
+                }, this);
+          }, this);
+          return animated;
+      }
+    },
 
     updateTargetsAtTime: {
         value: function(time, resourceManager) {

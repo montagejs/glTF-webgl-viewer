@@ -387,7 +387,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
     },
 
     updateTransforms: {
-        value: function() {
+        value: function(interpolatingViewPoint) {
             if (this.scene) {
                 var self = this;
                 var context = mat4.identity();
@@ -403,7 +403,31 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                     }
 
                     var parentMatrix = context;
-                    mat4.multiply(parentMatrix, node.transform.matrix , worldMatrix);
+
+                    var nodeTransform = node.transform;
+
+                    if (node.cameras) {
+                        if (node.cameras.length > 0) {
+
+                            if (interpolatingViewPoint && self.viewPoint) {
+
+                                if (self.viewPoint.id === node.id) {
+                                    var step = (Date.now() - interpolatingViewPoint.start) / 1000;
+                                    if (node.presentationTransform == null) {
+                                        node.presentationTransform = Object.create(Transform).init();
+                                    }
+                                    if ((interpolatingViewPoint.previous != null) && (step < 1)) {
+                                        var t1 = interpolatingViewPoint.previous.transform;
+                                        var t2 = nodeTransform;
+                                        t1.interpolateToTransform(t2, step, node.presentationTransform);
+                                        nodeTransform = node.presentationTransform;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    mat4.multiply(parentMatrix, nodeTransform.matrix , worldMatrix);
 
                     node.worldTransform = worldMatrix;
 
@@ -480,7 +504,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 this.pickingRenderTarget.extras.coords = options.coords;
                 webGLRenderer.bindRenderTarget(this.pickingRenderTarget);
             }
-            this.updateTransforms();
+            this.updateTransforms(options.interpolatingViewPoint);
 
             var skinnedNode = this.scene.rootNode.nodeWithPropertyNamed("instanceSkin");
             if (skinnedNode) {
@@ -494,7 +518,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             var viewMatrix = mat4.identity();
             if (this.viewPoint) {
                 if (this.viewPoint.worldTransform) {
-                    mat4.multiply(this.viewPoint.worldTransform, viewPointModifierMatrix, viewMatrix)
+                    mat4.multiply(this.viewPoint.worldTransform, viewPointModifierMatrix, viewMatrix);
                     mat4.inverse(viewMatrix);
                 } else {
                     mat4.set(viewPointModifierMatrix, viewMatrix);

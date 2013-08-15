@@ -197,7 +197,8 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                 m3dNode.id = camera.node.baseId;
                 this.view.viewPoint = m3dNode;
             } else {
-                this.view.viewPoint = null;
+                //FIXME: handle this case
+                //this.view.viewPoint = null;
             }
         }
     },

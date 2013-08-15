@@ -28,6 +28,13 @@ var glTFNode = require("runtime/glTF-node").glTFNode;
 //This currently *can't* happen with the code path in use, the API would allow it.
 exports.Component3D = Montage.specialize( {
 
+    //FIXME: work-around
+    self: {
+        get: function() {
+            return this;
+        }
+    },
+
     constructor: {
         value: function Component3D() {
             this._hasUnresolvedId = true;
