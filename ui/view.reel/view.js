@@ -136,9 +136,22 @@ exports.View = Component.specialize( {
                         this._viewPoint.scene = this.scene;
                     }
                 }
+                var interpolatingViewPoint = null;
                 if (this.sceneRenderer) {
-                    this.interpolatingViewPoint = {"previous": previousViewPoint ? previousViewPoint.glTFElement : null, "step":0, "start" : Date.now() }
-                    this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
+                    if (value) {
+                        if (this.scene) {
+                            if (this.scene.glTFElement) {
+                                var animationManager = this.scene.glTFElement.animationManager;
+                                //we do not animate already animated cameras
+                                if (animationManager.hasAnimation(value.id) == false) {
+                                    interpolatingViewPoint = {"previous": previousViewPoint ? previousViewPoint.glTFElement : null, "step":0, "start" : Date.now() }
+                                }
+                            }
+                        }
+                        this.interpolatingViewPoint = interpolatingViewPoint;
+                        this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
+
+                    }
                 }
             }
         }
