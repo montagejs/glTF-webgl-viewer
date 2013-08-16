@@ -493,8 +493,17 @@ exports.View = Component.specialize( {
         }
     },
 
+    _disableRendering: { value: false, writable: true },
+
     enterDocument: {
         value: function(firstTime) {
+            var simulateContextLoss = false;  //Very naive for now
+            var self = this;
+
+            if (simulateContextLoss) {
+                this.canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(this.canvas);
+            }
+
             var webGLContext = this.canvas.getContext("experimental-webgl", { antialias: true, preserveDrawingBuffer: true}) ||this.canvas.getContext("webgl", { antialias: true});
             var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
             webGLContext.enable(webGLContext.DEPTH_TEST);
@@ -505,6 +514,28 @@ exports.View = Component.specialize( {
 
             if (this.scene)
                 this.applyScene(this.scene);
+
+            this.canvas.addEventListener("webglcontextlost", function(event) {
+                console.log("context was lost");
+                event.preventDefault();
+                self.sceneRenderer.webGLRenderer.resourceManager.reset();
+                self.needsDraw = false;
+                self._disableRendering = true;
+            }, false);
+
+            this.canvas.addEventListener("webglcontextrestored", function(event) {
+                console.log("context was restored");
+                event.preventDefault();
+                webGLContext.enable(webGLContext.DEPTH_TEST);
+                self.needsDraw = true;
+                self._disableRendering = false;
+            }, false);
+
+            if (simulateContextLoss) {
+                setTimeout(function() {
+                    self.canvas.loseContext();
+                }, 5000);
+            }
 
             //setup gradient
             var self = this;
@@ -916,22 +947,20 @@ exports.View = Component.specialize( {
 
             if (!this._scene)
                 return;
-            var viewPoint = this.viewPoint;
-            if (!viewPoint) {
+            if (!this.viewPoint)
                 return;
-            }
-
+            if (this._disableRendering)
+                return;
+            var viewPoint = this.viewPoint;
             var self = this;
+
             var time = Date.now();
             if (this.sceneRenderer && this.scene) {
-
                 var animationManager = this.scene.glTFElement.animationManager;
-
                 if (this._state == this.PLAY && animationManager) {
                     this._sceneTime += time - this._lastTime;
                     if (this.scene.glTFElement.duration !== -1) {
                         if (this._sceneTime / 1000. > this.scene.glTFElement.duration) {
-
                             if (this.automaticallyCycleThroughViewPoints == true) {
                                 var viewPoints = this._getViewPoints(this.scene);
                                 if (viewPoints.length > 0) {
@@ -947,7 +976,6 @@ exports.View = Component.specialize( {
                                     this.viewPoint = nextViewPoint;
                                 }
                             }
-
                             if (this.loops) {
                                 this._sceneTime = this._sceneTime % this.scene.glTFElement.duration;
                            } else {
