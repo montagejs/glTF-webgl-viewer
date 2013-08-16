@@ -44,6 +44,8 @@ exports.AnimationManager = Object.create(Base, {
       value: function(targetUID) {
           //it is a forEach, because eventually we will return all the animations for a given target.
             var animated = false;
+            if (this._animations == null)
+                return false;
             this._animations.forEach(function(animation) {
                 animation.channels.forEach(function(channel) {
                     if (targetUID === channel.target.baseId) {
