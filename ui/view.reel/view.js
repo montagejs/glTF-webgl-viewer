@@ -144,13 +144,13 @@ exports.View = Component.specialize( {
                                 var animationManager = this.scene.glTFElement.animationManager;
                                 //we do not animate already animated cameras
                                 if (animationManager.hasAnimation(value.id) == false) {
-                                    interpolatingViewPoint = {"previous": previousViewPoint ? previousViewPoint.glTFElement : null, "step":0, "start" : Date.now() }
+                                    interpolatingViewPoint = {"previous": previousViewPoint ? previousViewPoint.glTFElement : null, "step":0, "start" : Date.now(), "duration": 1000 }
                                 }
                             }
                         }
                         this.interpolatingViewPoint = interpolatingViewPoint;
                         this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
-
+                        this.needsDraw = true;
                     }
                 }
             }
@@ -564,27 +564,6 @@ exports.View = Component.specialize( {
             document.addEventListener('mouseup', this.end.bind(this), true);
             document.addEventListener('mousemove', this.move.bind(this), true);
             document.addEventListener('mousewheel', this, true);
-
-            /*
-            window.requestAnimFrame = (function(){
-                return  window.requestAnimationFrame       ||
-                    window.webkitRequestAnimationFrame ||
-                    window.mozRequestAnimationFrame    ||
-                    window.oRequestAnimationFrame      ||
-                    window.msRequestAnimationFrame     ||
-                    function( callback, element){
-                        return window.setTimeout(callback, 1000 / 60);
-                    };
-            })();
-
-            var request;
-             var self = this;
-            // start and run the animloop
-            (function animloop(){
-                console.log("render:"+self.scenePath);
-                request = requestAnimFrame(animloop, self.canvas);
-            })();
-*/
         }
     },
 
@@ -620,7 +599,6 @@ exports.View = Component.specialize( {
             if (this._state == this.PLAY) {
                 this.pause();
             }
-
         }
     },
 
@@ -955,6 +933,14 @@ exports.View = Component.specialize( {
             var self = this;
 
             var time = Date.now();
+            if (this.interpolatingViewPoint) {
+                if ((time - this.interpolatingViewPoint.start) < this.interpolatingViewPoint.duration) {
+                    this.needsDraw = true;
+                } else {
+                    this.interpolatingViewPoint = null;
+                }
+            }
+
             if (this.sceneRenderer && this.scene) {
                 var animationManager = this.scene.glTFElement.animationManager;
                 if (this._state == this.PLAY && animationManager) {
