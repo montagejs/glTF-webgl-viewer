@@ -151,6 +151,7 @@ exports.View = Component.specialize( {
                                 if (hasStaticViewPoint) {
                                     interpolatingViewPoint = {"previous": previousViewPoint ? previousViewPoint.glTFElement : null, "step":0, "start" : Date.now(), "duration": 1000 }
                                 }
+                                this._viewPointIndex = this._getViewPointIndex(this.viewPoint);
                             }
                         }
                         this.interpolatingViewPoint = interpolatingViewPoint;
@@ -158,6 +159,7 @@ exports.View = Component.specialize( {
                         this.needsDraw = true;
                     }
                 }
+
             }
         }
     },
@@ -322,8 +324,7 @@ exports.View = Component.specialize( {
         }
     },
 
-    //we don't want to cache this to avoid synchronization here, so we don't want to call it often either :)
-    _getViewPoints: {
+    _getGLTFViewPoints: {
         value: function(scene) {
             var viewPoints = [];
             var node = scene.glTFElement.rootNode;
@@ -334,16 +335,38 @@ exports.View = Component.specialize( {
                 }
                 return null;
             }, true, null);
+            return viewPoints;
+        }
+    },
+
+    //we don't want to cache this to avoid synchronization here, so we don't want to call it often either :)
+    _getViewPoints: {
+        value: function(scene) {
+            var viewPoints = this._getGLTFViewPoints(scene);
 
             var m3dNodes = [];
             viewPoints.forEach( function(viewPoint) {
                 var m3dNode = Montage.create(Node)
                 m3dNode.scene = scene;
+                //FIXME: should have probably used baseId here
                 m3dNode.id = viewPoint.baseId;
                 m3dNodes.push(m3dNode);
             }, this);
 
             return m3dNodes;
+        }
+    },
+
+    //FIXME: cache this in the scene
+    _getViewPointIndex: {
+        value: function(viewPoint) {
+            var viewPoints = this._getGLTFViewPoints(viewPoint.scene);
+
+            for (var i = 0 ; i < viewPoints.length ; i++) {
+                if (viewPoints[i].baseId === viewPoint.id)
+                    return i;
+            }
+            return 0;
         }
     },
 
@@ -953,16 +976,16 @@ exports.View = Component.specialize( {
                     if (this.scene.glTFElement.duration !== -1) {
                         if (this._sceneTime / 1000. > this.scene.glTFElement.duration) {
                             if (this.automaticallyCycleThroughViewPoints == true) {
+                                var viewPointIndex = this._viewPointIndex;
                                 var viewPoints = this._getViewPoints(this.scene);
                                 if (viewPoints.length > 0) {
                                     var nextViewPoint;
                                     var checkIdx = 0;
                                     do {
                                         this._sceneTime = 0;
-                                        this._viewPointIndex++;
                                         checkIdx++;
-                                        this._viewPointIndex = this._viewPointIndex % viewPoints.length;
-                                        nextViewPoint = viewPoints[this._viewPointIndex];
+                                        viewPointIndex = ++viewPointIndex % viewPoints.length;
+                                        nextViewPoint = viewPoints[viewPointIndex];
                                     } while ((checkIdx < viewPoints.length) && (animationManager.hasAnimation(nextViewPoint.id) == false));
                                     this.viewPoint = nextViewPoint;
                                 }
