@@ -131,6 +131,7 @@ exports.View = Component.specialize( {
                 }
 
                 this._viewPoint = value;
+                this._sceneTime = 0;
                 if (value) {
                     if (this.scene && (this._viewPoint.scene == null)) {
                         this._viewPoint.scene = this.scene;
@@ -149,7 +150,12 @@ exports.View = Component.specialize( {
                                 }
 
                                 if (hasStaticViewPoint) {
-                                    interpolatingViewPoint = {"previous": previousViewPoint ? previousViewPoint.glTFElement : null, "step":0, "start" : Date.now(), "duration": 1000 }
+                                    var orbitXY = [this.orbitCamera.orbitX, this.orbitCamera.orbitY];
+                                    interpolatingViewPoint = {  "previous": previousViewPoint ? previousViewPoint.glTFElement : null,
+                                                                "step":0,
+                                                                "start" : Date.now(),
+                                                                "duration": 1000,
+                                                                "orbitXY" : orbitXY };
                                 }
                                 this._viewPointIndex = this._getViewPointIndex(this.viewPoint);
                             }
@@ -963,8 +969,23 @@ exports.View = Component.specialize( {
             var time = Date.now();
             if (this.interpolatingViewPoint) {
                 if ((time - this.interpolatingViewPoint.start) < this.interpolatingViewPoint.duration) {
-                    this.needsDraw = true;
+                    if (this.orbitCamera) {
+                        this.orbitCamera.ignoreEvents = true;
+                        var step = (time - this.interpolatingViewPoint.start) /(this.interpolatingViewPoint.duration * 0.6);
+                        step = Math.min(step,1);
+                        var from = this.interpolatingViewPoint.orbitXY;
+                        var v1 = from[0];
+                        var v2 = 0;
+                        this.orbitCamera.orbitX = v1 + ((v2 - v1) * step);
+                        v1 = from[1];
+                        this.orbitCamera.orbitY = v1 + ((v2 - v1) * step);
+                        this.orbitCamera._dirty = true;
+                    }
+                  this.needsDraw = true;
                 } else {
+                    this.orbitCamera.ignoreEvents = false;
+                    this.orbitCamera.orbitX = 0;
+                    this.orbitCamera.orbitY = 0;
                     this.interpolatingViewPoint = null;
                 }
             }
