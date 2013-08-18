@@ -143,7 +143,12 @@ exports.View = Component.specialize( {
                             if (this.scene.glTFElement) {
                                 var animationManager = this.scene.glTFElement.animationManager;
                                 //we do not animate already animated cameras
-                                if (animationManager.hasAnimation(value.id) == false) {
+                                var hasStaticViewPoint = animationManager.hasAnimation(value.id) == false;
+                                if (hasStaticViewPoint == false && previousViewPoint != null) {
+                                    hasStaticViewPoint |= animationManager.hasAnimation(previousViewPoint.id) == false;
+                                }
+
+                                if (hasStaticViewPoint) {
                                     interpolatingViewPoint = {"previous": previousViewPoint ? previousViewPoint.glTFElement : null, "step":0, "start" : Date.now(), "duration": 1000 }
                                 }
                             }
