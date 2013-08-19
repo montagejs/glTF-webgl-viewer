@@ -644,7 +644,16 @@ exports.View = Component.specialize( {
             }
 
             if (this._state == this.PAUSE) {
-                this.play();
+                if (this.scene && this.viewPoint) {
+                    if (this.scene.glTFElement) {
+                        if (this.scene.glTFElement.animationManager) {
+                            var animationManager = this.scene.glTFElement.animationManager;
+                            if (animationManager.hasAnimation(this.viewPoint.id)) {
+                                this.play();
+                            }
+                        }
+                    }
+                }
             }
 
             this._consideringPointerForPicking = false;
