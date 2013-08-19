@@ -172,7 +172,7 @@ exports.View = Component.specialize( {
                                 }
 
                                 if (hasStaticViewPoint) {
-                                    var orbitXY = [this.orbitCamera.orbitX, this.orbitCamera.orbitY];
+                                    var orbitXY = this.orbitCamera == null ? null : [this.orbitCamera.orbitX, this.orbitCamera.orbitY];
                                     interpolatingViewPoint = {  "previous": previousViewPoint ? previousViewPoint.glTFElement : null,
                                                                 "step":0,
                                                                 "start" : Date.now(),
