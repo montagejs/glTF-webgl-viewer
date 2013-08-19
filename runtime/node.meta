@@ -1,4 +1,15 @@
 {
+    "hidden_property": {
+        "prototype": "montage/core/meta/property-blueprint",
+        "properties": {
+            "name": "hidden",
+            "valueType": "boolean",
+            "blueprint": {
+                "@": "root"
+            }
+        }
+    },
+
     "blueprint_parent": {
         "prototype": "montage/core/meta/blueprint-reference",
         "properties": {
@@ -18,9 +29,15 @@
             "parent": {"@": "blueprint_parent"},
             "name": "Node",
             "propertyBlueprints": [
+                {
+                    "@": "hidden_property"
+                }
             ],
             "propertyBlueprintGroups": {
                 "Node": [
+                    {
+                        "@": "hidden_property"
+                    }
                 ]
             },
             "blueprintModule": {
