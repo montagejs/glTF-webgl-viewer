@@ -43,7 +43,7 @@ exports.Node = Component3D.specialize( {
     handleHiddenChange: {
         value: function() {
             if (this.glTFElement != null) {
-                this.glTFElement.hidden = true;
+                this.glTFElement.hidden = this._hidden;
             }
         }
     },
