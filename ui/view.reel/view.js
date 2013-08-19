@@ -69,6 +69,22 @@ exports.View = Component.specialize( {
         }
     },
 
+    handleTextureUpdate: {
+        value: function(evt) {
+            var resourceManager = this.getResourceManager();
+            if (resourceManager && this.sceneRenderer) {
+                if (this.sceneRenderer.webGLRenderer) {
+                    var webGLContext= this.sceneRenderer.webGLRenderer.webGLContext;
+                    //trigger texture load/creation
+                    var texture = resourceManager.getResource(evt.detail.value, this.sceneRenderer.webGLRenderer.textureDelegate, webGLContext);
+                    if (texture) {
+                        this.needsDraw = true;
+                    }
+                }
+            }
+        }
+    },
+
     _sceneTime: { value: 0, writable: true },
     _lastTime: { value: 0, writable: true },
 
@@ -254,8 +270,13 @@ exports.View = Component.specialize( {
                         this.delegate.sceneWillChange();
                     }
                 }
+                if (this._scene) {
+                    this._scene.removeEventListener("textureUpdate", this);
+                }
 
                 this._scene = value;
+                this._scene.addEventListener("textureUpdate", this);
+
                 if (value.status == "loaded") {
                     this.applyScene(value);
                 }
@@ -508,6 +529,7 @@ exports.View = Component.specialize( {
                     if (this.viewPoint) {
                         if (this.viewPoint.scene == null) {
                             this.viewPoint.scene = m3dScene;
+
                         }
                         if (this.sceneRenderer) {
                             this.interpolatingViewPoint = null;
@@ -615,9 +637,6 @@ exports.View = Component.specialize( {
 
     move:{
         value: function (event) {
-            this.needsDraw = true;
-
-
             //no drag at the moment
             this._mousePosition = null;
         }
@@ -1171,7 +1190,8 @@ exports.View = Component.specialize( {
 
     resourceAvailable: {
         value: function(resource) {
-            this.needsDraw = true;
+            if (resource.type !== "image")
+                this.needsDraw = true;
         }
     },
 

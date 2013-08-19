@@ -23,10 +23,11 @@
 
 var Montage = require("montage").Montage;
 var glTFNode = require("runtime/glTF-node").glTFNode;
+var Target = require("montage/core/target").Target
 
 //FIXME: add a state to now that resolution of id pending to avoid adding useless listeners
 //This currently *can't* happen with the code path in use, the API would allow it.
-exports.Component3D = Montage.specialize( {
+exports.Component3D = Target.specialize( {
 
     //FIXME: work-around
     self: {

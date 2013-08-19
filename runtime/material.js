@@ -62,6 +62,9 @@ exports.Material = Component3D.specialize( {
                         var imagePath = this.resolvePathIfNeeded(this._image);
                         var parameterValue = this.parameterForImagePath(imagePath);
                         this.glTFElement.parameters["diffuse"] = parameterValue;
+                        if (this.scene) {
+                            this.scene.dispatchEventNamed("textureUpdate", true, false, parameterValue);
+                        }
                     }
                 }
             }
