@@ -78,7 +78,7 @@ var global = window;
         this.minDistance = 16;
         this.distanceStep = 1.0;
         this.constrainDistance = true;
-
+        this.ignoreEvents = false;
         this._dirty = true;
 
         this._hookEvents(element);
@@ -143,7 +143,7 @@ var global = window;
 
         element.addEventListener('touchmove', function(event) {
             var touches = event.touches;
-            if(moving) {
+            if(moving && !ignoreEvents) {
                 var xDelta = touches[0].pageX  - lastX,
                     yDelta = touches[0].pageY  - lastY;
 
