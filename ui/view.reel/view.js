@@ -85,6 +85,12 @@ exports.View = Component.specialize( {
         }
     },
 
+    handleMaterialUpdate: {
+        value: function(evt) {
+            this.needsDraw = true;
+        }
+    },
+
     _sceneTime: { value: 0, writable: true },
     _lastTime: { value: 0, writable: true },
 
@@ -271,11 +277,13 @@ exports.View = Component.specialize( {
                     }
                 }
                 if (this._scene) {
+                    this._scene.removeEventListener("materialUpdate", this);
                     this._scene.removeEventListener("textureUpdate", this);
                 }
 
                 this._scene = value;
                 this._scene.addEventListener("textureUpdate", this);
+                this._scene.addEventListener("materialUpdate", this);
 
                 if (value.status == "loaded") {
                     this.applyScene(value);
