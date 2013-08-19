@@ -354,7 +354,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                                             renderPrimitive[WORLD] = pathInfo[WORLD];
                                             renderPrimitive[WORLDVIEWINVERSETRANSPOSE] = pathInfo[WORLDVIEWINVERSETRANSPOSE];
                                             renderPrimitive[WORLDVIEW] = pathInfo[WORLDVIEW];
-                                            renderPrimitive.nodeID = node.id;
+                                            renderPrimitive.node = node;
 
                                             passWithPrimitives.primitives.push(renderPrimitive);
                                         }

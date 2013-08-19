@@ -29,6 +29,35 @@ exports.Node = Component3D.specialize( {
     constructor: {
         value: function Node() {
             this.super();
+            this.addOwnPropertyChangeListener("hidden", this);
+            this.addOwnPropertyChangeListener("glTFElement", this);
+        }
+    },
+
+    handleGlTFElementChange: {
+        value: function() {
+            this.handleHiddenChange();
+        }
+    },
+
+    handleHiddenChange: {
+        value: function() {
+            if (this.glTFElement != null) {
+                this.glTFElement.hidden = true;
+            }
+        }
+    },
+
+    _hidden: { value: false, writable:true },
+
+    hidden: {
+        set: function(value) {
+            if (this._hidden != value) {
+                this._hidden = value;
+            }
+        },
+        get: function() {
+            return this._hidden;
         }
     }
 
