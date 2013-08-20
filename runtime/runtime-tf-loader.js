@@ -311,7 +311,6 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
     handleCamera: {
         value: function(entryID, description, userInfo) {
             //Do not handle camera for now.
-
             var camera = Object.create(Camera).init();
             camera.id = entryID;
             this.storeEntry(entryID, camera, description);
@@ -337,7 +336,13 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
             if (children) {
                 children.forEach( function(childID) {
                     var nodeEntry = this.getEntry(childID);
-                    parentNode.children.push(nodeEntry.entry);
+                    var node = nodeEntry.entry;
+                    if (node.parent == null) {
+                        parentNode.children.push(node);
+                    } else {
+                        parentNode.children.push(node.copy());
+                    }
+
                     this.buildNodeHirerachy(nodeEntry);
                 }, this);
             }

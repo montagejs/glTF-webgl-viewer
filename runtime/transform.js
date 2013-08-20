@@ -26,7 +26,7 @@ var Base = require("runtime/base").Base;
 var Utilities = require("runtime/utilities").Utilities;
 
 //FIXME: add decomposition to be able to add getters in TRS
-var transform = exports.Transform = Object.create(Base, {
+var Transform = exports.Transform = Object.create(Base, {
     _matrix: { value: null, writable: true },
 
     _dirty: { value: true, writable: true },

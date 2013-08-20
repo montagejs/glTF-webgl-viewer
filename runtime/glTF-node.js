@@ -111,6 +111,19 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
         }
     },
 
+    nodesDidChange: {
+        value: function(nodes) {
+        }
+    },
+
+    _parent: { value: null, writable: true},
+
+    parent: {
+        get: function() {
+            return this._parent;
+        }
+    },
+
     init: {
         value: function() {
             this.__Base_init();
@@ -122,6 +135,13 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
             this._properties["meshes"].push = function(data) {
                 var result = Array.prototype.push.call(this, data);
                 self.meshesDidChange(this);
+                return result;
+            }
+
+            this._children.push = function(data) {
+                var result = Array.prototype.push.call(this, data);
+                data._parent = self;
+                self.nodesDidChange(this);
                 return result;
             }
 
@@ -276,7 +296,7 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
     copy: {
         value: function(node) {
-            var copy = Object.create(glTFNode).init();
+            var node = Object.create(glTFNode).init();
 
             node.name = this.name;
             if (this.meshes) {
@@ -295,8 +315,8 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
                 }, this);
             }
 
-            this.transform = this.transform.copy();
-            return copy;
+            node.transform = this.transform.copy();
+            return node;
         }
     },
 
