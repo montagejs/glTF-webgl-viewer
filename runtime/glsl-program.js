@@ -297,27 +297,33 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             var type = this.getTypeForSymbol(symbol);
             var GL = this._GLTypes;
 
-            if (existingValue != null) {
-                if (type === GL.FLOAT_MAT4 && value) {
+            if (( value != null) && (existingValue != null)) {
+                if (type === GL.FLOAT_MAT4) {
                     if (value.length == 16) {
                         if (mat4.equal(existingValue, value)) {
                             return;
                         }
                     }
-                } else if (type === GL.FLOAT_MAT3 && value) {
+                } else if (type === GL.FLOAT_MAT3) {
                     if (value.length == 9) {
                         if (mat3.equal(existingValue, value)) {
                             return;
                         }
                     }
-                } else if (type === GL.FLOAT_VEC3 && value) {
+                } else if (type === GL.FLOAT_VEC3) {
                     if (value.length == 3) {
                         if (vec3.equal(existingValue, value)) {
                             return;
                         }
                     }
-                } else if (type === GL.FLOAT_VEC4 && value) {
+                } else if (type === GL.FLOAT_VEC4) {
                     if (value.length == 4) {
+                        if (vec4.equal(existingValue, value)) {
+                            return;
+                        }
+                    }
+                } else if (type === GL.FLOAT_VEC2) {
+                    if (value.length == 2) {
                         if (vec4.equal(existingValue, value)) {
                             return;
                         }
@@ -326,28 +332,19 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
 
             } else {
                 if (type === GL.FLOAT_MAT4) {
-                    if (value.length === 16) {
-                        value = mat4.create();
-                    }
+                    value = mat4.create();
                 } else if (type === GL.FLOAT_MAT3) {
-                    if (value.length === 9) {
-                        value = mat3.create();
-                    }
-                }
-                if (type === GL.FLOAT_VEC3) {
-                    if (value.length === 3) {
-                        value = vec3.create();
-                    }
-                }
-                if (type === GL.FLOAT_VEC4) {
-                    if (value.length == 4) {
-                        value = vec4.create();
-                    }
+                    value = mat3.create();
+                } else if (type === GL.FLOAT_VEC3) {
+                    value = vec3.create();
+                } else if (type === GL.FLOAT_VEC4) {
+                    value = vec4.create();
+                } else if (type === GL.FLOAT_VEC2) {
+                    value = vec2.create();
                 }
                 if (value != null) {
                     existingValue = value;
                 }
-
             }
 
             if (this.symbolToActiveInfo[symbol] !== null) {
@@ -357,26 +354,16 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             }
 
             if (value != null) {
-                var temp;
                 if (type === GL.FLOAT_MAT4) {
-                    if (value.length == 16) {
-                        value = mat4.set(value ,existingValue);
-                    }
-                }
-                if (type === GL.FLOAT_MAT3) {
-                    if (value.length == 9) {
-                        value = mat3.set(value, existingValue);
-                    }
-                }
-                if (type === GL.FLOAT_VEC3) {
-                    if (value.length == 3) {
-                        value = vec3.set(value, existingValue);
-                    }
-                }
-                if (type === GL.FLOAT_VEC4) {
-                    if (value.length == 4) {
-                        value = vec4.set(value, existingValue);
-                    }
+                    value = mat4.set(value ,existingValue);
+                } else if (type === GL.FLOAT_MAT3) {
+                    value = mat3.set(value, existingValue);
+                } else if (type === GL.FLOAT_VEC3) {
+                    value = vec3.set(value, existingValue);
+                } else if (type === GL.FLOAT_VEC4) {
+                    value = vec4.set(value, existingValue);
+                } else if (type === GL.FLOAT_VEC2) {
+                    value = vec2.set(value, existingValue);
                 }
             }
 
@@ -404,6 +391,9 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             };
             theSwitch[WebGLRenderingContext.FLOAT] = function uniform1f(GL, location , count, value) {
                 GL.uniform1f(location,value);
+            };
+            theSwitch[WebGLRenderingContext.FLOAT_VEC2] = function uniform2fv(GL, location , count, value) {
+                GL.uniform2fv(location,value);
             };
             theSwitch[WebGLRenderingContext.FLOAT_VEC3] = function uniform3fv(GL, location , count, value) {
                 GL.uniform3fv(location,value);
