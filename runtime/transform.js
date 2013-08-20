@@ -34,7 +34,6 @@ exports.Transform = Object.create(Base, {
     _rotation: { value: null, writable: true },
     _scale: { value: null, writable: true },
 
-
     interpolateToTransform: {
         value: function(to, step, destination) {
             //step = 0.5;
@@ -51,19 +50,33 @@ exports.Transform = Object.create(Base, {
     matrix: {
         get: function() {
             if (this._dirty) {
-                var tr  = mat4.identity();
-                var scale  = mat4.identity();
-                var rotation  = mat4.identity();
+                if (this._matrix == null) {
+                    this._matrix = mat4.create();
+                }
 
-                mat4.translate(tr, this._translation);
-                mat4.scale(scale, this._scale);
-                quat4.toMat4(this._rotation, rotation);
+                if (this._intermediateMatrices == null) {
+                    this._intermediateMatrices = [];
 
-                this._matrix = mat4.identity();
+                    this._intermediateMatrices.push(mat4.identity());   //idx: 0 tmp
+                    this._intermediateMatrices.push(mat4.identity());   //idx: 1 tr
+                    this._intermediateMatrices.push(mat4.identity());   //idx: 2 scale
+                    this._intermediateMatrices.push(mat4.identity());   //idx: 3 rotation
+                }
 
-                mat4.multiply(this._matrix, tr);
-                mat4.multiply(this._matrix, rotation);
-                mat4.multiply(this._matrix, scale);
+                mat4.identity(this._matrix);
+                mat4.identity(this._intermediateMatrices[0]);
+
+                mat4.set(this._intermediateMatrices[0], this._intermediateMatrices[1]); //tr
+                mat4.set(this._intermediateMatrices[0], this._intermediateMatrices[2]); //scale
+                mat4.set(this._intermediateMatrices[0], this._intermediateMatrices[3]); //rotation
+
+                mat4.translate(this._intermediateMatrices[1], this._translation);
+                mat4.scale(this._intermediateMatrices[2], this._scale);
+                quat4.toMat4(this._rotation, this._intermediateMatrices[3]);
+
+                mat4.multiply(this._matrix, this._intermediateMatrices[1]);
+                mat4.multiply(this._matrix, this._intermediateMatrices[2]);
+                mat4.multiply(this._matrix, this._intermediateMatrices[3]);
 
                 this._dirty = false;
             }
