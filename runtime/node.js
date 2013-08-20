@@ -44,6 +44,8 @@ exports.Node = Component3D.specialize( {
         value: function() {
             if (this.glTFElement != null) {
                 this.glTFElement.hidden = this._hidden;
+                //FIXME: user a more appropriate name for this, it will just trigger a redraw
+                this.scene.dispatchEventNamed("materialUpdate", true, false, this);
             }
         }
     },

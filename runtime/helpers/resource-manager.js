@@ -796,6 +796,7 @@ var global = window;
                                         var convertedResource = delegate.convert(subArray, request.ctx);
                                         resourceManager._storeResource(request.id, convertedResource);
                                         delegate.resourceAvailable(convertedResource, request.ctx);
+                                        self.fireResourceAvailable.call(self, request);
 
                                     }, self);
                                     wholeBuffer.pendingRequests = [];
@@ -829,6 +830,8 @@ var global = window;
                                 var convertedResource = delegate.convert(subArray, wrappedBufferRequest.ctx);
                                 self._storeResource(wrappedBufferRequest.id, convertedResource);
                                 delegate.resourceAvailable(convertedResource, wrappedBufferRequest.ctx);
+                                self.fireResourceAvailable.call(self, wrappedBufferRequest);
+
                                 return;
                             }
                         }

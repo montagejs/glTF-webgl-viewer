@@ -1200,8 +1200,7 @@ exports.View = Component.specialize( {
 
     resourceAvailable: {
         value: function(resource) {
-            if (resource.type !== "image")
-                this.needsDraw = true;
+            this.needsDraw = true;
         }
     },
 
