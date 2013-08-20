@@ -296,6 +296,7 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
             }
 
             this.transform = this.transform.copy();
+            return copy;
         }
     },
 

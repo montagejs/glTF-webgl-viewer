@@ -158,6 +158,7 @@ var transform = exports.Transform = Object.create(Base, {
             }
 
             transform.matrix = mat4.create(this.matrix);
+            return transform;
         }
     }
 
