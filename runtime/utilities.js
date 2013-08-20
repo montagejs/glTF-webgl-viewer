@@ -268,12 +268,6 @@ exports.Utilities = Object.create(Object.prototype, {
                 }
                 quat4.fromAngleAxis(axisAngle2[3], axisAngle2, destination);
             } else if (interpolationType == QUATERNION) {
-                var k1 = quat4.create();
-                var k2 = quat4.create();
-                quat4.fromAngleAxis(from[3],
-                    vec3.createFrom(from[0],from[1],from[2]), k1);
-                quat4.fromAngleAxis(to[3],
-                    vec3.createFrom(to[ 0],to[1],to[2]), k2);
                 quat4.slerp(from, to, step, destination);
             }
         }
