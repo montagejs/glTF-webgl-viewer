@@ -25,7 +25,8 @@ require("runtime/dependencies/gl-matrix");
 var Base = require("runtime/base").Base;
 var Utilities = require("runtime/utilities").Utilities;
 
-exports.Transform = Object.create(Base, {
+//FIXME: add decomposition to be able to add getters in TRS
+var transform = exports.Transform = Object.create(Base, {
     _matrix: { value: null, writable: true },
 
     _dirty: { value: true, writable: true },
@@ -138,5 +139,26 @@ exports.Transform = Object.create(Base, {
             this.matrix = mat4.identity();
             return this;
         }
+    },
+
+    copy: {
+        value: function() {
+            var transform = Object.create(Transform).init();
+
+            if (this._translation) {
+                transform.translation = vec3.createFrom(this._translation[0], this._translation[1], this._translation[2]);
+            }
+
+            if (this._scale) {
+                transform.scale = vec3.createFrom(this._scale[0], this._scale[1], this._scale[2]);
+            }
+
+            if (this._rotation) {
+                transform.rotation = quat4.create(this._rotation);
+            }
+
+            transform.matrix = mat4.create(this.matrix);
+        }
     }
+
 });

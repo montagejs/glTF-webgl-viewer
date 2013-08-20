@@ -26,7 +26,7 @@ var Base = require("runtime/base").Base;
 var Transform = require("runtime/transform").Transform;
 var Utilities = require("runtime/utilities").Utilities;
 
-exports.glTFNode = Object.create(Base, {
+var glTFNode = exports.glTFNode = Object.create(Base, {
 
     _children: { value: null, writable: true },
 
@@ -271,6 +271,31 @@ exports.glTFNode = Object.create(Base, {
     nodeWithID: {
         value: function(id) {
             return this._nodeWithID(id);
+        }
+    },
+
+    copy: {
+        value: function(node) {
+            var copy = Object.create(glTFNode).init();
+
+            node.name = this.name;
+            if (this.meshes) {
+                this.meshes.forEach( function(mesh) {
+                    node.meshes.push(mesh);
+                }, this);
+            }
+            if (this.lights) {
+                this.lights.forEach( function(light) {
+                    node.lights.push(light);
+                }, this);
+            }
+            if (this.cameras) {
+                this.cameras.forEach( function(camera) {
+                    node.cameras.push(camera);
+                }, this);
+            }
+
+            this.transform = this.transform.copy();
         }
     },
 
