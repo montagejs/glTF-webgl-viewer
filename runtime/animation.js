@@ -186,12 +186,36 @@ var Channel = exports.Channel = Object.create(Base, {
                             }
                             quat4.fromAngleAxis(axisAngle2[3], axisAngle2, interpolatedValue);
                         } else if (interpolationType == QUATERNION) {
-                            var k1 = quat4.create();
-                            var k2 = quat4.create();
+
+                            if (this._quats == null) {
+                                this._quats = [];
+
+                                this._quats.push(quat4.create());
+                                this._quats.push(quat4.create());
+                            }
+
+                            if (this._vecs == null) {
+                                this._vecs = [];
+
+                                this._vecs.push(vec3.create());
+                                this._vecs.push(vec3.create());
+                            }
+
+                            this._vecs[0][0] = outputArray[idx1 + 0];
+                            this._vecs[0][1] = outputArray[idx1 + 1];
+                            this._vecs[0][2] = outputArray[idx1 + 2];
+
+                            this._vecs[1][0] = outputArray[idx2 + 0];
+                            this._vecs[1][1] = outputArray[idx2 + 1];
+                            this._vecs[1][2] = outputArray[idx2 + 2];
+
+                            var k1 = this._quats[0];
+                            var k2 = this._quats[1];
+
                             quat4.fromAngleAxis(outputArray[idx1 + 3],
-                                vec3.createFrom(outputArray[idx1 + 0],outputArray[idx1 +1],outputArray[idx1 + 2]), k1);
+                                this._vecs[0], k1);
                             quat4.fromAngleAxis(outputArray[idx2 + 3],
-                                vec3.createFrom(outputArray[idx2 + 0],outputArray[idx2 + 1],outputArray[idx2 + 2]), k2);
+                                this._vecs[1], k2);
                             quat4.slerp(k1, k2, ratio, interpolatedValue);
                         }
 
