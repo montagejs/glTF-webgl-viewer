@@ -568,7 +568,8 @@ exports.View = Component.specialize( {
                 this.canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(this.canvas);
             }
 
-            var webGLContext = this.canvas.getContext("experimental-webgl", { antialias: true, preserveDrawingBuffer: true}) ||this.canvas.getContext("webgl", { antialias: true});
+            var webGLContext = this.canvas.getContext("experimental-webgl", {
+                premultipliedAlpha: false, antialias: true, preserveDrawingBuffer: true}) ||this.canvas.getContext("webgl", { antialias: true});
             var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
             webGLContext.enable(webGLContext.DEPTH_TEST);
             var options = null;
