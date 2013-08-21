@@ -40,7 +40,7 @@ exports.Scene = Component3D.specialize( {
         value: function() {
             if (!this._resourcesLoaded) {
                 this._resourcesLoaded = true;
-                this.scene.dispatchEventNamed("resourcesDidLoad", true, false, this);
+                this.dispatchEventNamed("resourcesDidLoad", true, false, this);
             }
         }
     },
