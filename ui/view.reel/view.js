@@ -1200,6 +1200,13 @@ exports.View = Component.specialize( {
     resourceAvailable: {
         value: function(resource) {
             this.needsDraw = true;
+            var resourceManager = this.getResourceManager();
+            var onGoing = Object.keys(resourceManager._resourcesStatus);
+            if (onGoing.length == 0) {
+                if (this.scene) {
+                    this.scene.dispatchEventNamed("resourcesDidLoad", true, false, this);
+                }
+            }
         }
     },
 
