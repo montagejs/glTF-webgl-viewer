@@ -34,6 +34,17 @@ exports.Scene = Component3D.specialize( {
         }
     },
 
+    _resourcesLoaded: { value: false, writable: true },
+
+    resourcesDidLoad: {
+        value: function() {
+            if (!this._resourcesLoaded) {
+                this._resourcesLoaded = true;
+                this.scene.dispatchEventNamed("resourcesDidLoad", true, false, this);
+            }
+        }
+    },
+
     status: { value: 0, writable:true},
 
     path: {

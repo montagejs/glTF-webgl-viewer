@@ -1204,7 +1204,7 @@ exports.View = Component.specialize( {
             var onGoing = Object.keys(resourceManager._resourcesStatus);
             if (onGoing.length == 0) {
                 if (this.scene) {
-                    this.scene.dispatchEventNamed("resourcesDidLoad", true, false, this);
+                    this.scene.resourcesDidLoad();
                 }
             }
         }
