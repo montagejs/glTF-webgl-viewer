@@ -428,8 +428,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                     }
 
                     mat4.multiply(parentMatrix, nodeTransform.matrix , worldMatrix);
-
-                    node.worldTransform = worldMatrix;
+                    node.worldTransform = node.worldMatrix ;//worldMatrix;
 
                     return worldMatrix;
                 } , true, context);
@@ -481,7 +480,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 self._pathsInfos[pathID] = pathInfos;
                 self._pathsInfosArray[pathCount++] = pathInfos;
                 self.setupNodeAtPath(node, pathID);
-
 
                 var newContext = {};
                 newContext["path"] = path;

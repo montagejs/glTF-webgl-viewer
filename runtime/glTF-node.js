@@ -320,6 +320,18 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
         }
     },
 
+    worldMatrix: {
+        get: function() {
+            if (this.parent) {
+                var mat = mat4.create();
+                mat4.multiply(this.parent.transform.matrix, this.transform.matrix, mat);
+                return mat;
+            } else {
+                return this.transform.matrix;
+            }
+        }
+    },
+
     nodeWithJointID: {
         value: function(id) {
             return this._nodeWithJointID(id);
