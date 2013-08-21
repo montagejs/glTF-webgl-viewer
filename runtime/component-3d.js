@@ -100,7 +100,7 @@ exports.Component3D = Target.specialize( {
 
                     if (this.glTFElement) {
                         this._hasUnresolvedId = false;
-                        console.log("node attached to element with id:"+this._id);
+                        //console.log("node attached to element with id:"+this._id);
                     }
                 }
             }
@@ -120,7 +120,7 @@ exports.Component3D = Target.specialize( {
                         this.glTFElement = this.scene.glTFElement.ids[this._id];
                         if (this.glTFElement) {
                             this._hasUnresolvedId = false;
-                            console.log("node attached to element with id:"+this._id);
+                            //console.log("node attached to element with id:"+this._id);
                         }
                     }
                 }
