@@ -35,6 +35,19 @@ var Transform = exports.Transform = Object.create(Base, {
     _rotation: { value: null, writable: true },
     _scale: { value: null, writable: true },
 
+    _id: { value: 0, writable: true },
+
+    _updateDirtyFlag: {
+        value: function(flag) {
+            this._dirty = flag;
+            if (this._observers) {
+                for (var i = 0 ; i < this._observers.length ; i++) {
+                    this._observers.transformDidUpdate(this);
+                }
+            }
+        }
+    },
+
     interpolateToTransform: {
         value: function(to, step, destination) {
             //step = 0.5;
@@ -44,7 +57,7 @@ var Transform = exports.Transform = Object.create(Base, {
             Utilities.interpolateVec(this._scale, to._scale, step, destination._scale);
             Utilities.inverpolateAxisAngle(this._rotation, to._rotation, step, destination._rotation);
             //FIXME:breaks encapsulation
-            destination._dirty = true;
+            destination._updateDirtyFlag(true);
         }
     },
 
@@ -79,6 +92,7 @@ var Transform = exports.Transform = Object.create(Base, {
                 mat4.multiply(this._matrix, this._intermediateMatrices[2]);
                 mat4.multiply(this._matrix, this._intermediateMatrices[3]);
 
+                //we can be silent about this one (not use this._updateDirtyFlag(false))
                 this._dirty = false;
             }
 
@@ -86,28 +100,28 @@ var Transform = exports.Transform = Object.create(Base, {
         },
         set: function(value ) {
             this._matrix = value;
-            this._dirty = false;
+            this._updateDirtyFlag(true);
         }
     },
 
     translation : {
         set: function(value ) {
             this._translation = value;
-            this._dirty = true;
+            this._updateDirtyFlag(true);
         }
     },
 
     rotation : {
         set: function(value ) {
             this._rotation = value;
-            this._dirty = true;
+            this._updateDirtyFlag(true);
         }
     },
 
     scale : {
         set: function(value ) {
             this._scale = value;
-            this._dirty = true;
+            this._updateDirtyFlag(true);
         }
     },
 
@@ -137,7 +151,16 @@ var Transform = exports.Transform = Object.create(Base, {
             this.scale = vec3.createFrom(1,1,1);
 
             this.matrix = mat4.identity();
+
+            this._id = Transform.bumpId();
             return this;
+        }
+    },
+
+    bumpId: {
+        value: function() {
+            Transform._id++;
+            return Transform._id;
         }
     },
 
@@ -159,6 +182,33 @@ var Transform = exports.Transform = Object.create(Base, {
 
             transform.matrix = mat4.create(this.matrix);
             return transform;
+        }
+    },
+
+    _observers: { value: null, writable: true},
+
+    addObserver: {
+        value: function(observer) {
+            if (this._observers == null) {
+                this._observers = [];
+            }
+
+            if (this._observers.indexOf(observer) === -1) {
+                this._observers.push(observer);
+            } else {
+                console.log("WARNING attempt to add 2 times the same observer in transform")
+            }
+        }
+    },
+
+    removeObserver: {
+        value: function(observer) {
+            if (this._observers) {
+                var index = this._observers.indexOf(observer);
+                if (index !== -1) {
+                    this._observers.splice(index, 1);
+                }
+            }
         }
     }
 

@@ -323,7 +323,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
 
             if (node.meshes) {
                 node.meshes.forEach( function(mesh) {
-
                     if (mesh.primitives) {
                         //go through all primitives within all meshes
                         //TODO: cache all this
@@ -502,7 +501,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 this.pickingRenderTarget.extras.coords = options.coords;
                 webGLRenderer.bindRenderTarget(this.pickingRenderTarget);
             }
-            this.updateTransforms(options.interpolatingViewPoint);
+            //this.updateTransforms(options.interpolatingViewPoint);
 
             var skinnedNode = this.scene.rootNode.nodeWithPropertyNamed("instanceSkin");
             if (skinnedNode) {
@@ -515,12 +514,8 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             //get view matrix
             var viewMatrix = mat4.identity();
             if (this.viewPoint) {
-                if (this.viewPoint.worldTransform) {
-                    mat4.multiply(this.viewPoint.worldTransform, viewPointModifierMatrix, viewMatrix);
-                    mat4.inverse(viewMatrix);
-                } else {
-                    mat4.set(viewPointModifierMatrix, viewMatrix);
-                }
+                mat4.multiply(this.viewPoint.worldMatrix, viewPointModifierMatrix, viewMatrix);
+                mat4.inverse(viewMatrix);
             }
 
             webGLRenderer.viewMatrix = viewMatrix;

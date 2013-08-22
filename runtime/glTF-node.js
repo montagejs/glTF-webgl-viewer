@@ -165,7 +165,20 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
             return this._transform;
         },
         set: function(value) {
+            if (this._observers  && this._transform) {
+                for (var i = 0 ; i < this._observers.length ; i++) {
+                    this._observers.transformWillUpdate(this._transform, this);
+                }
+            }
+
             this._transform = value;
+
+            if (this._observers && this._transform) {
+                for (var i = 0 ; i < this._observers.length ; i++) {
+                    this._observers.transformDidUpdate(this._transform);
+                }
+            }
+
         }
     },
 

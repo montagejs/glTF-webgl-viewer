@@ -808,17 +808,14 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             var allUniforms = program.uniformSymbols;
 
             for (i = 0; i < allUniforms.length ; i++) {
-                value = null;
                 var symbol = allUniforms[i];
                 var parameter = pass.instanceProgram.uniforms[symbol];
+                value = null;
                 parameter = parameters[parameter];
                 if (parameter) {
-                    if (parameter.semantic) {
-                        if (parameter.semantic == this.PROJECTION) {
-                            value = this.projectionMatrix;
-                        } else {
-                            value = primitiveDescription[parameter.semantic];
-                        }
+                    var semantic = parameter.semantic;
+                    if (semantic) {
+                        value = (semantic === this.PROJECTION) ? this.projectionMatrix : primitiveDescription.node.matrixWithSemantic(semantic);
                     }
                 }
 
@@ -829,7 +826,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             parameter.worldViewMatrix = mat4.create();
                         }
 
-                        mat4.multiply(this.viewMatrix, parameter.source.worldTransform, parameter.worldViewMatrix);
+                        mat4.multiply(this.viewMatrix, parameter.source.worldMatrix, parameter.worldViewMatrix);
                         value = parameter.worldViewMatrix;
 
                     } else {
@@ -891,10 +888,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 }
                 var glResource = null;
                 if (primitiveDescription.compressed) {
-                    glResource = this.resourceManager._getResource(  accessor.id);
-                }
-                else {
-                    glResource = this.resourceManager.getResource(  accessor, this.vertexAttributeBufferDelegate, accessor);
+                    glResource = this.resourceManager._getResource( accessor.id);
+                } else {
+                    glResource = this.resourceManager.getResource( accessor, this.vertexAttributeBufferDelegate, accessor);
                 }
 
                     // this call will bind the resource when available

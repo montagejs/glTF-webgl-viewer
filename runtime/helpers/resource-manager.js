@@ -1031,7 +1031,7 @@ var global = window;
             value: function() {
                 this._resources = {};
             }
-        },
+        }
 
     });
 
