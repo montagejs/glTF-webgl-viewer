@@ -394,8 +394,10 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
     _invalidateWorldMatrix: {
         value: function() {
             this._worldMatrixIsDirty = true;
+
+            //hack to tell observer to invalidate themselves
             this._ignoresTransformUpdates = true;
-            this._transform._fireTransformDidUpdate(true);
+            this._transform._fireTransformDidUpdate();
             this._ignoresTransformUpdates = false;
 
             if (this._children) {
