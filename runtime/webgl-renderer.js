@@ -793,6 +793,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
     renderPrimitive: {
         value: function(primitiveDescription, pass, time, parameters) {
+
             var renderVertices = false;
             //var worldMatrix = primitiveDescription.worldViewMatrix;
             //var projectionMatrix = this.projectionMatrix;
@@ -813,9 +814,15 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 value = null;
                 parameter = parameters[parameter];
                 if (parameter) {
-                    var semantic = parameter.semantic;
-                    if (semantic) {
-                        value = (semantic === this.PROJECTION) ? this.projectionMatrix : primitiveDescription.node.matrixWithSemantic(semantic);
+                    if (parameter.semantic != null) {
+                        var semantic = parameter.semantic;
+                        if (semantic === this.PROJECTION) {
+                            value = this.projectionMatrix;
+                        } else if (semantic === this.WORLDVIEW) {
+                            value = primitiveDescription.nodeWrapper.worldViewMatrix;
+                        } else {
+                            value = primitiveDescription.nodeWrapper.worldViewInverseTransposeMatrix;
+                        }
                     }
                 }
 
@@ -841,6 +848,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         this.textureDelegate.webGLContext = this.webGLContext;
                         var texture = this.resourceManager.getResource(texture, this.textureDelegate, this.webGLContext);
                         if (texture) {
+
                             gl.activeTexture(gl.TEXTURE0 + currentTexture);
                             gl.bindTexture(gl.TEXTURE_2D, texture);
 

@@ -23,44 +23,42 @@
 
 require("runtime/dependencies/gl-matrix");
 var Utilities = require("runtime/utilities").Utilities;
-var ConcatenatedTransform = require("runtime/concatenated-transform").ConcatenatedTransform;
+var TransformHelper = require("runtime/transform-helper").TransformHelper;
 
-var NodeWrapper = Object.create(Object.prototype, {
+exports.NodeWrapper = Object.create(Object.prototype, {
 
-    _viewTransform: { value: null, writable: true },
-
-    _viewTransformIsDirty: { value: true, writable: true },
-
-    _worldViewConcatenatedTransform: { value: null, writable: true },
-
-    _node: { value: null, writable: true },
+    _transformHelper: { value: null, writable: true },
 
     node: {
         get: function() {
-            return this._node;
+            return this._transformHelper.node;
         }
     },
 
     init: {
         value: function(node) {
-            this._node = node;
-            this._viewTransformIsDirty = true;
-            this._worldViewConcatenatedTransform = Object.create(ConcatenatedTransform).init();
+            this._transformHelper = Object.create(TransformHelper).init();
+            this._transformHelper.node = node;
             return this;
+        }
+    },
+
+    viewPointWillChange: {
+        value: function(node, prev, transform) {
         }
     },
 
     viewPointDidChange: {
         value: function() {
-            this._viewTransformIsDirty = true;
+            this._transformHelper.viewPoint = this._scenePassRenderer.viewPoint;
         }
     },
 
-    _scenePassRenderer: { value: null, writable: true },
+    //-------
 
     scenePassRenderer: {
         get: function() {
-            return this._sceneRenderer;
+            return this._scenePassRenderer;
         },
         set: function(value) {
             if (this._scenePassRenderer != value) {
@@ -69,7 +67,7 @@ var NodeWrapper = Object.create(Object.prototype, {
                 }
 
                 this._scenePassRenderer = value;
-                this.viewPointDidChange();
+                this._transformHelper.viewPoint = value.viewPoint;
 
                 if (this._scenePassRenderer) {
                     this._scenePassRenderer.addObserver(this);
@@ -80,21 +78,19 @@ var NodeWrapper = Object.create(Object.prototype, {
 
     worldMatrix: {
         get: function() {
-            return this._node.worldMatrix;
+            return this.node.worldMatrix;
         }
     },
 
     worldViewMatrix: {
         get: function() {
+            return this._transformHelper.worldViewMatrix;
+        }
+    },
 
-            if (this._viewTransformIsDirty === true) {
-                this._viewMatrix = this._scenePassRenderer.viewPoint.transform;
-                this._viewTransformIsDirty = false;
-            }
-
-            if (this._node) {
-
-            }
+    worldViewInverseTransposeMatrix: {
+        get: function() {
+            return this._transformHelper.worldViewInverseTransposeMatrix;
         }
     }
 

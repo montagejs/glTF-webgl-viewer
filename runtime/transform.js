@@ -37,14 +37,20 @@ var Transform = exports.Transform = Object.create(Base, {
 
     _id: { value: 0, writable: true },
 
+    _fireTransformDidUpdate: {
+        value: function(flag) {
+            if (this._observers) {
+                for (var i = 0 ; i < this._observers.length ; i++) {
+                    this._observers[i].transformDidUpdate(this);
+                }
+            }
+        }
+    },
+
     _updateDirtyFlag: {
         value: function(flag) {
             this._dirty = flag;
-            if (this._observers) {
-                for (var i = 0 ; i < this._observers.length ; i++) {
-                    this._observers.transformDidUpdate(this);
-                }
-            }
+            this._fireTransformDidUpdate();
         }
     },
 
@@ -100,7 +106,7 @@ var Transform = exports.Transform = Object.create(Base, {
         },
         set: function(value ) {
             this._matrix = value;
-            this._updateDirtyFlag(true);
+            this._dirty = false;
         }
     },
 
@@ -125,9 +131,19 @@ var Transform = exports.Transform = Object.create(Base, {
         }
     },
 
+    _commonInit: {
+        value: function() {
+            this.translation = vec3.createFrom(0,0,0);
+            this.rotation = vec4.createFrom(0,0,0,0);
+            this.scale = vec3.createFrom(1,1,1);
+            this.matrix = mat4.identity();
+            this._id = Transform.bumpId();
+        }
+    },
+
     initWithDescription: {
         value: function(description) {
-            this.__Base_init();
+            this._commonInit();
 
             if (description.matrix) {
                 this.matrix = mat4.create(description.matrix);
@@ -145,14 +161,7 @@ var Transform = exports.Transform = Object.create(Base, {
 
     init: {
         value: function() {
-            this.__Base_init();
-            this.translation = vec3.createFrom(0,0,0);
-            this.rotation = vec4.createFrom(0,0,0,0);
-            this.scale = vec3.createFrom(1,1,1);
-
-            this.matrix = mat4.identity();
-
-            this._id = Transform.bumpId();
+            this._commonInit();
             return this;
         }
     },

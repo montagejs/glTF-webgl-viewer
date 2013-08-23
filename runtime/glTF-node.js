@@ -148,6 +148,9 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
             this._properties["cameras"] = [];
             this._properties["lights"] = [];
 
+            this._worldMatrixIsDirty = true;
+            this._worldMatrix = mat4.create();
+
             return this;
         }
     },
@@ -158,6 +161,33 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
         }
     },
 
+    _observers: { value: null, writable: true},
+
+    addObserver: {
+        value: function(observer) {
+            if (this._observers == null) {
+                this._observers = [];
+            }
+
+            if (this._observers.indexOf(observer) === -1) {
+                this._observers.push(observer);
+            } else {
+                console.log("WARNING attempt to add 2 times the same observer in transform")
+            }
+        }
+    },
+
+    removeObserver: {
+        value: function(observer) {
+            if (this._observers) {
+                var index = this._observers.indexOf(observer);
+                if (index !== -1) {
+                    this._observers.splice(index, 1);
+                }
+            }
+        }
+    },
+
     _transform: { value: null, writable: true },
 
     transform: {
@@ -165,17 +195,25 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
             return this._transform;
         },
         set: function(value) {
-            if (this._observers  && this._transform) {
+            if (this._observers) {
                 for (var i = 0 ; i < this._observers.length ; i++) {
-                    this._observers.transformWillUpdate(this._transform, this);
+                    this._observers[i].transformWillChange(this, this._transform, value);
                 }
             }
 
+            if (this._transform) {
+                this._transform.removeObserver(this);
+            }
             this._transform = value;
+            this._invalidateWorldMatrix();
 
-            if (this._observers && this._transform) {
+            if (this._transform) {
+                this._transform.addObserver(this);
+            }
+
+            if (this._observers) {
                 for (var i = 0 ; i < this._observers.length ; i++) {
-                    this._observers.transformDidUpdate(this._transform);
+                    this._observers[i].transformDidChange(this);
                 }
             }
 
@@ -333,15 +371,45 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
         }
     },
 
+    _worldMatrixIsDirty: { value: true, writable:true },
+
+    _worldMatrix: { value: null, writable:true },
+
     worldMatrix: {
         get: function() {
             if (this.parent) {
-                var mat = mat4.create();
-                mat4.multiply(this.parent.transform.matrix, this.transform.matrix, mat);
-                return mat;
+                if (this._worldMatrixIsDirty) {
+                    mat4.multiply(this.parent.worldMatrix, this.transform.matrix, this._worldMatrix);
+                    this._worldMatrixIsDirty = false;
+                }
+                return this._worldMatrix;
             } else {
                 return this.transform.matrix;
             }
+        }
+    },
+
+    _ignoresTransformUpdates: { value: false, writable: true },
+
+    _invalidateWorldMatrix: {
+        value: function() {
+            this._worldMatrixIsDirty = true;
+            this._ignoresTransformUpdates = true;
+            this._transform._fireTransformDidUpdate(true);
+            this._ignoresTransformUpdates = false;
+
+            if (this._children) {
+                for (var i = 0 ; i < this._children.length ; i++) {
+                    this._children[i]._invalidateWorldMatrix();
+                }
+            }
+        }
+    },
+
+    transformDidUpdate: {
+        value: function() {
+            if (this._ignoresTransformUpdates === false)
+                this._invalidateWorldMatrix();
         }
     },
 
