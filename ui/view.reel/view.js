@@ -176,7 +176,6 @@ exports.View = Component.specialize( {
                                 if (hasStaticViewPoint == false && previousViewPoint != null) {
                                     hasStaticViewPoint |= animationManager.nodeHasAnimatedAncestor(previousViewPoint.glTFElement) == false;
                                 }
-
                                 if (hasStaticViewPoint) {
                                     var orbitXY = this.orbitCamera == null ? null : [this.orbitCamera.orbitX, this.orbitCamera.orbitY];
                                     interpolatingViewPoint = {  "previous": previousViewPoint ? previousViewPoint.glTFElement : null,
@@ -414,6 +413,7 @@ exports.View = Component.specialize( {
 
     applyScene: {
         value:function (m3dScene) {
+            var center = null;
             var scene = m3dScene.glTFElement;
             if (this.sceneRenderer) {
                 if (this.sceneRenderer.technique.rootPass) {
@@ -495,8 +495,7 @@ exports.View = Component.specialize( {
 
                             scaleFactor =  1 / scaleFactor;
                             var scaleMatrix = mat4.scale(mat4.identity(), [scaleFactor, scaleFactor, scaleFactor]);
-                            var center = vec3.createFrom(0,0,(sceneSize[2]*scaleFactor)/2);
-                            //self.camera.setCenter(center);
+                            center = vec3.createFrom(0,0,(sceneSize[2]*scaleFactor)/2);
                             var translationVector = vec3.createFrom(    -((sceneSize[0] / 2) + sceneBBox[0][0]),
                                 -((sceneSize[1] / 2) + sceneBBox[0][1]),
                                 -( sceneBBox[0][2]));
@@ -507,19 +506,19 @@ exports.View = Component.specialize( {
                                 translationVector[2]]);
 
                             mat4.set(translation, scene.rootNode.transform.matrix);
+                            scene.rootNode.transform._updateDirtyFlag(false);
                         }
 
                     }
                     this.sceneRenderer.scene = scene;
                     if (scene) {
                         this.orbitCamera = new MontageOrbitCamera(this.canvas);
+
                         this.orbitCamera.translateComposer = this.translateComposer;
                         this.orbitCamera._hookEvents(this.canvas);
-                        this.orbitCamera.constrainDistance = true;
-
+                        this.orbitCamera.constrainDistance = hasCamera ? true : false;
                         this.orbitCamera.maxDistance = hasCamera ? 15 : 200;
                         this.orbitCamera.minDistance = hasCamera ? -45 : 0;
-
                         this.orbitCamera.setDistance(hasCamera ? 0 : 1.3);
                         this.orbitCamera.distanceStep = hasCamera ? 0.015 : 0.0001;
                         this.orbitCamera.setRideMode(hasCamera);
@@ -547,7 +546,6 @@ exports.View = Component.specialize( {
                         }
                         if (this.sceneRenderer) {
                             this.interpolatingViewPoint = null;
-                            this.viewPoint.glTFElement.presentationTransform = null;
                             this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
                         }
                     }
@@ -1002,12 +1000,9 @@ exports.View = Component.specialize( {
     draw: {
         value: function() {
 
-            if (!this._scene)
+            if (this._scene == null || this.viewPoint == null || this._disableRendering)
                 return;
-            if (!this.viewPoint)
-                return;
-            if (this._disableRendering)
-                return;
+
             var viewPoint = this.viewPoint;
             var self = this;
             var time = Date.now();
@@ -1085,14 +1080,13 @@ exports.View = Component.specialize( {
             if (this.orbitCamera) {
                 var cameraMatrix = this.orbitCamera.getViewMat();
                 mat4.set(cameraMatrix, this.viewPointModifierMatrix);
+                mat4.inverse(this.viewPointModifierMatrix);
             }
 
             var webGLContext = this.getWebGLContext(),
                 renderer,
                 width,
                 height;
-
-
 
            if(this.orbitCamera && this.orbitCameraAnimating) {
                 if (this.orbitCameraAnimatingXVel < 0.0013) {
@@ -1135,10 +1129,9 @@ exports.View = Component.specialize( {
                         webGLContext.depthFunc(webGLContext.LESS);
                         webGLContext.enable(webGLContext.DEPTH_TEST);
                         webGLContext.frontFace(webGLContext.CW);
+
                         var savedTr = mat4.create();
-
                         var rootNode = this.scene.glTFElement.rootNode;
-
                         var node = rootNode;
                         //save car matrix
                         mat4.set(rootNode.transform.matrix, savedTr);
@@ -1174,7 +1167,8 @@ exports.View = Component.specialize( {
                     webGLContext.disable(webGLContext.BLEND);
 
                     if (this._mousePosition) {
-                        this.sceneRenderer.render(time, {    "picking" : true,
+                        this.sceneRenderer.render(time, {
+                            "picking" : true,
                             "coords" : this._mousePosition,
                             "delegate" : this,
                             "viewPointModifierMatrix" : this.viewPointModifierMatrix,
@@ -1185,7 +1179,6 @@ exports.View = Component.specialize( {
                     this.sceneRenderer.render(time, {
                         "viewPointModifierMatrix" : this.viewPointModifierMatrix,
                         "interpolatingViewPoint" : this.interpolatingViewPoint
-
                     });
 
                     webGLContext.flush();
@@ -1194,8 +1187,6 @@ exports.View = Component.specialize( {
                     if (error != webGLContext.NO_ERROR) {
                         console.log("gl error"+webGLContext.getError());
                     }
-
-                    //this.displayAllBBOX(cameraMatrix);
                 }
             }
         }
@@ -1258,10 +1249,8 @@ exports.View = Component.specialize( {
                 }, 3000)
             }, false);
             this.translateComposer = composer;
-
         }
-    },
-
+    }
 });
 
 
