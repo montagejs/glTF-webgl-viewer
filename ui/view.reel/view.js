@@ -1080,7 +1080,10 @@ exports.View = Component.specialize( {
             if (this.orbitCamera) {
                 var cameraMatrix = this.orbitCamera.getViewMat();
                 mat4.set(cameraMatrix, this.viewPointModifierMatrix);
-                mat4.inverse(this.viewPointModifierMatrix);
+                //FIXME
+                if (this.viewPoint)
+                   if (this.viewPoint.glTFElement.parent == null)
+                        mat4.inverse(this.viewPointModifierMatrix);
             }
 
             var webGLContext = this.getWebGLContext(),
