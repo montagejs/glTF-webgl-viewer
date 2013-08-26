@@ -465,7 +465,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 this.__transform = Object.create(Transform).init();
             }
 
-
             var viewPointModifierMatrix = options.viewPointModifierMatrix;
             if (this.viewPoint) {
                 mat4.set(this.viewPoint.worldMatrix, this.__matrix);
@@ -501,7 +500,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 this.pickingRenderTarget.extras.coords = options.coords;
                 webGLRenderer.bindRenderTarget(this.pickingRenderTarget);
             }
-            //this.updateTransforms();
 
             var skinnedNode = this.scene.rootNode.nodeWithPropertyNamed("instanceSkin");
             if (skinnedNode) {
