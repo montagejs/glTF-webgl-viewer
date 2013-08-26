@@ -298,6 +298,12 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             var GL = this._GLTypes;
 
             if (( value != null) && (existingValue != null)) {
+                if (type === GL.FLOAT) {
+                    if (value === existingValue) {
+                        return;
+                    }
+                }
+
                 if (type === GL.FLOAT_MAT4) {
                     if (value.length == 16) {
                         if (mat4.equal(existingValue, value)) {
@@ -492,9 +498,11 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
                 this.symbolToSemantic = {};
                 this.semanticToSymbol = {};
                 this._GLTypes = {
+                    "FLOAT" : GL.FLOAT,
                     "FLOAT_MAT4" : GL.FLOAT_MAT4,
                     "FLOAT_MAT3" : GL.FLOAT_MAT3,
                     "FLOAT_VEC3" : GL.FLOAT_VEC3,
+                    "FLOAT_VEC2" : GL.FLOAT_VEC2,
                     "FLOAT_VEC4" : GL.FLOAT_VEC4
                 }
 
