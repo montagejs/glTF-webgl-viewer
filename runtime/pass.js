@@ -429,42 +429,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
         }
     },
 
-    /*
-    updateTransforms: {
-        value: function(interpolatingViewPoint) {
-            if (this.scene) {
-                var self = this;
-                var context = mat4.identity();
-                this.scene.rootNode.apply( function(node, parent, context) {
-                    var worldMatrix;
-                    var pathID = self._pathIDsForNodeID[node.id];
-
-                    var pathInfos = self._pathsInfos[pathID];
-                    if (pathInfos) {
-                        worldMatrix = pathInfos[WebGLRenderer.WORLD];
-                    } else {
-                        worldMatrix = parentMatrix;
-                    }
-
-                    var parentMatrix = context;
-
-                    var nodeTransform = node.transform;
-
-                    if (node.cameras) {
-                        if (node.cameras.length > 0) {
-                        }
-                    }
-
-                    mat4.multiply(parentMatrix, nodeTransform.matrix , worldMatrix);
-                    node.worldTransform = node.worldMatrix ;//worldMatrix;
-
-                    return worldMatrix;
-                } , true, context);
-            }
-        }
-    },
-    */
-
     sceneWillChange: {
         value: function(prev, scene) {
             this._viewPointMatrix = mat4.identity();
@@ -478,7 +442,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             this._nodeWrappers = {};
             //Assign a view point from available nodes with camera if none
             var self = this;
-            var pathCount = 0;
             if (!this.scene)
                 return;
             this.scene.rootNode.apply( function(node, parent, context) {
@@ -549,28 +512,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             webGLRenderer.projectionMatrix = this.viewPoint.cameras[0].projection.matrix;
 
 
-            //get view matrix
-            //var viewMatrix = mat4.identity();
-            //if (this.viewPoint) {
-            //    mat4.multiply(this.viewPoint.worldMatrix, viewPointModifierMatrix, viewMatrix);
-            //    mat4.inverse(viewMatrix);
-           // }
-
-            //webGLRenderer.viewMatrix = viewMatrix;
-            //to be cached
-
-            /*
-            var count = this._pathsInfosArray.length;
-            for (var i = 0 ; i < count ; i++) {
-                var pathInfos = this._pathsInfosArray[i];
-                var worldMatrix = pathInfos[webGLRenderer.WORLD];
-                var worldViewMatrix = pathInfos[webGLRenderer.WORLDVIEW];
-                var normalMatrix = pathInfos[webGLRenderer.WORLDVIEWINVERSETRANSPOSE];
-                mat4.multiply(viewMatrix, worldMatrix, worldViewMatrix);
-                mat4.toInverseMat3(worldViewMatrix, normalMatrix);
-                mat3.transpose(normalMatrix);
-            }
-            */
             var nonOpaquePassesWithPrimitives = [];
             var keys = Object.keys(this._primitivesPerPass);
             keys.forEach( function(key) {
