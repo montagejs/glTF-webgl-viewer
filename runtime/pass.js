@@ -297,9 +297,7 @@ var ProgramPass = exports.ProgramPass = Montage.create(Pass, {
 
 var ScenePassRenderer = Object.create(Object.prototype, {
 
-    _pathsInfosArray: { value: null, writable: true },
-
-    _pathsInfos: { value: null, writable: true },
+    _nodeWrappers: { value: null, writable: true },
 
     _pathIDsForNodeID: { value: null, writable: true },
 
@@ -310,6 +308,8 @@ var ScenePassRenderer = Object.create(Object.prototype, {
     _scene: { value: null, writable: true },
 
     _observers: { value: null, writable: true},
+
+    _viewPointMatrix: { value: null, writable: true },
 
     addObserver: {
         value: function(observer) {
@@ -353,6 +353,12 @@ var ScenePassRenderer = Object.create(Object.prototype, {
 
             if (this._observers) {
                 for (var i = 0 ; i < this._observers.length ; i++) {
+                    this._observers[i].viewPointMatrixDidUpdate(this);
+                }
+            }
+
+            if (this._observers) {
+                for (var i = 0 ; i < this._observers.length ; i++) {
                     this._observers[i].viewPointDidChange(this);
                 }
             }
@@ -361,6 +367,13 @@ var ScenePassRenderer = Object.create(Object.prototype, {
 
     setupNodeAtPath: {
         value:function(node, pathID) {
+            var nodeWrapper = this._nodeWrappers[node.id];
+            if (nodeWrapper == null) {
+                nodeWrapper = Object.create(NodeWrapper).init(node);
+                this._nodeWrappers[node.id] = nodeWrapper;
+                nodeWrapper.scenePassRenderer = this;
+            }
+
 
             if (node.meshes) {
                 node.meshes.forEach( function(mesh) {
@@ -386,8 +399,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                                             renderPrimitive.compressed = true;
                                         renderPrimitive["primitive"] = primitive;
                                         renderPrimitive.node = node;
-                                        renderPrimitive.nodeWrapper = Object.create(NodeWrapper).init(node);
-                                        renderPrimitive.nodeWrapper.scenePassRenderer = this;
+                                        renderPrimitive.nodeWrapper = nodeWrapper;
                                         passWithPrimitives.primitives.push(renderPrimitive);
                                     }
                                 }
@@ -440,22 +452,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
 
                     if (node.cameras) {
                         if (node.cameras.length > 0) {
-
-                            if (interpolatingViewPoint && self.viewPoint) {
-
-                                if (self.viewPoint.id === node.id) {
-                                    var step = (Date.now() - interpolatingViewPoint.start) / 1000;
-                                    if (node.presentationTransform == null) {
-                                        node.presentationTransform = Object.create(Transform).init();
-                                    }
-                                    if ((interpolatingViewPoint.previous != null) && (step < 1)) {
-                                        var t1 = interpolatingViewPoint.previous.transform;
-                                        var t2 = nodeTransform;
-                                        t1.interpolateToTransform(t2, step, node.presentationTransform);
-                                        nodeTransform = node.presentationTransform;
-                                    }
-                                }
-                            }
                         }
                     }
 
@@ -469,48 +465,26 @@ var ScenePassRenderer = Object.create(Object.prototype, {
     },
     */
 
+    sceneWillChange: {
+        value: function(prev, scene) {
+            this._viewPointMatrix = mat4.identity();
+        }
+    },
+
     sceneDidChange: {
         value: function() {
             //prepares all infos
-            this._pathsInfos = {};
-            this._pathIDsForNodeID = {};
             this._primitivesPerPass = {};
-            this._pathsInfosArray = [];
-
-            //TODO: expose list of nodes / cameras / light / material
-            var nodes = {};
-
+            this._nodeWrappers = {};
             //Assign a view point from available nodes with camera if none
             var self = this;
-            var WORLD = WebGLRenderer.WORLD;
-            var WORLDVIEW = WebGLRenderer.WORLDVIEW;
-            var WORLDVIEWINVERSETRANSPOSE = WebGLRenderer.WORLDVIEWINVERSETRANSPOSE;
-
-            var context = {};
-            context["path"] = [];
-            context[WORLD] = mat4.identity();
             var pathCount = 0;
-
             if (!this.scene)
                 return;
             this.scene.rootNode.apply( function(node, parent, context) {
-                var worldMatrix = mat4.create();
-
-                mat4.multiply(context[WORLD], node.transform.matrix , worldMatrix);
-
-                var path = context.path.concat([node.id]);
-                var pathID = path.join('-');
-
-                nodes[node.id] = node;
-
-                self.setupNodeAtPath(node, pathID);
-
-                var newContext = {};
-                newContext["path"] = path;
-                newContext[WORLD] = worldMatrix;
-
-                return newContext;
-            } , true, context);
+                self.setupNodeAtPath(node);
+                return null;
+            } , true, null);
         }
     },
 
@@ -520,13 +494,51 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             if (!this.scene || !this.viewPoint)
                 return;
 
-            var picking = options ? ((options.picking == true) && (options.coords)) : false;
+            //FIXME: make a pool to avoid these object, they are temporary we don't want to re-create them each time
+            if (this.__matrix == null) {
+                this.__matrix = mat4.create();
+            }
+            if (this.__transform == null) {
+                this.__transform = Object.create(Transform).init();
+            }
+
+
             var viewPointModifierMatrix = options.viewPointModifierMatrix;
+            if (this.viewPoint) {
+                mat4.set(this.viewPoint.worldMatrix, this.__matrix);
+                var interpolatingViewPoint = options.interpolatingViewPoint;
+                if (interpolatingViewPoint) {
+                    var step = (time - interpolatingViewPoint.start) / 1000;
+                    if ((interpolatingViewPoint.previous != null) && (step < 1)) {
+                        //FIXME: this is wrong as it assumes that t1 & t2 can be interpolated but shouldn't be just like this
+                        //we should get the worldTransforms , decompose and then interpolate, here this works when both
+                        //nodes are under the root
+                        var t1 = interpolatingViewPoint.previous.transform;
+                        var t2 = this.viewPoint.transform;
+                        t1.interpolateToTransform(t2, step, this.__transform);
+                        mat4.multiply(this.viewPoint.parent.worldMatrix, this.__transform.matrix, this.__matrix);
+                    }
+                }
+
+                mat4.multiply(this.__matrix, viewPointModifierMatrix);
+                mat4.inverse(this.__matrix);
+
+                if (mat4.equal(this._viewPointMatrix, this.__matrix) === false) {
+                    mat4.set(this.__matrix, this._viewPointMatrix);
+                    if (this._observers) {
+                        for (var i = 0 ; i < this._observers.length ; i++) {
+                            this._observers[i].viewPointMatrixDidUpdate(this);
+                        }
+                    }
+                }
+            }
+
+            var picking = options ? ((options.picking == true) && (options.coords)) : false;
             if (picking) {
                 this.pickingRenderTarget.extras.coords = options.coords;
                 webGLRenderer.bindRenderTarget(this.pickingRenderTarget);
             }
-            //this.updateTransforms(options.interpolatingViewPoint);
+            //this.updateTransforms();
 
             var skinnedNode = this.scene.rootNode.nodeWithPropertyNamed("instanceSkin");
             if (skinnedNode) {
@@ -536,14 +548,15 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             //set projection matrix
             webGLRenderer.projectionMatrix = this.viewPoint.cameras[0].projection.matrix;
 
-            //get view matrix
-            var viewMatrix = mat4.identity();
-            if (this.viewPoint) {
-                mat4.multiply(this.viewPoint.worldMatrix, viewPointModifierMatrix, viewMatrix);
-                mat4.inverse(viewMatrix);
-            }
 
-            webGLRenderer.viewMatrix = viewMatrix;
+            //get view matrix
+            //var viewMatrix = mat4.identity();
+            //if (this.viewPoint) {
+            //    mat4.multiply(this.viewPoint.worldMatrix, viewPointModifierMatrix, viewMatrix);
+            //    mat4.inverse(viewMatrix);
+           // }
+
+            //webGLRenderer.viewMatrix = viewMatrix;
             //to be cached
 
             /*
@@ -607,6 +620,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
         },
         set: function(value) {
             if (this._scene != value) {
+                this.sceneWillChange(this._scene, value);
                 this._scene = value;
                 this.sceneDidChange();
             }
@@ -672,6 +686,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             this.pickingRenderTarget = this.createPickingRenderTargetIfNeeded();
             this.pickingRenderTarget.width = 512;
             this.pickingRenderTarget.height = 512;
+            this._nodeWrappers = {};
             return this;
         }
     }

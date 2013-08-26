@@ -828,13 +828,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
                 if ((value == null) && parameter != null) {
                     if (parameter.source) {
-                        //FIXME: assume WORLDMATRIX at the moment, need to clarify how to use semantic and the whole source syntax
-                        if (parameter.worldViewMatrix == null) {
-                            parameter.worldViewMatrix = mat4.create();
-                        }
-
-                        mat4.multiply(this.viewMatrix, parameter.source.worldMatrix, parameter.worldViewMatrix);
-                        value = parameter.worldViewMatrix;
+                        var nodeWrapper = primitiveDescription.nodeWrapper.scenePassRenderer._nodeWrappers[parameter.source.id];
+                        value = nodeWrapper.worldViewMatrix;
 
                     } else {
                         value = parameter.value;

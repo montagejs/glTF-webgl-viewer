@@ -94,6 +94,8 @@ exports.View = Component.specialize( {
     _sceneTime: { value: 0, writable: true },
     _lastTime: { value: 0, writable: true },
 
+    superSamplingFactor: { value: 1, writable: true },
+
     play: {
         value: function() {
             switch (this._state) {
@@ -145,6 +147,7 @@ exports.View = Component.specialize( {
         },
         set: function(value) {
             if (this._viewPoint != value) {
+
                 var previousViewPoint = null;
                 if (this._viewPoint && value) {
                     if (this._viewPoint.scene == value.scene) {
@@ -153,6 +156,9 @@ exports.View = Component.specialize( {
                 }
 
                 this._viewPoint = value;
+                if (value)
+                    console.log("set viewpoint:"+value.id);
+
                 this._sceneTime = 0;
                 if (value) {
                     if (this.scene && (this._viewPoint.scene == null)) {
@@ -166,9 +172,9 @@ exports.View = Component.specialize( {
                             if (this.scene.glTFElement) {
                                 var animationManager = this.scene.glTFElement.animationManager;
                                 //we do not animate already animated cameras
-                                var hasStaticViewPoint = animationManager.hasAnimation(value.id) == false;
+                                var hasStaticViewPoint = animationManager.nodeHasAnimatedAncestor(value.glTFElement) == false;
                                 if (hasStaticViewPoint == false && previousViewPoint != null) {
-                                    hasStaticViewPoint |= animationManager.hasAnimation(previousViewPoint.id) == false;
+                                    hasStaticViewPoint |= animationManager.nodeHasAnimatedAncestor(previousViewPoint.glTFElement) == false;
                                 }
 
                                 if (hasStaticViewPoint) {
@@ -533,7 +539,6 @@ exports.View = Component.specialize( {
                         if (center)
                             this.orbitCamera.setCenter(center);
                     }
-                    this.needsDraw = true;
                     //right now, play by default
                     if (this.viewPoint) {
                         if (this.viewPoint.scene == null) {
@@ -546,6 +551,9 @@ exports.View = Component.specialize( {
                             this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
                         }
                     }
+                    this.stop();
+                    this.play();
+                    this.needsDraw = true;
                 }
             }
         }
@@ -656,7 +664,7 @@ exports.View = Component.specialize( {
             event.preventDefault();
             this._consideringPointerForPicking = true;
             var position = this.getRelativePositionToCanvas(event);
-            this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
+            this._mousePosition = [position.x * this.scaleFactor * this.superSamplingFactor,  this.height - (position.y * this.scaleFactor * this.superSamplingFactor)];
 
             if (this._state == this.PLAY) {
                 this.pause();
@@ -676,7 +684,7 @@ exports.View = Component.specialize( {
                     if (this.scene.glTFElement) {
                         if (this.scene.glTFElement.animationManager) {
                             var animationManager = this.scene.glTFElement.animationManager;
-                            if (animationManager.hasAnimation(this.viewPoint.id)) {
+                            if (animationManager.nodeHasAnimatedAncestor(this.viewPoint.glTFElement)) {
                                 this.play();
                             }
                         }
@@ -944,7 +952,7 @@ exports.View = Component.specialize( {
         },
         set: function(value) {
             if (value != this._width) {
-                this._width = value * this.scaleFactor;
+                this._width = value * this.scaleFactor * this.superSamplingFactor;
                 this.needsDraw = true;
             }
         }
@@ -960,7 +968,7 @@ exports.View = Component.specialize( {
         },
         set: function(value) {
             if (value != this._height) {
-                this._height = value * this.scaleFactor;
+                this._height = value * this.scaleFactor * this.superSamplingFactor;
                 this.needsDraw = true;
             }
         }
@@ -1002,7 +1010,6 @@ exports.View = Component.specialize( {
                 return;
             var viewPoint = this.viewPoint;
             var self = this;
-
             var time = Date.now();
             if (this.interpolatingViewPoint) {
                 if ((time - this.interpolatingViewPoint.start) < this.interpolatingViewPoint.duration) {
@@ -1045,7 +1052,7 @@ exports.View = Component.specialize( {
                                         checkIdx++;
                                         viewPointIndex = ++viewPointIndex % viewPoints.length;
                                         nextViewPoint = viewPoints[viewPointIndex];
-                                    } while ((checkIdx < viewPoints.length) && (animationManager.hasAnimation(nextViewPoint.id) == false));
+                                    } while ((checkIdx < viewPoints.length) && (animationManager.nodeHasAnimatedAncestor(nextViewPoint.glTFElement) == false));
                                     this.viewPoint = nextViewPoint;
                                 }
                             }
@@ -1076,16 +1083,8 @@ exports.View = Component.specialize( {
             }
 
             if (this.orbitCamera) {
-                var hasAnimation = false;
                 var cameraMatrix = this.orbitCamera.getViewMat();
-
-                if (this.scene) {
-                    if (this.scene.glTFElement.animationManager) {
-                        if (this.scene.glTFElement.animationManager.animations) {
-                            hasAnimation = true;
-                        }
-                    }
-                }
+                mat4.set(cameraMatrix, this.viewPointModifierMatrix);
             }
 
             var webGLContext = this.getWebGLContext(),
@@ -1094,7 +1093,6 @@ exports.View = Component.specialize( {
                 height;
 
 
-            mat4.set(cameraMatrix, this.viewPointModifierMatrix);
 
            if(this.orbitCamera && this.orbitCameraAnimating) {
                 if (this.orbitCameraAnimatingXVel < 0.0013) {
@@ -1122,6 +1120,11 @@ exports.View = Component.specialize( {
                     this.canvas.style.height = (this._height / this.scaleFactor) + "px";
                     this.canvas.width = this._width;
                     this.canvas.height = this._height;
+
+                    if (this.superSamplingFactor > 1) {
+                        this.element.style.WebkitTransform = "scale(0.5, 0.5)"
+                        this.element.style["-webkit-transform-origin"] = "0px 0px";
+                    }
 
                     /* ------------------------------------------------------------------------------------------------------------
                         Draw reflected scene
@@ -1191,7 +1194,7 @@ exports.View = Component.specialize( {
                     if (error != webGLContext.NO_ERROR) {
                         console.log("gl error"+webGLContext.getError());
                     }
-                    
+
                     //this.displayAllBBOX(cameraMatrix);
                 }
             }

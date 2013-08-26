@@ -54,6 +54,12 @@ exports.NodeWrapper = Object.create(Object.prototype, {
         }
     },
 
+    viewPointMatrixDidUpdate: {
+        value: function() {
+            this._transformHelper.transformDidUpdate();
+        }
+    },
+
     //-------
 
     scenePassRenderer: {
@@ -67,7 +73,7 @@ exports.NodeWrapper = Object.create(Object.prototype, {
                 }
 
                 this._scenePassRenderer = value;
-                this._transformHelper.viewPoint = value.viewPoint;
+                this._transformHelper.viewMatrix = value._viewPointMatrix;
 
                 if (this._scenePassRenderer) {
                     this._scenePassRenderer.addObserver(this);

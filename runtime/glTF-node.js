@@ -384,6 +384,7 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
                 }
                 return this._worldMatrix;
             } else {
+                this._worldMatrixIsDirty = false;
                 return this.transform.matrix;
             }
         }

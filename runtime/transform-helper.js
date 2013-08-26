@@ -69,24 +69,15 @@ var TransformHelper = exports.TransformHelper = Object.create(Object.prototype, 
         }
     },
 
-    _viewPoint: { value: null, writable: true },
+    _viewMatrix: { value: null, writable: true },
 
-    viewPoint: {
+    viewMatrix: {
         set: function(value) {
-            if (this._viewPoint != value) {
-                if (this._viewPoint) {
-                    this._viewPoint.transform.removeObserver(this);
-                }
-
-                this._viewPoint = value;
-                if (this._viewPoint) {
-                    this._viewPoint.transform.addObserver(this);
-                }
-                this._dirty = true;
-            }
+            this._viewMatrix = value;
+            this._dirty = true;
         },
         get: function() {
-            return this._viewPoint;
+            return this._viewMatrix;
         }
     },
 
@@ -99,7 +90,6 @@ var TransformHelper = exports.TransformHelper = Object.create(Object.prototype, 
     updateMatricesIfNeeded: {
         value: function() {
             if (this._dirty) {
-                mat4.inverse(this._viewPoint.worldMatrix, this._viewMatrix);
                 mat4.multiply(this._viewMatrix, this._node.worldMatrix, this._worldViewMatrix);
                 mat4.toInverseMat3(this._worldViewMatrix, this._worldViewInverseTransposeMatrix);
                 mat3.transpose(this._worldViewInverseTransposeMatrix);

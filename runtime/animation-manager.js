@@ -40,21 +40,43 @@ exports.AnimationManager = Object.create(Base, {
         }
     },
 
-    hasAnimation: {
-      value: function(targetUID) {
-          //it is a forEach, because eventually we will return all the animations for a given target.
-            var animated = false;
-            if (this._animations == null)
-                return false;
-            this._animations.forEach(function(animation) {
-                animation.channels.forEach(function(channel) {
-                    if (targetUID === channel.target.baseId) {
-                        animated = true;
-                    }
+    targets: {
+        get: function() {
+            var targets = [];
+            if (this._animations != null) {
+                this._animations.forEach(function(animation) {
+                    animation.channels.forEach(function(channel) {
+                        targets.push(channel.target.id);
+                    }, this);
                 }, this);
-          }, this);
-          return animated;
-      }
+            }
+            return targets;
+        }
+    },
+
+    hasAnimation: {
+      value: function(targetUID, targets) {
+          //it is a forEach, because eventually we will return all the animations for a given target.
+          var animated = false;
+          if (this._animations == null)
+              return false;
+          if (targets == null)
+              targets = this.targets;
+
+          return targets.indexOf(targetUID) !== -1;
+        }
+    },
+
+    nodeHasAnimatedAncestor: {
+        value: function(node) {
+            do {
+                if (this.hasAnimation(node.id)) {
+                    return true;
+                }
+                node = node.parent;
+            } while (node != null);
+            return false;
+        }
     },
 
     updateTargetsAtTime: {
