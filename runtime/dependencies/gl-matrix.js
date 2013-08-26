@@ -908,7 +908,6 @@ var global = window;
      */
     mat4.create = function (mat) {
         var dest = new MatrixArray(16);
-
         if (mat) {
             dest[0] = mat[0];
             dest[1] = mat[1];
@@ -1496,7 +1495,6 @@ var global = window;
         }
 
         if (len !== 1) {
-            //debugger;
             len = 1 / len;
             x *= len;
             y *= len;
