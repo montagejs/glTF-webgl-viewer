@@ -420,15 +420,17 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
     //that should be private
     commit: {
         value: function(GL) {
-            var i = this.pendingCommits.length-1, symbol;
-            while (symbol = this.pendingCommits[i--]) {
-                this._commitSwitch[this.getTypeForSymbol(symbol)](
-                    GL,
-                    GL.getUniformLocation(this.GLProgram,symbol),
-                    false,
-                    this.getValueForSymbol(symbol));
+            if (this.pendingCommits.length) {
+                var i = this.pendingCommits.length-1, symbol;
+                while (symbol = this.pendingCommits[i--]) {
+                    this._commitSwitch[this.getTypeForSymbol(symbol)](
+                        GL,
+                        this.symbolToLocation[symbol],
+                        false,
+                        this.getValueForSymbol(symbol));
+                }
+                this.pendingCommits.length = 0;
             }
-            this.pendingCommits = [];
         }
     },
 
@@ -474,11 +476,11 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             var activeInfo;
 
             var vertexShader = this.createShaderWithSourceAndType(GL,vertexShaderSource,GLSLProgram.VERTEX_SHADER);
-            if (vertexShader === null)
+            if (vertexShader == null)
                 return false;
 
             var fragmentShader = this.createShaderWithSourceAndType(GL,fragmentShaderSource,GLSLProgram.FRAGMENT_SHADER);
-            if (fragmentShader === null)
+            if (fragmentShader == null)
                 return false;
 
             this.GLProgram = GL.createProgram();
