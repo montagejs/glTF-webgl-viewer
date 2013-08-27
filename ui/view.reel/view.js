@@ -574,8 +574,9 @@ exports.View = Component.specialize( {
                 this.canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(this.canvas);
             }
 
-            var webGLContext = this.canvas.getContext("experimental-webgl", {
-                premultipliedAlpha: false, antialias: true, preserveDrawingBuffer: true}) ||this.canvas.getContext("webgl", { antialias: true});
+            var webGLOptions = { premultipliedAlpha: false, antialias: true, preserveDrawingBuffer: false };
+            var webGLContext =  this.canvas.getContext("experimental-webgl", webGLOptions) ||
+                                this.canvas.getContext("webgl", webGLOptions);
             var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
             webGLContext.enable(webGLContext.DEPTH_TEST);
             var options = null;
@@ -1066,10 +1067,13 @@ exports.View = Component.specialize( {
 
             var webGLContext = this.getWebGLContext();
             webGLContext.viewport(0, 0, this._width, this._height);
+            //WebGL does it for us with preserveDrawBuffer = false
+            /*
             if (webGLContext) {
                 webGLContext.clearColor(0,0,0,0.);
                 webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
+            */
 
             //----
             if (this.viewPoint) {
@@ -1154,7 +1158,8 @@ exports.View = Component.specialize( {
 
                         rootNode.transform.matrix = savedTr;
                     }
-                    
+
+                    /*
                     //restore culling order
                     webGLContext.frontFace(webGLContext.CCW);
 
@@ -1168,7 +1173,7 @@ exports.View = Component.specialize( {
                     //webGLContext.enable(webGLContext.DEPTH_TEST);
                     webGLContext.enable(webGLContext.CULL_FACE);
                     webGLContext.disable(webGLContext.BLEND);
-
+*/
                     if (this._mousePosition) {
                         this.sceneRenderer.render(time, {
                             "picking" : true,
