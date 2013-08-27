@@ -274,12 +274,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
     initWithWebGLContext: {
         value: function(value) {
             this.webGLContext = value;
-            return this;
-        }
-    },
-
-    init: {
-        value: function() {
+            this._states = {};
             return this;
         }
     },
@@ -749,30 +744,25 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
     _lastMaxEnabledArray: { value: 0, writable: true },
 
-    _blend: { value: false },
+    _states: { value: null, writable: true },
 
     setState: {
         value: function(stateID, flag, force) {
-            var gl = this.webGLContext;
-            switch (stateID) {
-                case gl.BLEND:
-                    if ((this._blend !== flag) || force) {
-                        if (flag) {
-                            gl.enable(gl.BLEND);
-                        } else {
-                            gl.disable(gl.BLEND);
-                        }
-                        this._blend = flag;
-                    }
-                    break;
 
-                default:
-                    if (flag) {
-                        gl.enable(stateID);
-                    } else {
-                        gl.disable(stateID);
-                    }
-                    break;
+            var gl = this.webGLContext;
+
+            if ((this._states[stateID] != null) && (force != true)) {
+                if (this._states[stateID] === flag) {
+                    return;
+                }
+            }
+
+            this._states[stateID] = flag;
+
+            if (flag) {
+                gl.enable(stateID);
+            } else {
+                gl.disable(stateID);
             }
         }
     },
@@ -1162,18 +1152,19 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             parameters = primitive.primitive.material.parameters;
                             var transparency = parameters["transparency"];
                             if (transparency) {
-                                if (transparency.value)
+                                if (transparency.value != null)
                                     globalIntensity *= transparency.value;
                             }
 
                             var filterColor = parameters["filterColor"];
                             if (filterColor) {
-                                if (filterColor.value) {
+                                if (filterColor.value != null) {
                                     globalIntensity *= filterColor.value[3];
                                 }
                             }
-                            if (globalIntensity < 0.00001)
+                            if (globalIntensity < 0.00001) {
                                 continue;
+                            }
 
                             if ((globalIntensity < 1) && !blending) {
                                 blending = true;
