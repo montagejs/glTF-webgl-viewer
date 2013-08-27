@@ -577,6 +577,17 @@ exports.View = Component.specialize( {
             var webGLOptions = { premultipliedAlpha: false, antialias: true, preserveDrawingBuffer: false };
             var webGLContext =  this.canvas.getContext("experimental-webgl", webGLOptions) ||
                                 this.canvas.getContext("webgl", webGLOptions);
+            if (webGLContext != null) {
+                var contextAttributes = webGLContext.getContextAttributes();
+                var antialias = false;
+                if (contextAttributes) {
+                    antialias = contextAttributes.antialias;
+                }
+                if (antialias == false) {
+                    console.log("WARNING: anti-aliasing is not supported/enabled")
+                }
+            }
+
             var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
             webGLContext.enable(webGLContext.DEPTH_TEST);
             var options = null;
