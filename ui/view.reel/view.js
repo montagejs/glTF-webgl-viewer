@@ -549,8 +549,6 @@ exports.View = Component.specialize( {
                             this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
                         }
                     }
-                    this.stop();
-                    this.play();
                     this.needsDraw = true;
                 }
             }
