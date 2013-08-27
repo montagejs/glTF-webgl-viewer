@@ -1185,11 +1185,12 @@ exports.View = Component.specialize( {
                     });
 
                     webGLContext.flush();
-
+/*
                     var error = webGLContext.getError();
                     if (error != webGLContext.NO_ERROR) {
                         console.log("gl error"+webGLContext.getError());
                     }
+                    */
                 }
             }
         }
