@@ -1117,10 +1117,12 @@ exports.View = Component.specialize( {
 
                     //as indicated here: http://www.khronos.org/webgl/wiki/HandlingHighDPI
                     //set draw buffer and canvas size
-                    this.canvas.style.width = (this._width / this.scaleFactor) + "px";
-                    this.canvas.style.height = (this._height / this.scaleFactor) + "px";
-                    this.canvas.width = this._width;
-                    this.canvas.height = this._height;
+                    if ((width != this.canvas.width) || (height != this.canvas.height)) {
+                        this.canvas.style.width = (this._width / this.scaleFactor) + "px";
+                        this.canvas.style.height = (this._height / this.scaleFactor) + "px";
+                        this.canvas.width = this._width;
+                        this.canvas.height = this._height;
+                    }
 
                     if (this.superSamplingFactor > 1) {
                         this.element.style.WebkitTransform = "scale(0.5, 0.5)"
