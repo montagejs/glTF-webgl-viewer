@@ -1075,7 +1075,6 @@ exports.View = Component.specialize( {
             this._lastTime = time;
 
             var webGLContext = this.getWebGLContext();
-            webGLContext.viewport(0, 0, this._width, this._height);
             //WebGL does it for us with preserveDrawBuffer = false
             /*
             if (webGLContext) {
@@ -1131,6 +1130,7 @@ exports.View = Component.specialize( {
                         this.canvas.style.height = (this._height / this.scaleFactor) + "px";
                         this.canvas.width = this._width;
                         this.canvas.height = this._height;
+                        webGLContext.viewport(0, 0, this._width, this._height);
                     }
 
                     if (this.superSamplingFactor > 1) {
