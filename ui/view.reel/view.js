@@ -582,31 +582,36 @@ exports.View = Component.specialize( {
             var webGLOptions = { premultipliedAlpha: false, antialias: true, preserveDrawingBuffer: false };
             var webGLContext =  this.canvas.getContext("experimental-webgl", webGLOptions) ||
                                 this.canvas.getContext("webgl", webGLOptions);
-            if (webGLContext != null) {
-                this._contextAttributes = webGLContext.getContextAttributes();
-                var antialias = false;
-                if (this._contextAttributes) {
-                    antialias = this._contextAttributes.antialias;
+
+
+            if (webGLContext == null) {
+                console.log("Please check that your browser enables & supports WebGL");
+                return
+            }
+
+            this._contextAttributes = webGLContext.getContextAttributes();
+            var antialias = false;
+            if (this._contextAttributes) {
+                antialias = this._contextAttributes.antialias;
+            }
+            if (antialias == false) {
+                console.log("WARNING: anti-aliasing is not supported/enabled")
+            }
+
+            //check from http://davidwalsh.name/detect-ipad
+            if (navigator) {
+                // For use within normal web clients
+                var isiPad = navigator.userAgent.match(/iPad/i) != null;
+                if (isiPad == false) {
+                    // For use within iPad developer UIWebView
+                    // Thanks to Andrew Hedges!
+                    var ua = navigator.userAgent;
+                    isiPad = /iPad/i.test(ua) || /iPhone OS 3_1_2/i.test(ua) || /iPhone OS 3_2_2/i.test(ua);
                 }
-                if (antialias == false) {
-                    console.log("WARNING: anti-aliasing is not supported/enabled")
+                if (isiPad) {
+                    this._shouldForceClear = true;
                 }
 
-                //check from http://davidwalsh.name/detect-ipad
-                if (navigator) {
-                    // For use within normal web clients
-                    var isiPad = navigator.userAgent.match(/iPad/i) != null;
-                    if (isiPad == false) {
-                        // For use within iPad developer UIWebView
-                        // Thanks to Andrew Hedges!
-                        var ua = navigator.userAgent;
-                        isiPad = /iPad/i.test(ua) || /iPhone OS 3_1_2/i.test(ua) || /iPhone OS 3_2_2/i.test(ua);
-                    }
-                    if (isiPad) {
-                        this._shouldForceClear = true;
-                    }
-
-                }
             }
 
             var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
