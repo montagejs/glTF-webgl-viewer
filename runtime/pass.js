@@ -386,12 +386,20 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                                 if (technique) {
                                     if (technique.rootPass) {
                                         var passUniqueID = technique.rootPass.id;
-                                        var passWithPrimitives = this._primitivesPerPass[passUniqueID];
-                                        if (!passWithPrimitives) {
+                                        var passWithPrimitives = null;
+                                        var i;
+                                        for (i = 0 ; i < this._primitivesPerPass.length ; i++) {
+                                            if (this._primitivesPerPass[i].pass === passUniqueID) {
+                                                passWithPrimitives = this._primitivesPerPass[i];
+                                            }
+                                        }
+
+                                        if (passWithPrimitives == null) {
                                             passWithPrimitives = this._primitivesPerPass[passUniqueID] = {
                                                 "pass" : technique.rootPass,
                                                 "primitives" : []
                                             };
+                                            this._primitivesPerPass.push(passWithPrimitives);
                                         }
 
                                         var renderPrimitive = {};
@@ -411,24 +419,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
         }
     },
 
-    getPathIDsForNodeID: {
-        value: function(nodeID) {
-            return this._pathIDsForNodeID[nodeID];
-        }
-    },
-
-    addPathIDForNodeID: {
-        value: function(nodeID, pathID) {
-            var pathIDs = this.pathIDsForNodeID;
-            if (!pathIDs) {
-                pathIDs = [];
-                this._pathIDsForNodeID[nodeID] = pathIDs;
-            }
-
-            pathIDs.push(pathID);
-        }
-    },
-
     sceneWillChange: {
         value: function(prev, scene) {
             this._viewPointMatrix = mat4.identity();
@@ -438,7 +428,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
     sceneDidChange: {
         value: function() {
             //prepares all infos
-            this._primitivesPerPass = {};
+            this._primitivesPerPass = [];
             this._nodeWrappers = {};
             //Assign a view point from available nodes with camera if none
             var self = this;
@@ -509,17 +499,20 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             //set projection matrix
             webGLRenderer.projectionMatrix = this.viewPoint.cameras[0].projection.matrix;
 
+            if (this.__nonOpaquePassesWithPrimitives == null) {
+                this.__nonOpaquePassesWithPrimitives = [];
+            }
 
-            var nonOpaquePassesWithPrimitives = [];
-            var keys = Object.keys(this._primitivesPerPass);
-            keys.forEach( function(key) {
-                var passWithPrimitives = this._primitivesPerPass[key];
+            this.__nonOpaquePassesWithPrimitives.length = 0;
+            var idx;
+            for (idx = 0 ; idx < this._primitivesPerPass.length ; idx++) {
+                var passWithPrimitives = this._primitivesPerPass[idx];
                 var pass = picking ? this.pickingPass : passWithPrimitives.pass;
 
                 var states = pass.states;
                 //we do not check hitTesting for non-opaque elements
                 if (states.blendEnable && !picking) {
-                    nonOpaquePassesWithPrimitives.push(passWithPrimitives);
+                    this.__nonOpaquePassesWithPrimitives.push(passWithPrimitives);
                 } else {
                     if (picking && this.pickingTechnique)
                         webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, this.pickingTechnique.parameters, time);
@@ -527,12 +520,13 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                         webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, null, time);
 
                 }
-            }, this);
+            }
 
             if (!picking) {
-                nonOpaquePassesWithPrimitives.forEach( function(passWithPrimitives) {
+                for (idx = 0 ; idx < this.__nonOpaquePassesWithPrimitives.length ; idx++) {
+                    var passWithPrimitives = this.__nonOpaquePassesWithPrimitives[idx];
                     webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, passWithPrimitives.pass, null, time);
-                }, this);
+                }
             } else {
                 webGLRenderer.unbindRenderTarget(this.pickingRenderTarget);
 

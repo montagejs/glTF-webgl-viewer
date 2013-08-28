@@ -1037,7 +1037,6 @@ exports.View = Component.specialize( {
 
     draw: {
         value: function() {
-
             if (this._scene == null || this.viewPoint == null || this._disableRendering)
                 return;
 
@@ -1212,20 +1211,26 @@ exports.View = Component.specialize( {
                     webGLContext.enable(webGLContext.CULL_FACE);
                     webGLContext.disable(webGLContext.BLEND);
 */
-                    if (this._mousePosition) {
-                        this.sceneRenderer.render(time, {
-                            "picking" : true,
-                            "coords" : this._mousePosition,
-                            "delegate" : this,
-                            "viewPointModifierMatrix" : this.viewPointModifierMatrix,
-                            "interpolatingViewPoint" : this.interpolatingViewPoint
-                        });
+                    if (this.__renderOptions == null) {
+                        this.__renderOptions = {};
                     }
 
-                    this.sceneRenderer.render(time, {
-                        "viewPointModifierMatrix" : this.viewPointModifierMatrix,
-                        "interpolatingViewPoint" : this.interpolatingViewPoint
-                    });
+                    this.__renderOptions.viewPointModifierMatrix = this.viewPointModifierMatrix;
+                    this.__renderOptions.interpolatingViewPoint = this.interpolatingViewPoint;
+
+                    if (this._mousePosition) {
+                        this.__renderOptions.picking = true;
+                        this.__renderOptions.coords = this._mousePosition;
+                        this.__renderOptions.delegate = this;
+
+                        this.sceneRenderer.render(time, this.__renderOptions);
+                    }
+
+                    this.__renderOptions.picking = false;
+                    this.__renderOptions.coords = null;
+                    this.__renderOptions.delegate = null;
+
+                    this.sceneRenderer.render(time, this.__renderOptions);
 
                     webGLContext.flush();
 /*
