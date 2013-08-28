@@ -124,16 +124,27 @@ var Channel = exports.Channel = Object.create(Base, {
                             }
                         }
                     }
+
+                    if (this.__vec4 == null) {
+                        this.__vec4 = vec4.create();
+                    }
+                    if (this.__vec3 == null) {
+                        this.__vec3 = vec3.create();
+                    }
+                    if (this.__vec2 == null) {
+                        this.__vec2 = vec2.create();
+                    }
+
                     var interpolatedValue = null;
                     switch (outputParameter.componentsPerAttribute) {
                         case 4 :
-                            interpolatedValue = vec4.create();
+                            interpolatedValue = this.__vec4;
                             break;
                         case 3 :
-                            interpolatedValue = vec3.create();
+                            interpolatedValue = this.__vec3;
                             break;
                         case 2 :
-                            interpolatedValue = vec2.create();
+                            interpolatedValue = this.__vec2;
                             break;
                         case 1 :
                             console.log("float interpolation not handled yet");
@@ -153,9 +164,10 @@ var Channel = exports.Channel = Object.create(Base, {
 
                         var interpolationType = QUATERNION;//AXIS_ANGLE_INTERP_NAIVE;
 
-                        var axisAngle1 = vec4.createFrom(outputArray[idx1 + 0],outputArray[idx1 + 1],outputArray[idx1 + 2],outputArray[idx1 + 3]);
-                        var axisAngle2 = vec4.createFrom(outputArray[idx2 + 0],outputArray[idx2 + 1],outputArray[idx2 + 2],outputArray[idx2 + 3]);
                         if (interpolationType == AXIS_ANGLE_INTERP) {
+                            var axisAngle1 = vec4.createFrom(outputArray[idx1 + 0],outputArray[idx1 + 1],outputArray[idx1 + 2],outputArray[idx1 + 3]);
+                            var axisAngle2 = vec4.createFrom(outputArray[idx2 + 0],outputArray[idx2 + 1],outputArray[idx2 + 2],outputArray[idx2 + 3]);
+
                             vec3.normalize(axisAngle1); //FIXME: do that upfront
                             vec3.normalize(axisAngle2);
                             //get the rotation axis from the cross product
@@ -178,6 +190,9 @@ var Channel = exports.Channel = Object.create(Base, {
                             var interpolatedAngle = axisAngle1[3]+((axisAngle2[3]-axisAngle1[3]) * ratio);
                             quat4.fromAngleAxis(interpolatedAngle, rotAxis, interpolatedValue);
                         } else if (interpolationType == AXIS_ANGLE_INTERP_NAIVE) {
+                            var axisAngle1 = vec4.createFrom(outputArray[idx1 + 0],outputArray[idx1 + 1],outputArray[idx1 + 2],outputArray[idx1 + 3]);
+                            var axisAngle2 = vec4.createFrom(outputArray[idx2 + 0],outputArray[idx2 + 1],outputArray[idx2 + 2],outputArray[idx2 + 3]);
+
                             //direct linear interpolation of components, to be considered for small angles
                             for (i = 0 ; i < interpolatedValue.length ; i++) {
                                 var v1 = axisAngle1[ i];

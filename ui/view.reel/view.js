@@ -551,7 +551,6 @@ exports.View = Component.specialize( {
                             this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
                         }
                     }
-                    this.play();
                     this.needsDraw = true;
                 }
             }
@@ -1218,6 +1217,7 @@ exports.View = Component.specialize( {
                     this.__renderOptions.viewPointModifierMatrix = this.viewPointModifierMatrix;
                     this.__renderOptions.interpolatingViewPoint = this.interpolatingViewPoint;
 
+                    /* disable picking
                     if (this._mousePosition) {
                         this.__renderOptions.picking = true;
                         this.__renderOptions.coords = this._mousePosition;
@@ -1225,7 +1225,7 @@ exports.View = Component.specialize( {
 
                         this.sceneRenderer.render(time, this.__renderOptions);
                     }
-
+*/
                     this.__renderOptions.picking = false;
                     this.__renderOptions.coords = null;
                     this.__renderOptions.delegate = null;
