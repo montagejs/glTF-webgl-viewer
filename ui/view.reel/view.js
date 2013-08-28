@@ -69,6 +69,8 @@ exports.View = Component.specialize( {
         }
     },
 
+
+
     handleTextureUpdate: {
         value: function(evt) {
             var resourceManager = this.getResourceManager();
@@ -549,6 +551,7 @@ exports.View = Component.specialize( {
                             this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
                         }
                     }
+                    this.play();
                     this.needsDraw = true;
                 }
             }
@@ -563,6 +566,10 @@ exports.View = Component.specialize( {
 
     _disableRendering: { value: false, writable: true },
 
+    _contextAttributes : { value: null, writable: true },
+
+    _shouldForceClear: { value: false, writable: true },
+
     enterDocument: {
         value: function(firstTime) {
             var simulateContextLoss = false;  //Very naive for now
@@ -576,13 +583,29 @@ exports.View = Component.specialize( {
             var webGLContext =  this.canvas.getContext("experimental-webgl", webGLOptions) ||
                                 this.canvas.getContext("webgl", webGLOptions);
             if (webGLContext != null) {
-                var contextAttributes = webGLContext.getContextAttributes();
+                this._contextAttributes = webGLContext.getContextAttributes();
                 var antialias = false;
-                if (contextAttributes) {
-                    antialias = contextAttributes.antialias;
+                if (this._contextAttributes) {
+                    antialias = this._contextAttributes.antialias;
                 }
                 if (antialias == false) {
                     console.log("WARNING: anti-aliasing is not supported/enabled")
+                }
+
+                //check from http://davidwalsh.name/detect-ipad
+                if (navigator) {
+                    // For use within normal web clients
+                    var isiPad = navigator.userAgent.match(/iPad/i) != null;
+                    if (isiPad == false) {
+                        // For use within iPad developer UIWebView
+                        // Thanks to Andrew Hedges!
+                        var ua = navigator.userAgent;
+                        isiPad = /iPad/i.test(ua) || /iPhone OS 3_1_2/i.test(ua) || /iPhone OS 3_2_2/i.test(ua);
+                    }
+                    if (isiPad) {
+                        this._shouldForceClear = true;
+                    }
+
                 }
             }
 
@@ -1076,12 +1099,11 @@ exports.View = Component.specialize( {
 
             var webGLContext = this.getWebGLContext();
             //WebGL does it for us with preserveDrawBuffer = false
-            /*
-            if (webGLContext) {
+
+            if (this._shouldForceClear || (this._contextAttributes.preserveDrawingBuffer == null) || (this._contextAttributes.preserveDrawingBuffer == true)) {
                 webGLContext.clearColor(0,0,0,0.);
                 webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
-            */
 
             //----
             if (this.viewPoint) {
