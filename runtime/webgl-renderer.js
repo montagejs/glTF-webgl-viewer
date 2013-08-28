@@ -1167,15 +1167,15 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             }
 
                             if ((globalIntensity < 1) && !blending) {
-                                blending = true;
                                 this.setState(gl.BLEND, true);
                                 gl.blendEquation(gl.FUNC_ADD);
                                 gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-                            } else if (blending && (globalIntensity === 1)) {
+                                this.renderPrimitive(primitive, pass, time);
                                 this.setState(gl.BLEND, false);
-                                blending = false;
+                            } else {
+                                this.renderPrimitive(primitive, pass, time);
                             }
-                            this.renderPrimitive(primitive, pass, time);
+
                         }
                     }
                 }
