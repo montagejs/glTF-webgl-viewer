@@ -49,6 +49,8 @@ var Utilities = require("runtime/utilities").Utilities;
 var dom = require("montage/core/dom");
 var Point = require("montage/core/geometry/point").Point;
 var OrbitCamera = require("runtime/dependencies/camera").OrbitCamera;
+var FlyingCamera = require("runtime/dependencies/camera").FlyingCamera;
+
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
 var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
 var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
@@ -539,7 +541,13 @@ exports.View = Component.specialize( {
 
                         if (center)
                             this.orbitCamera.setCenter(center);
+                    } else {
+                        //should not reach at the moment
+                        this.flyingCamera = new MontageFlyingCamera(this.canvas);
                     }
+
+
+
                     //right now, play by default
                     if (this.viewPoint) {
                         if (this.viewPoint.scene == null) {
@@ -551,6 +559,8 @@ exports.View = Component.specialize( {
                             this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
                         }
                     }
+                    this.play();
+
                     this.needsDraw = true;
                 }
             }
@@ -945,6 +955,7 @@ exports.View = Component.specialize( {
 
     handleSelectedNode: {
         value: function(nodeID) {
+            /*
             if (this.orbitCamera)
                 this.displayAllBBOX(this.orbitCamera.getViewMat(), nodeID);
             else {
@@ -952,7 +963,7 @@ exports.View = Component.specialize( {
                 mat4.inverse(this.viewPoint.glTFElement.transform.matrix, mat);
                 this.displayAllBBOX(mat, nodeID);
             }
-
+            */
         }
     },
 
@@ -1008,6 +1019,8 @@ exports.View = Component.specialize( {
             }
         }
     },
+
+    /*
     _cameraAnimating:{
         value:true
     },
@@ -1029,7 +1042,7 @@ exports.View = Component.specialize( {
     cameraAnimatingYVel:{
         value: 0
     },
-
+    */
     interpolatingViewPoint: {
         value: null, writable:true
     },
@@ -1057,11 +1070,13 @@ exports.View = Component.specialize( {
                         this.orbitCamera._dirty = true;
                     }
                 } else {
-                    this.orbitCamera.ignoreEvents = false;
-                    this.orbitCamera.orbitX = 0;
-                    this.orbitCamera.orbitY = 0;
-                    this.orbitCamera.setDistance(0);
-                    this.interpolatingViewPoint = null;
+                    if (this.orbitCamera) {
+                        this.orbitCamera.ignoreEvents = false;
+                        this.orbitCamera.orbitX = 0;
+                        this.orbitCamera.orbitY = 0;
+                        this.orbitCamera.setDistance(0);
+                        this.interpolatingViewPoint = null;
+                    }
                 }
                 this.needsDraw = true;
             }
@@ -1121,6 +1136,13 @@ exports.View = Component.specialize( {
                 if (this.viewPoint)
                    if (this.viewPoint.glTFElement.parent == null)
                         mat4.inverse(this.viewPointModifierMatrix);
+            } else if (this.flyingCamera) {
+                var cameraMatrix = this.flyingCamera.getViewMat();
+                mat4.set(cameraMatrix, this.viewPointModifierMatrix);
+                //FIXME
+                if (this.viewPoint)
+                    if (this.viewPoint.glTFElement.parent == null)
+                        mat4.inverse(this.viewPointModifierMatrix);
             }
 
             var webGLContext = this.getWebGLContext(),
@@ -1128,7 +1150,8 @@ exports.View = Component.specialize( {
                 width,
                 height;
 
-           if(this.orbitCamera && this.orbitCameraAnimating) {
+            /*
+            if(this.orbitCamera && this.orbitCameraAnimating) {
                 if (this.orbitCameraAnimatingXVel < 0.0013) {
                     this.orbitCameraAnimatingXVel += 0.00001
                 }
@@ -1139,6 +1162,7 @@ exports.View = Component.specialize( {
                 this.orbitCamera.orbit(this.orbitCameraAnimatingXVel, this.orbitCameraAnimatingYVel);
                 this.needsDraw = true;
             }
+            */
             if (this._state == this.PLAY)
                this.needsDraw = true;
 
@@ -1288,7 +1312,7 @@ exports.View = Component.specialize( {
             });
 
             composer.addEventListener('translateStart', function (event) {
-                self.cameraAnimating = false;
+                //self.cameraAnimating = false;
                 if(animationTimeout) {
                     clearTimeout(animationTimeout);
                 }
@@ -1296,7 +1320,7 @@ exports.View = Component.specialize( {
 
             composer.addEventListener('translateEnd', function () {
                 animationTimeout = setTimeout(function() {
-                    self.cameraAnimating = true;
+                    //self.cameraAnimating = true;
                     self.needsDraw = true;
                 }, 3000)
             }, false);
@@ -1308,6 +1332,9 @@ exports.View = Component.specialize( {
 
 var MontageOrbitCamera = OrbitCamera;
 MontageOrbitCamera.prototype = Montage.create(OrbitCamera.prototype);
+
+var MontageFlyingCamera = FlyingCamera;
+MontageFlyingCamera.prototype = Montage.create(FlyingCamera.prototype);
 
 MontageOrbitCamera.prototype._hookEvents = function (element) {
     var self = this, moving = false,
