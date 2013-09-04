@@ -665,34 +665,18 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 return (x & (x - 1)) == 0;
             },
 
-            //should be called only once
-            convert: function (resource, ctx) {
+            installCubemapSide: function(gl, target, texture, content) {
                 var gl = this.webGLContext;
 
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+                gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, content);
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
+            },
 
-                if (resource.sources) {
-                    //we must have a cube map here:
+            createTextureFromImageAndSampler: function(image, sampler) {
+                var gl = this.webGLContext;
 
-                } else if (resource.source.type == "video") {
-                    //for now, naive handling of videos
-                    resource.source.videoElement = ctx;
-                    var texture = gl.createTexture();
-                    gl.bindTexture(gl.TEXTURE_2D, texture);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, resource.source.videoElement);
-                    gl.bindTexture(gl.TEXTURE_2D, null);
-
-                    return texture;
-                }
-
-                var image = ctx;
                 var canvas = null;
-
-                //TODO: add compressed textures
-                var sampler = resource.sampler;
                 var minFilter = this.getGLFilter(sampler.minFilter);
                 var magFilter = this.getGLFilter(sampler.magFilter);
                 var wrapS = this.getGLWrapMode(sampler.wrapS);
@@ -741,8 +725,49 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 }
 
                 gl.bindTexture(gl.TEXTURE_2D, null);
-
                 return texture;
+            },
+
+            //should be called only once
+            convert: function (resource, ctx) {
+                var gl = this.webGLContext;
+
+                if (resource.sources) {
+                    if (resource.sources.length === 6) {
+                        //we must have a cube map here:
+                        var cubeTexture = gl.createTexture();
+                        gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubeTexture);
+                        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_X, cubeTexture, ctx[0]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, cubeTexture, ctx[1]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, cubeTexture, ctx[2]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, cubeTexture, ctx[3]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, cubeTexture, ctx[4]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, cubeTexture, ctx[5]);
+
+                        return cubeTexture;
+                    }
+
+                } else if (resource.source.type == "video") {
+                    //for now, naive handling of videos
+                    resource.source.videoElement = ctx;
+                    var texture = gl.createTexture();
+                    gl.bindTexture(gl.TEXTURE_2D, texture);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, resource.source.videoElement);
+                    gl.bindTexture(gl.TEXTURE_2D, null);
+
+                    return texture;
+                }
+
+                return this.createTextureFromImageAndSampler(ctx, resource.sampler);
             },
 
             resourceAvailable: function (glResource, ctx) {
@@ -834,10 +859,29 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     }
                 }
 
+                var texture = null;
+
                 if (value != null) {
-                    var uniformIsSampler2D = program.getTypeForSymbol(symbol) === gl.SAMPLER_2D;
-                    if (uniformIsSampler2D) {
-                        var texture = value;
+                    var glType = program.getTypeForSymbol(symbol);
+                    var uniformIsSamplerCube = glType === gl.SAMPLER_CUBE;
+                    var uniformIsSampler2D = glType === gl.SAMPLER_2D;
+
+                    if (uniformIsSamplerCube) {
+                        texture = value;
+                        this.textureDelegate.webGLContext = this.webGLContext;
+                        var texture = this.resourceManager.getResource(texture, this.textureDelegate, this.webGLContext);
+                        if (texture) {
+                            gl.activeTexture(gl.TEXTURE0 + currentTexture);
+                            gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+
+                            var samplerLocation = program.getLocationForSymbol(symbol);
+                            if (typeof samplerLocation !== "undefined") {
+                                program.setValueForSymbol(symbol, currentTexture);
+                                currentTexture++;
+                            }
+                        }
+                    } else if (uniformIsSampler2D) {
+                        texture = value;
                         this.textureDelegate.webGLContext = this.webGLContext;
                         var texture = this.resourceManager.getResource(texture, this.textureDelegate, this.webGLContext);
                         if (texture) {

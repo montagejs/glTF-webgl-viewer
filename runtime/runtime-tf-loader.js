@@ -167,6 +167,7 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                     if (parameter) {
                         var paramValue = null;
                         switch (parameter.type) {
+                            case "SAMPLER_CUBE":
                             case "SAMPLER_2D":
                             {
                                 var entry = this.getEntry(value.value);
@@ -623,6 +624,15 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                 description.sampler = this.getEntry(description.sampler).entry;
                 description.id = entryID; //because the resource manager needs this
                 this.storeEntry(entryID, description, description);
+            } else if (description.sources && description.sampler) {
+                description.type = "texture";
+                for (var i = 0 ; i < description.sources.length ; i++) {
+                    description.sources[i] = this.getEntry(description.sources[i]).entry;
+                }
+                description.sampler = this.getEntry(description.sampler).entry;
+                description.id = entryID; //because the resource manager needs this
+                this.storeEntry(entryID, description, description);
+
             } else {
                 console.log("ERROR: texture"+entryID+" must contain both source and sampler properties");
             }

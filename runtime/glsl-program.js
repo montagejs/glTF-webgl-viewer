@@ -413,6 +413,12 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             theSwitch[WebGLRenderingContext.SAMPLER_2D] = function uniform1i(GL, location , count, value) {
                 GL.uniform1i(location, value);
             };
+
+            theSwitch[WebGLRenderingContext.SAMPLER_CUBE] = function uniform1i(GL, location , count, value) {
+                GL.uniform1i(location, value);
+            };
+
+
             return theSwitch;
         })()
     },

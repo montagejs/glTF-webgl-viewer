@@ -930,7 +930,7 @@ var global = window;
         },
 
         _handleImageLoading: {
-            value: function(resource, textureLoadedCallback, ctx) {
+            value: function(resource, textureLoadedCallback, ctx, index) {
                 //TODO: unify with binaries
                 var resourceStatus = this._resourcesStatus[resource.id];
                 var status = null;
@@ -946,11 +946,11 @@ var global = window;
                     imageObject.onload = function() { 
                         delete self._resourcesStatus[resource.id];
                         self._storeResource(resource.id, imageObject);
-                        textureLoadedCallback(imageObject, resource.id, ctx); 
+                        textureLoadedCallback(imageObject, resource.id, ctx, index);
                     }  
                     imageObject.src = resource.description.path;  
                 } else if (resource.description.image) {
-                    textureLoadedCallback(resource.description.image, resource.id, ctx);                  
+                    textureLoadedCallback(resource.description.image, resource.id, ctx, index);
                 }
             }
         },
@@ -991,6 +991,46 @@ var global = window;
                                 self.fireResourceAvailable.call(self, resource.id);
                             }, ctx);
                     }
+
+                } else if (resource.sources) {
+                    var idx = 0;
+                    var contents = [null, null, null, null, null, null];
+                    var sourceIndex = 0;
+                    resource.sources.forEach(function(source) {
+                        if (source.type === "image") {
+                            this._handleImageLoading(source,
+                                function(image, id, ctx, sourceIndex) {
+                                    idx++;
+                                    contents[sourceIndex] = image;
+                                    if (idx == resource.sources.length) {
+                                        var gl = ctx;
+                                        var convertedResource = delegate.convert(resource, contents);
+                                        delete self._resourcesStatus[resource.id];
+                                        self._storeResource(resource.id, convertedResource);
+                                        delegate.resourceAvailable(convertedResource, gl);
+                                        self.fireResourceAvailable.call(self, resource.id);
+                                    }
+                                }, ctx, sourceIndex++);
+                        }
+                        if (source.type === "video") {
+                            this._handleVideoLoading(source,
+                                function(video, id, ctx) {
+                                    idx++;
+                                    contents[sourceIndex] = video;
+                                    if (idx == resource.sources.length) {
+                                        var gl = ctx;
+                                        var convertedResource = delegate.convert(resource, contents);
+                                        delete self._resourcesStatus[resource.id];
+                                        self._storeResource(resource.id, convertedResource);
+                                        delegate.resourceAvailable(convertedResource, gl);
+                                        self.fireResourceAvailable.call(self, resource.id);
+                                    }
+                                }, ctx, sourceIndex++);
+                        }
+
+
+                    }, this)
+
 
                 }
             }
