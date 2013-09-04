@@ -669,8 +669,12 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             convert: function (resource, ctx) {
                 var gl = this.webGLContext;
 
-                //for now, naive handling of videos
-                if (resource.source.type == "video") {
+
+                if (resource.sources) {
+                    //we must have a cube map here:
+
+                } else if (resource.source.type == "video") {
+                    //for now, naive handling of videos
                     resource.source.videoElement = ctx;
                     var texture = gl.createTexture();
                     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -684,9 +688,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     return texture;
                 }
 
-
                 var image = ctx;
-                var canvas = document.createElement("canvas");
+                var canvas = null;
 
                 //TODO: add compressed textures
                 var sampler = resource.sampler;
@@ -694,28 +697,37 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 var magFilter = this.getGLFilter(sampler.magFilter);
                 var wrapS = this.getGLWrapMode(sampler.wrapS);
                 var wrapT = this.getGLWrapMode(sampler.wrapT);
-                if ((wrapS === gl.REPEAT) || (wrapT === gl.REPEAT)) {
+                var shouldResize = false;
+                var usesMipMaps = ((minFilter === gl.NEAREST_MIPMAP_NEAREST) ||
+                    (minFilter === gl.LINEAR_MIPMAP_NEAREST) ||
+                    (minFilter === gl.NEAREST_MIPMAP_LINEAR) ||
+                    (minFilter === gl.LINEAR_MIPMAP_LINEAR));
+
+                if (usesMipMaps ||  (wrapS === gl.REPEAT) || (wrapT === gl.REPEAT)) {
+
                     var width = parseInt(image.width);
                     var height = parseInt(image.height);
 
                     if (!this.isPowerOfTwo(width)) {
                         width = this.nextHighestPowerOfTwo(width);
+                        shouldResize = true;
                     }
                     if (!this.isPowerOfTwo(height)) {
                         height = this.nextHighestPowerOfTwo(height);
+                        shouldResize = true;
                     }
-                    canvas.width = width;
-                    canvas.height = height;
 
-                } else {
-                    canvas.width = image.width;
-                    canvas.height = image.height;
+                    if (shouldResize) {
+                        canvas = document.createElement("canvas");
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        var graphicsContext = canvas.getContext("2d");
+                        graphicsContext.drawImage(image, 0, 0, parseInt(canvas.width), parseInt(canvas.height));
+                        canvas.id = image.id;
+                        image = canvas;
+                    }
                 }
-
-                var graphicsContext = canvas.getContext("2d");
-                graphicsContext.drawImage(image, 0, 0, parseInt(canvas.width), parseInt(canvas.height));
-                canvas.id = image.id;
-                image = canvas;
 
                 var texture = gl.createTexture();
                 gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -724,11 +736,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-                if ((minFilter === gl.NEAREST_MIPMAP_NEAREST) ||
-                    (minFilter === gl.LINEAR_MIPMAP_NEAREST) ||
-                    (minFilter === gl.NEAREST_MIPMAP_LINEAR) ||
-                    (minFilter === gl.LINEAR_MIPMAP_LINEAR))
-                {
+                if (usesMipMaps) {
                     gl.generateMipmap(gl.TEXTURE_2D);
                 }
 
@@ -833,10 +841,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         this.textureDelegate.webGLContext = this.webGLContext;
                         var texture = this.resourceManager.getResource(texture, this.textureDelegate, this.webGLContext);
                         if (texture) {
-
                             gl.activeTexture(gl.TEXTURE0 + currentTexture);
                             gl.bindTexture(gl.TEXTURE_2D, texture);
-
                             if (parameter.value.source.videoElement) {
                                 if (parameter.value.source.timeStamp != time) {
                                     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,
@@ -904,6 +910,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         gl.vertexAttribPointer(attributeLocation,
                             glResource.componentsPerAttribute,
                             glResource.componentType, false, accessor.byteStride, 0);
+
 
                         if ( renderVertices && (semantic == "POSITION")) {
                             gl.drawArrays(gl.POINTS, 0, accessor.count);
@@ -1111,8 +1118,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         }
                     }
 
-                   // this.setState(gl.DEPTH_TEST, depthTest);
+                    //this.setState(gl.DEPTH_TEST, depthTest);
                     this.setState(gl.CULL_FACE, cullFaceEnable);
+
                     //gl.depthMask(depthMask);
                     this.setState(gl.BLEND, blending);
                     if (blending) {
@@ -1137,7 +1145,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                                         pass.extras.nodeIDToColor[nodeID] = nodePickingColor;
                                     }
                                     primitive.pickingColor = nodePickingColor;
-
                                 }
                             }
                             this.bindedProgram.setValueForSymbol("u_pickingColor", primitive.pickingColor);
