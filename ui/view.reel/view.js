@@ -145,6 +145,53 @@ exports.View = Component.specialize( {
 
     _viewPoint: { value: null, writable: true },
 
+    viewPointWillChange: {
+        value:function(previousViewPoint, newViewPoint) {
+                var interpolatingViewPoint = null;
+                if (this.sceneRenderer) {
+                    if (newViewPoint) {
+                        if (this.scene) {
+                            if (this.scene.glTFElement) {
+                                var animationManager = this.scene.glTFElement.animationManager;
+                                //we do not animate already animated cameras
+                                var hasStaticViewPoint = animationManager.nodeHasAnimatedAncestor(newViewPoint.glTFElement) == false;
+                                if (hasStaticViewPoint == false && previousViewPoint != null) {
+                                    hasStaticViewPoint |= animationManager.nodeHasAnimatedAncestor(previousViewPoint.glTFElement) == false;
+                                }
+                                if (hasStaticViewPoint) {
+                                    var orbitXY = this.orbitCamera == null ? null : [this.orbitCamera.orbitX, this.orbitCamera.orbitY];
+                                    interpolatingViewPoint = {  "previous": previousViewPoint ? previousViewPoint.glTFElement : null,
+                                                                "step":0,
+                                                                "start" : Date.now(),
+                                                                "duration": 1000,
+                                                                "orbitXY" : orbitXY,
+                                                                "orbitDistance" : this.orbitCamera ? this.orbitCamera.getDistance() : 0 };
+                                }
+                            }
+                        }
+                        this.interpolatingViewPoint = interpolatingViewPoint;
+                    }
+                }
+            }
+        
+    },
+
+    viewPointDidChange: {
+        value:function() {
+                if (this.sceneRenderer) {
+                    if (this._viewPoint) {
+                        if (this.scene) {
+                            if (this.scene.glTFElement) {
+                                this.sceneRenderer.technique.rootPass.viewPoint = this._viewPoint ? this._viewPoint.glTFElement : null;
+                                this._viewPointIndex = this._getViewPointIndex(this.viewPoint);
+                                this.needsDraw = true;
+                            }
+                        }
+                    }
+                }
+        }
+    },
+
     viewPoint: {
         get: function() {
             return this._viewPoint;
@@ -159,9 +206,9 @@ exports.View = Component.specialize( {
                     }
                 }
 
+                this.viewPointWillChange(previousViewPoint, value);
+
                 this._viewPoint = value;
-                if (value)
-                    console.log("set viewpoint:"+value.id);
 
                 this._sceneTime = 0;
                 if (value) {
@@ -169,35 +216,7 @@ exports.View = Component.specialize( {
                         this._viewPoint.scene = this.scene;
                     }
                 }
-                var interpolatingViewPoint = null;
-                if (this.sceneRenderer) {
-                    if (value) {
-                        if (this.scene) {
-                            if (this.scene.glTFElement) {
-                                var animationManager = this.scene.glTFElement.animationManager;
-                                //we do not animate already animated cameras
-                                var hasStaticViewPoint = animationManager.nodeHasAnimatedAncestor(value.glTFElement) == false;
-                                if (hasStaticViewPoint == false && previousViewPoint != null) {
-                                    hasStaticViewPoint |= animationManager.nodeHasAnimatedAncestor(previousViewPoint.glTFElement) == false;
-                                }
-                                if (hasStaticViewPoint) {
-                                    var orbitXY = this.orbitCamera == null ? null : [this.orbitCamera.orbitX, this.orbitCamera.orbitY];
-                                    interpolatingViewPoint = {  "previous": previousViewPoint ? previousViewPoint.glTFElement : null,
-                                                                "step":0,
-                                                                "start" : Date.now(),
-                                                                "duration": 1000,
-                                                                "orbitXY" : orbitXY,
-                                                                "orbitDistance" : this.orbitCamera ? this.orbitCamera.getDistance() : 0 };
-                                }
-                                this._viewPointIndex = this._getViewPointIndex(this.viewPoint);
-                            }
-                        }
-                        this.interpolatingViewPoint = interpolatingViewPoint;
-                        this.sceneRenderer.technique.rootPass.viewPoint = value ? value.glTFElement : null;
-                        this.needsDraw = true;
-                    }
-                }
-
+                this.viewPointDidChange();
             }
         }
     },
@@ -556,7 +575,7 @@ exports.View = Component.specialize( {
                         }
                         if (this.sceneRenderer) {
                             this.interpolatingViewPoint = null;
-                            this.sceneRenderer.technique.rootPass.viewPoint = this.viewPoint.glTFElement;
+                            this.viewPointDidChange();
                         }
                     }
                     this.play();
