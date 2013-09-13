@@ -27,6 +27,15 @@ var Transform = require("runtime/transform").Transform;
 var Utilities = require("runtime/utilities").Utilities;
 
 var glTFNode = exports.glTFNode = Object.create(Base, {
+    
+    //just for glTFNode singleton
+    currentId: { value: 0, writable:true },
+
+    bumpId: {
+        value: function() {
+            return glTFNode._id++;
+        }
+    },
 
     _children: { value: null, writable: true },
 
@@ -365,6 +374,9 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
                     node.cameras.push(camera);
                 }, this);
             }
+
+            //for copies of nodes coming from a DAG we keep track of the id but still, we want to be different
+            node.id = this.id + "-" +this.bumpId();
 
             node.transform = this.transform.copy();
             return node;
