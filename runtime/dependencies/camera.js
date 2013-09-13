@@ -266,10 +266,18 @@ var global = window;
             var mv = this._viewMat;
             mat4.identity(mv);
             mat4.translate(mv, this._distance);
-            mat4.rotateY(mv, this.orbitY);
-            mat4.rotateX(mv, this.orbitX);
 
-            //HACK: to preserve legacy behavior, this is to be removed.
+            //This to preserve some legacy behaivor, this will be cleanup when new cameraoController comes in
+            if (this._rideMode == false) {
+                mat4.rotateX(mv, this.orbitX);
+                mat4.rotateY(mv, this.orbitY);
+            } else {
+                mat4.rotateY(mv, this.orbitY);
+                mat4.rotateX(mv, this.orbitX);
+            }
+
+
+            //HACK: also to preserve legacy behavior, this is to be removed.
             if (this._rideMode == false) {
                 mat4.rotateX(mv, -Math.PI * 0.5);
             }
