@@ -588,7 +588,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             },
 
             convert: function (resource, ctx) {
-
                 var attribute = ctx;
                 var gl = this.webGLContext;
                 var previousBuffer = gl.getParameter(gl.ARRAY_BUFFER_BINDING);
@@ -719,6 +718,13 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, minFilter);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, magFilter);
+                
+                /*
+                var extensions = gl.getSupportedExtensions();
+                var ext = gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+                var max_anisotropy = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+                gl.texParameterf(gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy);
+                */
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
                 if (usesMipMaps) {
                     gl.generateMipmap(gl.TEXTURE_2D);
@@ -731,7 +737,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             //should be called only once
             convert: function (resource, ctx) {
                 var gl = this.webGLContext;
-
                 if (resource.sources) {
                     if (resource.sources.length === 6) {
                         //we must have a cube map here:
@@ -816,7 +821,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
     renderPrimitive: {
         value: function(primitiveDescription, pass, time, parameters) {
-
             var renderVertices = false;
             //var worldMatrix = primitiveDescription.worldViewMatrix;
             //var projectionMatrix = this.projectionMatrix;
@@ -984,7 +988,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 else
                     glIndices = this.resourceManager.getResource(primitive.indices, this.indicesDelegate, primitive);
 
-
                 if (glIndices && available) {
                     //if (!primitiveDescription.mesh.loaded) {
                     //    primitiveDescription.mesh.loadedPrimitivesCount++;
@@ -1007,12 +1010,10 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
             //should be called only once
             convert: function (resource, ctx) {
-                var gl = ctx.gl;
-                var instanceProgram = ctx.instanceProgram;
+                var gl = ctx;
                 var glslProgram = Object.create(GLSLProgram);
                 glslProgram.initWithShaders( resource );
-                if (!glslProgram.build(gl, Object.keys(instanceProgram.attributes),
-                                            Object.keys(instanceProgram.uniforms))) {
+                if (!glslProgram.build(gl)) {
                     console.log(resource);
                     console.log(glslProgram.errorLogs);
                 }
@@ -1128,7 +1129,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             var count = primitives.length;
             var gl = this.webGLContext;
             if (pass.instanceProgram) {
-                var ctx = { "gl" : gl, "instanceProgram" : pass.instanceProgram };
+                var ctx = gl;
                 var glProgram = this.resourceManager.getResource(pass.instanceProgram.program, this.programDelegate, ctx);
                 if (glProgram) {
                     var blending = false;
