@@ -296,7 +296,6 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             var existingValue = this.symbolToValue[symbol];
             var type = this.getTypeForSymbol(symbol);
             var GL = this._GLTypes;
-
             if (( value != null) && (existingValue != null)) {
                 if (type === GL.FLOAT) {
                     if (value === existingValue) {
@@ -338,18 +337,15 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
 
             } else {
                 if (type === GL.FLOAT_MAT4) {
-                    value = mat4.create();
+                    existingValue = mat4.create();
                 } else if (type === GL.FLOAT_MAT3) {
-                    value = mat3.create();
+                    existingValue = mat3.create();
                 } else if (type === GL.FLOAT_VEC3) {
-                    value = vec3.create();
+                    existingValue = vec3.create();
                 } else if (type === GL.FLOAT_VEC4) {
-                    value = vec4.create();
+                    existingValue = vec4.create();
                 } else if (type === GL.FLOAT_VEC2) {
-                    value = vec2.create();
-                }
-                if (value != null) {
-                    existingValue = value;
+                    existingValue = vec2.create();
                 }
             }
 
@@ -474,7 +470,7 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
     },
 
     build: {
-        value: function(GL, attributes, uniforms) {
+        value: function(GL) {
             var i;
             var vertexShaderSource = this.shaders[GLSLProgram.VERTEX_SHADER];
             var fragmentShaderSource = this.shaders[GLSLProgram.FRAGMENT_SHADER];

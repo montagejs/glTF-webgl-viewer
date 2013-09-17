@@ -24,142 +24,111 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-var global = window;
-(function (root, factory) {
-    if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
-      
-        factory(module.exports);
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define([], function () {
-            return factory(root);
-        });
-    } else {
-        // Browser globals
-        factory(root);
-    }
-}(this, function (root) {
-    var Utilities;
-    if (typeof exports === 'object') {
-        require("runtime/dependencies/gl-matrix");
-        Utilities = require("runtime/utilities").Utilities;
-    } else {
-        Utilities = global.Utilities;
-    }
+require("runtime/dependencies/gl-matrix");
+var Utilities = require("runtime/utilities").Utilities;
 
-    var Primitive = Object.create(Object.prototype, {
+exports.Primitive = Object.create(Object.prototype, {
 
-        _attributesCount: {
-            enumerable: false,
-            value: 0,
-            writable: true
+    _attributesCount: {
+        enumerable: false,
+        value: 0,
+        writable: true
+    },
+
+    attributesCount : {
+        enumerable: false,
+        get: function() {
+            return this._attributesCount;
+        }
+    },
+
+    init: {
+        value: function() {
+            this.step = 0;
+            this.semantics = {};
+            return this;
+        }
+    },
+
+    _semantics: {
+        enumerable: false,
+        value: null,
+        writable: true
+    },
+
+    semantics: {
+        enumerable: true,
+        get: function() {
+            return this._semantics;
         },
+        set: function(value) {
+            this._semantics = value;
+        }
+    },
 
-        attributesCount : {
-            enumerable: false,
-            get: function() {
-                return this._attributesCount;
-            }
-        },
-
-        init: {
-            value: function() {
-                this.step = 0;
-                this.semantics = {};
-                return this;
-            }
-        },
-
-        _semantics: {
-            enumerable: false,
-            value: null,
-            writable: true
-        },
-
-        semantics: {
-            enumerable: true,
-            get: function() {
-                return this._semantics;
-            },
-            set: function(value) {
-                this._semantics = value;
-            }
-        },
-
-        //since semantics/set got simplified we should get rid of this eventually
-        addVertexAttribute: {
-            enumerable: false,
-            value: function(vertexAttribute) {
-                if (vertexAttribute.semantic === "POSITION") {
-                    var bbox = null;
-                    var accessor = vertexAttribute.attribute;
-                    if (accessor.min && accessor.max) {
-                        bbox = [ accessor.min, accessor.max];
-                    }
-                    this.boundingBox = bbox;
+    //since semantics/set got simplified we should get rid of this eventually
+    addVertexAttribute: {
+        enumerable: false,
+        value: function(vertexAttribute) {
+            if (vertexAttribute.semantic === "POSITION") {
+                var bbox = null;
+                var accessor = vertexAttribute.attribute;
+                if (accessor.min && accessor.max) {
+                    bbox = [ accessor.min, accessor.max];
                 }
-
-                if (!this.semantics[vertexAttribute.semantics]) {
-                    this.semantics[vertexAttribute.semantic] = vertexAttribute.attribute;
-                    this._attributesCount++;
-                }
+                this.boundingBox = bbox;
             }
-        },
 
-        _computeBBOXIfNeeded: {
-            enumerable: false,
-            value: function() {
-            }
-        },
-
-        _boundingBox: {
-            value: null,
-            writable: true
-        },
-
-        boundingBox: {
-            enumerable: true,
-            get: function() {
-                this._computeBBOXIfNeeded();
-                return this._boundingBox;
-            },
-            // we let the possibility to override by hand the bounding volume.
-            set: function(value) {
-                this._boundingBox = value;
-            }
-        },
-
-        _indices: { enumerable: false, value: null, writable: true },
-
-        indices: {
-            get: function() {
-                return this._indices;
-            },
-            set: function(value) {
-                this._indices = value;
-            }
-        },
-
-        _material: { enumerable: false, value: null, writable: true },
-
-        material: {
-            get: function() {
-                return this._material;
-            },
-            set: function(value) {
-                this._material = value;
+            if (!this.semantics[vertexAttribute.semantics]) {
+                this.semantics[vertexAttribute.semantic] = vertexAttribute.attribute;
+                this._attributesCount++;
             }
         }
+    },
 
-    });
+    _computeBBOXIfNeeded: {
+        enumerable: false,
+        value: function() {
+        }
+    },
 
-    if(root) {
-        root.Primitive = Primitive;
+    _boundingBox: {
+        value: null,
+        writable: true
+    },
+
+    boundingBox: {
+        enumerable: true,
+        get: function() {
+            this._computeBBOXIfNeeded();
+            return this._boundingBox;
+        },
+        // we let the possibility to override by hand the bounding volume.
+        set: function(value) {
+            this._boundingBox = value;
+        }
+    },
+
+    _indices: { enumerable: false, value: null, writable: true },
+
+    indices: {
+        get: function() {
+            return this._indices;
+        },
+        set: function(value) {
+            this._indices = value;
+        }
+    },
+
+    _material: { enumerable: false, value: null, writable: true },
+
+    material: {
+        get: function() {
+            return this._material;
+        },
+        set: function(value) {
+            this._material = value;
+        }
     }
 
-    return Primitive;
-
-}));
+});

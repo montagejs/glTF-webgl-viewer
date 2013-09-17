@@ -62,11 +62,11 @@ exports.BuiltInAssets = Object.create(Object.prototype, {
                 var assetInfos = this.assetInfosForName(assetName);
                 if (!assetInfos) {
                     deferred.reject("ERROR:"+assetName+" isn't registered as a built-in asset");
+                } else {
+                    loader.initWithPath(assetInfos.location);
+                    loader.delegate = readerDelegate;
+                    loader.load(null, assetInfos.options);
                 }
-
-                loader.initWithPath(assetInfos.location);
-                loader.delegate = readerDelegate;
-                loader.load(null, assetInfos.options);
             }
 
             return deferred.promise;

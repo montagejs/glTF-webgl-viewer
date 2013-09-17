@@ -354,11 +354,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
             if (this._observers) {
                 for (var i = 0 ; i < this._observers.length ; i++) {
                     this._observers[i].viewPointMatrixDidUpdate(this);
-                }
-            }
-
-            if (this._observers) {
-                for (var i = 0 ; i < this._observers.length ; i++) {
                     this._observers[i].viewPointDidChange(this);
                 }
             }

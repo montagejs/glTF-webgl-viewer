@@ -612,12 +612,37 @@ var global = window;
             }
         },
 
+        /*  Some method wrappers for observing,
+            because even though at the moment a single property would work,
+            Implemntation is likely to change here..
+         */
+
+        _observingEnabled: { value: false, writable:true },
+
+        isObserving: {
+            value: function() {
+                return this._observingEnabled;
+            }
+        },
+
+        startObserving: {
+            value: function() {
+                this._observingEnabled = true;
+            }
+        },
+
+        stopObserving: {
+            value: function() {
+                this._observingEnabled = false;
+            }
+        },
+
         fireResourceAvailable: {
-            value: function(request) {
-                if (this.observers) {   
+            value: function(resourceId) {
+                if (this._observingEnabled && this.observers) {
                     this.observers.forEach(function(observer) {
                         if (observer.resourceAvailable) {
-                            observer.resourceAvailable(request);
+                            observer.resourceAvailable(resourceId);
                         }
                     }, this);
                 }
@@ -694,7 +719,7 @@ var global = window;
 
                     delete self._resourcesStatus[req_.id];
 
-                    self.fireResourceAvailable.call(self, req_);
+                    self.fireResourceAvailable.call(self, req_.id);
 
                     if (self._resourcesBeingProcessedCount < self.maxConcurrentRequests) {
                         var requestTree  = resourceManager.requestTrees ? resourceManager.requestTrees[req_.path] : null;
@@ -796,7 +821,7 @@ var global = window;
                                         var convertedResource = delegate.convert(subArray, request.ctx);
                                         resourceManager._storeResource(request.id, convertedResource);
                                         delegate.resourceAvailable(convertedResource, request.ctx);
-                                        self.fireResourceAvailable.call(self, request);
+                                        self.fireResourceAvailable.call(self, request.id);
 
                                     }, self);
                                     wholeBuffer.pendingRequests = [];
@@ -830,7 +855,7 @@ var global = window;
                                 var convertedResource = delegate.convert(subArray, wrappedBufferRequest.ctx);
                                 self._storeResource(wrappedBufferRequest.id, convertedResource);
                                 delegate.resourceAvailable(convertedResource, wrappedBufferRequest.ctx);
-                                self.fireResourceAvailable.call(self, wrappedBufferRequest);
+                                self.fireResourceAvailable.call(self, wrappedBufferRequest.id);
 
                                 return;
                             }
@@ -870,6 +895,7 @@ var global = window;
                         var convertedResource = delegate.convert(ctx.sources, ctx.programCtx.ctx);
                         ctx.programCtx.resourceManager._storeResource(ctx.programCtx.id, convertedResource);
                         delegate.resourceAvailable(convertedResource, ctx.programCtx.ctx);
+                        ctx.programCtx.resourceManager.fireResourceAvailable.call(ctx.programCtx.resourceManager, ctx.programCtx.id);
                     }
                 }
             }
@@ -912,12 +938,13 @@ var global = window;
                 var self = this;
 
                 if (resource.description.path) {
+                    this._resourcesBeingProcessedCount++;
                     var videoElement = document.createElement('video');
                     videoElement.preload = "auto";
                     videoElement.loop = "loop";
                     videoElement.addEventListener("canplaythrough", function() {
+                        self._resourcesBeingProcessedCount--;
                         videoElement.play();
-
                         delete self._resourcesStatus[resource.id];
                         self._storeResource(resource.id, videoElement);
                         textureLoadedCallback(videoElement, resource.id, ctx);
@@ -942,8 +969,11 @@ var global = window;
                 var self = this;
 
                 if (resource.description.path) {
+                    this._resourcesBeingProcessedCount++;
                     var imageObject = new Image();  
-                    imageObject.onload = function() { 
+                    imageObject.onload = function() {
+                        self._resourcesBeingProcessedCount--;
+
                         delete self._resourcesStatus[resource.id];
                         self._storeResource(resource.id, imageObject);
                         textureLoadedCallback(imageObject, resource.id, ctx, index);

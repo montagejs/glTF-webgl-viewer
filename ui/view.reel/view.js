@@ -50,7 +50,6 @@ var dom = require("montage/core/dom");
 var Point = require("montage/core/geometry/point").Point;
 var OrbitCamera = require("runtime/dependencies/camera").OrbitCamera;
 var FlyingCamera = require("runtime/dependencies/camera").FlyingCamera;
-
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
 var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
 var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
@@ -65,13 +64,92 @@ var Camera = require("runtime/camera").Camera;
 */
 exports.View = Component.specialize( {
 
+    _firstFrameDidRender: { value: false, writable: true },
+
+    _sceneResourcesLoaded: { value: false, writable: true },
+
+    _scene: { value: null, writable: true },
+
+    allowsProgressiveSceneLoading: {
+        value:false, writable:true
+    },
+
+    sceneWillChange: {
+        value: function(value) {
+            this.viewPointModifierMatrix = mat4.identity();
+            this.interpolatingViewPoint = null;
+            this._firstFrameDidRender = false;
+
+            if (this.delegate) {
+                if (this.delegate.sceneWillChange) {
+                    this.delegate.sceneWillChange();
+                }
+            }
+
+            if (this._scene) {
+                this._scene.removeEventListener("materialUpdate", this);
+                this._scene.removeEventListener("textureUpdate", this);
+            }
+        }
+    },
+
+    sceneDidChange: {
+        value: function() {
+            //FIXME: incoming scene should not be expected to be just non null
+            if (this._scene) {
+                this._sceneResourcesLoaded = false;
+                this._scene.addEventListener("textureUpdate", this);
+                this._scene.addEventListener("materialUpdate", this);
+                this.applyScene();
+                if (this.delegate) {
+                    if (this.delegate.sceneDidChange) {
+                        this.delegate.sceneDidChange();
+                    }
+                }
+            }
+        }
+    },
+
+    scene: {
+        get: function() {
+            return this._scene;
+        },
+
+        set: function(value) {
+            if (value) {
+                //FIXME:sort of a hack, only set the scene when ready
+                if (value.isLoaded() === false) {
+                    value.addOwnPropertyChangeListener("status", this);
+                    return;
+                }
+            }
+
+            if (this.scene != value) {
+                this.sceneWillChange(value);
+                this._scene = value;
+                this.sceneDidChange();
+            }
+        }
+    },
+
+    // Montage
+
     constructor: {
         value: function View() {
             this.super();
         }
     },
 
+    // Before commit:
+    // - make sure texture update still work
 
+    // Resources
+
+    resourceAvailable: {
+        value: function(resource) {
+            this.needsDraw = true;
+        }
+    },
 
     handleTextureUpdate: {
         value: function(evt) {
@@ -95,10 +173,11 @@ exports.View = Component.specialize( {
         }
     },
 
-    _sceneTime: { value: 0, writable: true },
-    _lastTime: { value: 0, writable: true },
+    //
 
-    superSamplingFactor: { value: 1, writable: true },
+    _sceneTime: { value: 0, writable: true },
+
+    _lastTime: { value: 0, writable: true },
 
     play: {
         value: function() {
@@ -240,7 +319,6 @@ exports.View = Component.specialize( {
     canvas: {
         get: function() {
             if (this.templateObjects) {
-                              
                 return this.templateObjects.canvas;
             } 
             return null;
@@ -279,52 +357,6 @@ exports.View = Component.specialize( {
                 this.interpolatingViewPoint = null;
             }
         }
-    },
-
-    _scene: { value: null, writable: true },
-
-    scene: {
-        get: function() {
-            return this._scene;
-        },
-
-        set: function(value) {
-            if (this.scene !== value) {
-                var sceneReady = value != null ? (value.status == "loaded") : true; //force true if null
-                this.viewPointModifierMatrix = mat4.identity();
-                this.interpolatingViewPoint = null;
-
-                //sort of a hack, only set the scene when ready
-                if (!sceneReady) {
-                    value.addOwnPropertyChangeListener("status", this);
-                    return;
-                }
-
-                if (this.delegate && sceneReady) {
-                    if (this.delegate.sceneWillChange) {
-                        this.delegate.sceneWillChange();
-                    }
-                }
-                if (this._scene) {
-                    this._scene.removeEventListener("materialUpdate", this);
-                    this._scene.removeEventListener("textureUpdate", this);
-                }
-
-                this._scene = value;
-                this._scene.addEventListener("textureUpdate", this);
-                this._scene.addEventListener("materialUpdate", this);
-
-                if (value.status == "loaded") {
-                    this.applyScene(value);
-                }
-
-                if (this.delegate && sceneReady) {
-                    if (this.delegate.sceneDidChange) {
-                        this.delegate.sceneDidChange();
-                    }
-                }
-            }
-       }
     },
 
     //Test for https://github.com/KhronosGroup/glTF/issues/67
@@ -435,9 +467,11 @@ exports.View = Component.specialize( {
     },
 
     applyScene: {
-        value:function (m3dScene) {
+        value:function () {
+            var m3dScene = this.scene;
             var center = null;
             var scene = m3dScene.glTFElement;
+            var self = this;
             if (this.sceneRenderer) {
                 if (this.sceneRenderer.technique.rootPass) {
                     if (scene) {
@@ -450,7 +484,6 @@ exports.View = Component.specialize( {
                         var ctx = mat4.identity();
                         var node = scene.rootNode;
                         var sceneBBox = null;
-                        var self = this;
                         node.apply( function(node, parent, parentTransform) {
                             var modelMatrix = mat4.create();
                             mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
@@ -565,22 +598,31 @@ exports.View = Component.specialize( {
                         this.flyingCamera = new MontageFlyingCamera(this.canvas);
                     }
 
-
-
                     //right now, play by default
                     if (this.viewPoint) {
                         if (this.viewPoint.scene == null) {
                             this.viewPoint.scene = m3dScene;
-
                         }
                         if (this.sceneRenderer) {
                             this.interpolatingViewPoint = null;
                             this.viewPointDidChange();
                         }
                     }
-                    this.play();
 
-                    this.needsDraw = true;
+                    if (this.allowsProgressiveSceneLoading === false) {
+                        var renderPromise = this.scene.prepareToRender(this.sceneRenderer.webGLRenderer);
+                        renderPromise.then(function () {
+                            self.sceneRenderer.webGLRenderer.webGLContext.finish();
+
+                            self._sceneResourcesLoaded = true;
+                            self.needsDraw = true;
+                        }, function (error) {
+                        }, function (progress) {
+                        });
+
+                    } else {
+                        this.needsDraw = true;
+                    }
                 }
             }
         }
@@ -607,9 +649,15 @@ exports.View = Component.specialize( {
                 this.canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(this.canvas);
             }
 
-            var webGLOptions = { premultipliedAlpha: false, antialias: true, preserveDrawingBuffer: false };
+            var webGLOptions = {  premultipliedAlpha: false, antialias: true, preserveDrawingBuffer: false };
             var webGLContext =  this.canvas.getContext("experimental-webgl", webGLOptions) ||
                                 this.canvas.getContext("webgl", webGLOptions);
+
+            function throwOnGLError(err, funcName, args) {
+                throw WebGLDebugUtils.glEnumToString(err) + " was caused by call to: " + funcName;
+            };
+
+            //webGLContext = WebGLDebugUtils.makeDebugContext(webGLContext, throwOnGLError);
 
 
             if (webGLContext == null) {
@@ -647,14 +695,20 @@ exports.View = Component.specialize( {
             var options = null;
             this.sceneRenderer = Object.create(SceneRenderer);
             this.sceneRenderer.init(webGLRenderer, options);
-            this.sceneRenderer.webGLRenderer.resourceManager.observers.push(this);
+
+            var resourceManager = this.getResourceManager();
+            if (!resourceManager.isObserving()) {
+                resourceManager.observers.push(this);
+                resourceManager.startObserving();
+            }
 
             if (this.scene)
-                this.applyScene(this.scene);
+                this.applyScene();
 
             this.canvas.addEventListener("webglcontextlost", function(event) {
                 console.log("context was lost");
                 event.preventDefault();
+                self.getResourceManager.stopObserving();
                 self.sceneRenderer.webGLRenderer.resourceManager.reset();
                 self.needsDraw = false;
                 self._disableRendering = true;
@@ -728,7 +782,7 @@ exports.View = Component.specialize( {
             event.preventDefault();
             this._consideringPointerForPicking = true;
             var position = this.getRelativePositionToCanvas(event);
-            this._mousePosition = [position.x * this.scaleFactor * this.superSamplingFactor,  this.height - (position.y * this.scaleFactor * this.superSamplingFactor)];
+            this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
 
             if (this._state == this.PLAY) {
                 this.pause();
@@ -1017,7 +1071,7 @@ exports.View = Component.specialize( {
         },
         set: function(value) {
             if (value != this._width) {
-                this._width = value * this.scaleFactor * this.superSamplingFactor;
+                this._width = value * this.scaleFactor;
                 this.needsDraw = true;
             }
         }
@@ -1033,7 +1087,7 @@ exports.View = Component.specialize( {
         },
         set: function(value) {
             if (value != this._height) {
-                this._height = value * this.scaleFactor * this.superSamplingFactor;
+                this._height = value * this.scaleFactor;
                 this.needsDraw = true;
             }
         }
@@ -1068,9 +1122,47 @@ exports.View = Component.specialize( {
 
     draw: {
         value: function() {
-            if (this._scene == null || this.viewPoint == null || this._disableRendering)
+
+            //bail out if we don't allow to have resources progressively loaded
+            //we should show a loading progress here
+            if ((this.allowsProgressiveSceneLoading === false) && (this._sceneResourcesLoaded === false)) {
+                return;
+            }
+
+            //Update canvas when size changed
+
+            var width, height, webGLContext = this.getWebGLContext();
+            if (webGLContext == null || this._disableRendering)
                 return;
 
+
+            //WebGL does it for us with preserveDrawBuffer = false
+            if (this._shouldForceClear || (this._contextAttributes.preserveDrawingBuffer == null) || (this._contextAttributes.preserveDrawingBuffer == true)) {
+                webGLContext.clearColor(0,0,0,0.);
+                webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
+            }
+
+
+            width = this._width;
+            height = this._height;
+
+            //as indicated here: http://www.khronos.org/webgl/wiki/HandlingHighDPI
+            //set draw buffer and canvas size
+            if ((width != this.canvas.width) || (height != this.canvas.height)) {
+                this.canvas.style.width = (this._width / this.scaleFactor) + "px";
+                this.canvas.style.height = (this._height / this.scaleFactor) + "px";
+                this.canvas.width = this._width;
+                this.canvas.height = this._height;
+                webGLContext.viewport(0, 0, this._width, this._height);
+            }
+
+            if (this.viewPoint) {
+                if (this.viewPoint.glTFElement)
+                    this.viewPoint.glTFElement.cameras[0].projection.aspectRatio =  this._width / this._height;
+            }
+
+            if (this._scene == null || this.viewPoint == null || this._disableRendering)
+                return;
             var viewPoint = this.viewPoint;
             var self = this;
             var time = Date.now();
@@ -1133,20 +1225,7 @@ exports.View = Component.specialize( {
                 }
             }
             this._lastTime = time;
-
-            var webGLContext = this.getWebGLContext();
-            //WebGL does it for us with preserveDrawBuffer = false
-
-            if (this._shouldForceClear || (this._contextAttributes.preserveDrawingBuffer == null) || (this._contextAttributes.preserveDrawingBuffer == true)) {
-                webGLContext.clearColor(0,0,0,0.);
-                webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
-            }
-
             //----
-            if (this.viewPoint) {
-                if (this.viewPoint.glTFElement)
-                    this.viewPoint.glTFElement.cameras[0].projection.aspectRatio =  this._width / this._height;
-            }
 
             if (this.orbitCamera) {
                 var cameraMatrix = this.orbitCamera.getViewMat();
@@ -1164,10 +1243,8 @@ exports.View = Component.specialize( {
                         mat4.inverse(this.viewPointModifierMatrix);
             }
 
-            var webGLContext = this.getWebGLContext(),
-                renderer,
-                width,
-                height;
+            var renderer;
+
 
             /*
             if(this.orbitCamera && this.orbitCameraAnimating) {
@@ -1188,23 +1265,6 @@ exports.View = Component.specialize( {
             if (this.scene) {
                 renderer = this.sceneRenderer.webGLRenderer;
                 if (webGLContext) {
-                    width = this._width;
-                    height = this._height;
-
-                    //as indicated here: http://www.khronos.org/webgl/wiki/HandlingHighDPI
-                    //set draw buffer and canvas size
-                    if ((width != this.canvas.width) || (height != this.canvas.height)) {
-                        this.canvas.style.width = (this._width / this.scaleFactor) + "px";
-                        this.canvas.style.height = (this._height / this.scaleFactor) + "px";
-                        this.canvas.width = this._width;
-                        this.canvas.height = this._height;
-                        webGLContext.viewport(0, 0, this._width, this._height);
-                    }
-
-                    if (this.superSamplingFactor > 1) {
-                        this.element.style.WebkitTransform = "scale(0.5, 0.5)"
-                        this.element.style["-webkit-transform-origin"] = "0px 0px";
-                    }
 
                     /* ------------------------------------------------------------------------------------------------------------
                         Draw reflected scene
@@ -1276,25 +1336,17 @@ exports.View = Component.specialize( {
                     this.sceneRenderer.render(time, this.__renderOptions);
 
                     webGLContext.flush();
+
+                    if (this._firstFrameDidRender === false) {
+                        this._firstFrameDidRender = true;
+                        this.dispatchEventNamed("firstFrameDidRender", true, false, this);
+                    }
 /*
                     var error = webGLContext.getError();
                     if (error != webGLContext.NO_ERROR) {
                         console.log("gl error"+webGLContext.getError());
                     }
                     */
-                }
-            }
-        }
-    },
-
-    resourceAvailable: {
-        value: function(resource) {
-            this.needsDraw = true;
-            var resourceManager = this.getResourceManager();
-            var onGoing = Object.keys(resourceManager._resourcesStatus);
-            if (onGoing.length == 0) {
-                if (this.scene) {
-                    this.scene.resourcesDidLoad();
                 }
             }
         }

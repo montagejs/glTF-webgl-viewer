@@ -153,11 +153,12 @@ var global = window;
                 return this._aspectRatio;
             },
             set: function(value) {
-                    if (this._matrix) {
+                    var matrix = this.matrix;
+                    if (matrix) {
                         if (this.yfov) {
-                            this._matrix[0] = this._scaleX / value ;
+                            matrix[0] = this._scaleX / value ;
                         } else if (this.xfov) {
-                            this._matrix[5] = this._scaleY * value ;
+                            matrix[5] = this._scaleY * value ;
 
                         }
                     }
@@ -211,6 +212,7 @@ var global = window;
                         this._matrix[13] = 0.0;
                         this._matrix[14] = (2.0 * this.zfar * this.znear) / (this.znear - this.zfar);
                         this._matrix[15] = 0.0;
+
                     } else if (this.projection === "orthographic") {
                         this._matrix = mat4.ortho(-this.xmag, this.xmag, -this.ymag, this.ymag, this.znear, this.zfar);
                     } else {
