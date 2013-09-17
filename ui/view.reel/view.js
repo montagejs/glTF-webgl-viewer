@@ -140,14 +140,18 @@ exports.View = Component.specialize( {
         }
     },
 
-    // Before commit:
-    // - make sure texture update still work
-
     // Resources
-
     resourceAvailable: {
         value: function(resource) {
-            this.needsDraw = true;
+            //only issue draw once all requests finished
+            if (this.allowsProgressiveSceneLoading == false) {
+                var resourceManager = this.getResourceManager();
+                if (resourceManager) {
+                    if (resourceManager.hasPendingRequests() == false) {
+                        this.needsDraw = true;
+                    }
+                } 
+            }
         }
     },
 

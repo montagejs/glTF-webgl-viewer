@@ -1097,6 +1097,12 @@ var global = window;
             }
         },
 
+        hasPendingRequests: {
+            value: function() {
+                return this._resourcesBeingProcessedCount > 0;
+            }
+        },
+
         removeAllResources: {
             value: function() {
                 this._resources = {};
