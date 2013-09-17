@@ -115,7 +115,7 @@ exports.Scene = Component3D.specialize( {
         value: function(webGLRenderer) {
             if (this._prepareToRenderDefer == null) {
                 this._prepareToRenderDefer = Q.defer();
-                var sceneResourceLoader = Object.create(SceneResourceLoader).init(this.scene.glTFElement, webGLRenderer, this);
+                var sceneResourceLoader = Object.create(SceneResourceLoader).init(this.glTFElement, webGLRenderer, this);
                 sceneResourceLoader.loadScene();
             }
 
