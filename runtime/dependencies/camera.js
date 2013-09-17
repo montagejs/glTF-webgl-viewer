@@ -374,6 +374,7 @@ var global = window;
         }, false);
     };
 
+
     FlyingCamera.prototype.rotateView = function (xDelta, yDelta) {
         var rot = this._rotMat;
 
@@ -381,8 +382,13 @@ var global = window;
             this._angles[1] += xDelta;
             // Keep our rotation in the range of [0, 2*PI]
             // (Prevents numeric instability if you spin around a LOT.)
+
+            if(this.constrainYRotation) {
+                this._angles[1] = Math.min(Math.max(this._angles[1], this.minYRotation), this.maxYRotation);
+            }
+
             while (this._angles[1] < 0) {
-                this._angles[1] += Math.PI * 2.0;
+                    this._angles[1] += Math.PI * 2.0;
             }
             while (this._angles[1] >= Math.PI * 2.0) {
                 this._angles[1] -= Math.PI * 2.0;
@@ -396,6 +402,8 @@ var global = window;
             if (this._angles[0] > Math.PI * 0.5) {
                 this._angles[0] = Math.PI * 0.5;
             }
+
+
                 
             // Update the directional matrix
             mat4.identity(rot);

@@ -2427,11 +2427,13 @@ var global = window;
      * @returns {quat4} the quaternion constructed from the rotation matrix
      *
      */
-    quat4.fromRotationMatrix = function(mat, dest) {
+    quat4.fromRotationMatrix = function(mat1, dest) {
         if (!dest) dest = quat4.create();
 
         // Algorithm in Ken Shoemake's article in 1987 SIGGRAPH course notes
         // article "Quaternion Calculus and Fast Animation".
+        var mat = mat3.create();
+        mat3.transpose(mat1, mat);
 
         var fTrace = mat[0] + mat[4] + mat[8];
         var fRoot;

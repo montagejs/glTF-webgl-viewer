@@ -85,29 +85,43 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(firstTime) {
             if(firstTime) {
                 this.modelsController.content = [
-
                     { "name": "Buggy", "path": "model/rambler/Rambler.json"},
                     { "name": "duck", "path": "model/duck/duck.json"},
                     { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
-                    { "name": "Wine", "path": "model/wine/wine.json"},
-                   /*
-                    { "name": "Nexus", "path": "model/NexusFlattened/NexusFlattened.json"},
-                    { "name": "room1", "path": "model/room/testRoom5.json"},
+                    { "name": "Wine", "path": "model/wine/wine.json"}
+/*
 
+                    { "name": "testShadows",    "path": "model/test_shadows/test_shadows.json"},
 
-                    { "name": "megacity", "path": "model/megacity/megacityVideo.json"},
-                    { "name": "minebot", "path": "model/minebot/mine_bot_anim.json"},
-                    { "name": "Buggy", "path": "model/rambler/Rambler.json"},
-                    { "name": "BuggyFlatttened", "path": "model/rambler/RamblerFlattened.json"},
-                    { "name": "Wine", "path": "model/wine/wine.json"},
-                    { "name": "balloon", "path": "model/baloon3/baloon.json"},
-                    { "name": "frigate", "path": "model/frigate/frigate.json"},
-                    { "name": "brainsteam", "path": "model/brainsteam/brainsteam.json"},
-                    { "name": "vc", "path": "model/vc/vc.json"},
-                    { "name": "FemurTri", "path": "model/femur/FemurTri.json"},
-                    { "name": "challenge", "path": "model/challenge/challengeFlattened.json"},
-                    { "name": "monster", "path": "model/monster/monster.json"},
-                    { "name": "FemurPoly", "path": "model/femur/FemurPoly.json"}*/
+                    { "name": "loft",    "path": "model/loft4/loft4.json"},
+
+                    { "name": "test",    "path": "model/testMark/testMark.json"},
+
+                    { "name": "cubemaps",    "path": "model/cubemaps/test1.json"},
+
+                    { "name": "roomWithCameras",    "path": "model/testWithCameras/testWithCameras.json"},
+                    { "name": "vc",                 "path": "model/vc/vc.json"},
+                    { "name": "BuggyFlatttened",    "path": "model/rambler/RamblerFlattened.json"},
+                    { "name": "duck",               "path": "model/duck/duck.json"},
+                    { "name": "room1",              "path": "model/room/testRoom6.json"},
+                    { "name": "Buggy",              "path": "model/rambler/Rambler.json"},
+                    { "name": "SuperMurdoch",       "path": "model/SuperMurdoch/SuperMurdoch.json"},
+                    { "name": "Wine",               "path": "model/wine/wine.json"},
+                    { "name": "Nexus",              "path": "model/NexusFlattened/NexusFlattened.json"},
+                    { "name": "room1",              "path": "model/room/testRoom5.json"},
+                    { "name": "megacity",           "path": "model/megacity/megacityVideo.json"},
+                    { "name": "minebot",            "path": "model/minebot/mine_bot_anim.json"},
+                    { "name": "Buggy",              "path": "model/rambler/Rambler.json"},
+                    { "name": "BuggyFlatttened",    "path": "model/rambler/RamblerFlattened.json"},
+                    { "name": "Wine",               "path": "model/wine/wine.json"},
+                    { "name": "balloon",            "path": "model/baloon3/baloon.json"},
+                    { "name": "frigate",            "path": "model/frigate/frigate.json"},
+                    { "name": "brainsteam",         "path": "model/brainsteam/brainsteam.json"},
+                    { "name": "FemurTri",           "path": "model/femur/FemurTri.json"},
+                    { "name": "challenge",          "path": "model/challenge/challengeFlattened.json"},
+                    { "name": "monster",            "path": "model/monster/monster.json"},
+                    { "name": "FemurPoly",          "path": "model/femur/FemurPoly.json"}
+*/
                 ];
                 this.modelPath = this.modelsController.content[0].path;
             }

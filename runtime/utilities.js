@@ -284,6 +284,109 @@ exports.Utilities = Object.create(Object.prototype, {
         }
     },
 
+    /* Originally from: http://tog.acm.org/resources/GraphicsGems/gemsii/unmatrix.c
+     * Simplified version without Shear and Perspective decomposition
+     *
+     * unmatrix.c - given a 4x4 matrix, decompose it into standard operations.
+     *
+     * Author:	Spencer W. Thomas
+     * 		University of Michigan
+     */
+    idx: {
+        value: function(i, j) {
+            return (i * 4) + j;
+        }
+    },
+
+    decomposeMat4: {
+        value: function(matrix, translation, rotation, scale) {
+            var i, j;
+            var locMat = mat4.create();
+            var pmat = mat4.create();
+            var invpmat = mat4.create();
+            var tinvpmat = mat4.create();
+            var rows = [vec3.create(), vec3.create(), vec3.create()];
+
+            mat4.set(matrix, locMat);
+
+            var idx, idx1;
+            for (i = 0 ; i < 4 ; i++) {
+                for (j = 0 ; j < 4 ; j++) {
+                    idx = this.idx(i,j);
+                    idx1 = this.idx(3,3);
+                    locMat[idx] /= locMat[idx1];
+                }
+            }
+            mat4.set(locMat, pmat);
+
+            for (i = 0; i < 3; i++ ) {
+                idx = this.idx(i,3);
+                pmat[idx] = 0
+            }
+            idx = this.idx(3,3);
+            pmat[idx] = 1;
+
+            if (locMat[this.idx(0, 3)] != 0 ||
+                locMat[this.idx(1, 3)] != 0 ||
+                locMat[this.idx(2, 3)] != 0 ) {
+                locMat[this.idx(0, 3)] = 0;
+                locMat[this.idx(1, 3)] = 0;
+                locMat[this.idx(2, 3)] = 0;
+                locMat[this.idx(3, 3)] = 1;
+            }
+
+            translation[0] = locMat[this.idx(3, 0)];
+            locMat[this.idx(3, 0)] = 0;
+            translation[1] = locMat[this.idx(3, 1)];
+            locMat[this.idx(3, 1)] = 0;
+            translation[2] = locMat[this.idx(3, 2)];
+            locMat[this.idx(3, 2)] = 0;
+
+            /* Now get scale and shear. */
+            for ( i = 0 ; i < 3 ; i++ ) {
+                rows[i][0] = locMat[this.idx(i, 0)];
+                rows[i][1] = locMat[this.idx(i, 1)];
+                rows[i][2] = locMat[this.idx(i, 2)];
+            }
+
+            scale[0] = vec3.length(rows[0]);
+            vec3.normalize(rows[0]);
+
+            scale[1] = vec3.length(rows[1]);
+            vec3.normalize(rows[1]);
+
+            scale[2] = vec3.length(rows[2]);
+            vec3.normalize(rows[2]);
+
+            var res = vec3.create();
+            vec3.cross(rows[1], rows[2], res);
+
+            if ( vec3.dot(rows[0], res) < 0 ) {
+                for ( i = 0; i < 3; i++ ) {
+                    scale[i] *= -1;
+                    rows[i][0] *= -1;
+                    rows[i][1] *= -1;
+                    rows[i][2] *= -1;
+                }
+            }
+
+            var amat3 = mat3.create();
+            amat3[0] = rows[0][0];
+            amat3[1] = rows[1][0];
+            amat3[2] = rows[2][0];
+            amat3[3] = rows[0][1];
+            amat3[4] = rows[1][1];
+            amat3[5] = rows[2][1];
+            amat3[6] = rows[0][2];
+            amat3[7] = rows[1][2];
+            amat3[8] = rows[2][2];
+            mat3.transpose(amat3);
+            quat4.fromRotationMatrix(amat3, rotation);
+            quat4.normalize(rotation);
+
+        }
+    },
+
     easeOut: {
         value: function(x) {
             //actually, just ease out

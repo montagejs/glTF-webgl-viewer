@@ -30,6 +30,7 @@ var Transform = exports.Transform = Object.create(Base, {
     _matrix: { value: null, writable: true },
 
     _dirty: { value: true, writable: true },
+    _dirtyAffines: { value: true, writable: true },
 
     _translation: { value: null, writable: true },
     _rotation: { value: null, writable: true },
@@ -105,8 +106,23 @@ var Transform = exports.Transform = Object.create(Base, {
             return this._matrix;
         },
         set: function(value ) {
-            this._matrix = value;
+            if (this._matrix == null) {
+                this._matrix = mat4.create();
+            }
+
+            mat4.set(value, this._matrix);
+            //this._matrix = value;
             this._dirty = false;
+            this._dirtyAffines = true;
+        }
+    },
+
+    _rebuildAffinesIfNeeded: {
+        value: function() {
+            if (this._dirtyAffines === true) {
+                Utilities.decomposeMat4(this.matrix, this._translation, this._rotation, this._scale);
+                this._dirtyAffines = false;
+            }
         }
     },
 
@@ -114,6 +130,9 @@ var Transform = exports.Transform = Object.create(Base, {
         set: function(value ) {
             this._translation = value;
             this._updateDirtyFlag(true);
+        }, get: function(value) {
+            this._rebuildAffinesIfNeeded();
+            return this._translation;
         }
     },
 
@@ -121,6 +140,9 @@ var Transform = exports.Transform = Object.create(Base, {
         set: function(value ) {
             this._rotation = value;
             this._updateDirtyFlag(true);
+        }, get: function(value) {
+            this._rebuildAffinesIfNeeded();
+            return this._rotation;
         }
     },
 
@@ -128,6 +150,9 @@ var Transform = exports.Transform = Object.create(Base, {
         set: function(value ) {
             this._scale = value;
             this._updateDirtyFlag(true);
+        }, get: function(value) {
+            this._rebuildAffinesIfNeeded();
+            return this._scale;
         }
     },
 
