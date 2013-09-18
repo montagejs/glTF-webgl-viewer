@@ -7,6 +7,9 @@
         "matte": "0.1.1",
         "q" : "0.9.6"
     },
+    "devDependencies": {
+        "express": "*"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/fabrobinet/glTF-webgl-viewer.git"
