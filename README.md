@@ -4,4 +4,4 @@ Montage viewer for [glTF](https://github.com/KhronosGroup/glTF/blob/master/speci
 
  * install [node](http://nodejs.org/) for your platform
  * npm install (inside glTF-webgl-viewer)
-
+ * view index.html through web server
