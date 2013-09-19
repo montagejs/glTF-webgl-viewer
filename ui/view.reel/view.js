@@ -414,7 +414,6 @@ exports.View = Component.specialize( {
             }
 
             var scene = Montage.create(Scene).init();
-            //this.scene = scene;
             scene.addOwnPropertyChangeListener("status", this);
             scene.path = value;
         },
@@ -590,9 +589,11 @@ exports.View = Component.specialize( {
                             this.orbitCamera.maxOrbitX = 0.4;
                             this.orbitCamera.minOrbitY = -0.4;
                             this.orbitCamera.maxOrbitY = 0.4;
+                        } else {
+                            this.orbitCamera.minOrbitX = 0;
                         }
 
-                        this.orbitCamera.constrainXOrbit = hasCamera;
+                        this.orbitCamera.constrainXOrbit = true;
                         this.orbitCamera.constrainYOrbit = hasCamera;
 
                         if (center)
@@ -617,7 +618,6 @@ exports.View = Component.specialize( {
                         var renderPromise = this.scene.prepareToRender(this.sceneRenderer.webGLRenderer);
                         renderPromise.then(function () {
                             self.sceneRenderer.webGLRenderer.webGLContext.finish();
-
                             self._sceneResourcesLoaded = true;
                             self.needsDraw = true;
                         }, function (error) {
@@ -691,7 +691,6 @@ exports.View = Component.specialize( {
                 if (isiPad) {
                     this._shouldForceClear = true;
                 }
-
             }
 
             var webGLRenderer = Object.create(WebGLRenderer).initWithWebGLContext(webGLContext);
@@ -735,10 +734,19 @@ exports.View = Component.specialize( {
             //setup gradient
             var self = this;
             var techniquePromise = BuiltInAssets.assetWithName("gradient");
-            techniquePromise.then(function (scene) {
+            techniquePromise.then(function (glTFScene_) {
+                var scene = Montage.create(Scene).init(glTFScene_);
+
                 self.gradientRenderer = Object.create(SceneRenderer);
                 self.gradientRenderer.init(webGLRenderer, null);
-                self.gradientRenderer.scene = scene;
+                self.gradientRenderer.scene = scene.glTFElement;
+                var viewPoints = self._getViewPoints(scene);
+                if (viewPoints) {
+                    if (viewPoints.length) {
+                        self.gradientRenderer.technique.rootPass.viewPoint = viewPoints[0].glTFElement;
+                    }
+                }
+
                 self.needsDraw = true;
             }, function (error) {
             }, function (progress) {
@@ -888,21 +896,13 @@ exports.View = Component.specialize( {
         },
         set: function(flag) {
             this._showReflection = flag;
+            this.needsDraw = true;
             //if reflection (e.g floor) is enabled, then we constrain the rotation
-            //if (flag && this.orbitCamera)
-            //    this.orbitCamera.constrainXOrbit = flag;
+            if (flag && this.orbitCamera)
+                this.orbitCamera.constrainXOrbit = flag;
         }
     },
 
-    drawGradient: {
-        value: function() {
-            if (this.showGradient) {
-                if (this.gradientRenderer) {
-                    this.gradientRenderer.render();
-                }
-            }
-        }
-    },
 
     displayBBOX: {
         value: function(bbox, cameraMatrix, modelMatrix) {
@@ -969,7 +969,7 @@ exports.View = Component.specialize( {
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._BBOXIndices);
                 gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
             }
-            
+
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._BBOXIndices);
 
             if (!this._BBOXVertexBuffer) {
@@ -1134,7 +1134,6 @@ exports.View = Component.specialize( {
             }
 
             //Update canvas when size changed
-
             var width, height, webGLContext = this.getWebGLContext();
             if (webGLContext == null || this._disableRendering)
                 return;
@@ -1145,7 +1144,6 @@ exports.View = Component.specialize( {
                 webGLContext.clearColor(0,0,0,0.);
                 webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
-
 
             width = this._width;
             height = this._height;
@@ -1269,60 +1267,48 @@ exports.View = Component.specialize( {
             if (this.scene) {
                 renderer = this.sceneRenderer.webGLRenderer;
                 if (webGLContext) {
-
-                    /* ------------------------------------------------------------------------------------------------------------
-                        Draw reflected scene
-                            - enable depth testing
-                            - enable culling
-                     ------------------------------------------------------------------------------------------------------------ */
-                    if(this.showReflection && this.orbitCamera) {
-                        webGLContext.depthFunc(webGLContext.LESS);
-                        webGLContext.enable(webGLContext.DEPTH_TEST);
-                        webGLContext.frontFace(webGLContext.CW);
-
-                        var savedTr = mat4.create();
-                        var rootNode = this.scene.glTFElement.rootNode;
-                        var node = rootNode;
-                        //save car matrix
-                        mat4.set(rootNode.transform.matrix, savedTr);
-                        webGLContext.depthMask(true);
-
-                        var translationMatrix = mat4.translate(mat4.identity(), [0, 0, 0 ]);
-                        var scaleMatrix = mat4.scale(translationMatrix, [1, 1, -1]);
-                        mat4.multiply(scaleMatrix, node.transform.matrix) ;
-                        rootNode.transform.matrix = scaleMatrix;
-
-                        //FIXME: passing a matrix was the proper to do this, but right now matrix updates are disabled (temporarly)
-                        this.sceneRenderer.technique.rootPass.viewPoint.flipped = true;
-
-                        this.sceneRenderer.render(time);
-                        webGLContext.depthMask(true);
-                        this.sceneRenderer.technique.rootPass.viewPoint.flipped = false;
-
-                        rootNode.transform.matrix = savedTr;
-                    }
-
-                    /*
-                    //restore culling order
-                    webGLContext.frontFace(webGLContext.CCW);
-
-                   // webGLContext.disable(webGLContext.DEPTH_TEST);
-                    //webGLContext.depthMask(false);
-                    this.drawGradient();
-                    //this.drawFloor(cameraMatrix);
-                    webGLContext.depthMask(true);
-
-                    webGLContext.depthFunc(webGLContext.LESS);
-                    //webGLContext.enable(webGLContext.DEPTH_TEST);
-                    webGLContext.enable(webGLContext.CULL_FACE);
-                    webGLContext.disable(webGLContext.BLEND);
-*/
                     if (this.__renderOptions == null) {
                         this.__renderOptions = {};
                     }
 
                     this.__renderOptions.viewPointModifierMatrix = this.viewPointModifierMatrix;
                     this.__renderOptions.interpolatingViewPoint = this.interpolatingViewPoint;
+
+                    //FIXME: on the iPad with private function to enable webGL there was an issue with depthMask (need to re-check if that got fixed)
+                    var allowsReflection = this.showReflection && (this.viewPoint.id === "__default_camera");
+                    if(allowsReflection) {
+                        /* ------------------------------------------------------------------------------------------------------------
+                         Draw reflected scene
+                         ------------------------------------------------------------------------------------------------------------ */
+                        webGLContext.depthFunc(webGLContext.LESS);
+                        webGLContext.enable(webGLContext.DEPTH_TEST);
+                        webGLContext.frontFace(webGLContext.CW);
+                        webGLContext.depthMask(true);
+                        var rootNode = this.scene.glTFElement.rootNode;
+                        var savedTr = mat4.create(rootNode.transform.matrix);
+                        var scaleMatrix = mat4.scale(mat4.identity(), [1, 1, -1]);
+                        mat4.multiply(scaleMatrix, rootNode.transform.matrix) ;
+                        rootNode.transform.matrix = scaleMatrix;
+                        this.sceneRenderer.render(time, this.__renderOptions);
+                        rootNode.transform.matrix = savedTr;
+                        webGLContext.frontFace(webGLContext.CCW);
+                    }
+
+                    if (this.showGradient || allowsReflection) {
+                        //FIXME:For now, just allow reflection when using default camera
+                        if (this.viewPoint.id === "__default_camera") {
+                            if (this.gradientRenderer) {
+                                webGLContext.disable(webGLContext.DEPTH_TEST);
+                                webGLContext.disable(webGLContext.CULL_FACE);
+                                webGLContext.depthMask(false);
+                                this.gradientRenderer.render(time, this.__renderOptions);
+                                webGLContext.depthMask(true);
+                                webGLContext.enable(webGLContext.DEPTH_TEST);
+                                webGLContext.enable(webGLContext.CULL_FACE);
+                                webGLContext.disable(webGLContext.BLEND);
+                            }
+                        }
+                    }
 
                     /* disable picking
                     if (this._mousePosition) {
@@ -1332,7 +1318,7 @@ exports.View = Component.specialize( {
 
                         this.sceneRenderer.render(time, this.__renderOptions);
                     }
-*/
+                    */
                     this.__renderOptions.picking = false;
                     this.__renderOptions.coords = null;
                     this.__renderOptions.delegate = null;
@@ -1345,7 +1331,7 @@ exports.View = Component.specialize( {
                         this._firstFrameDidRender = true;
                         this.dispatchEventNamed("firstFrameDidRender", true, false, this);
                     }
-/*
+                    /*
                     var error = webGLContext.getError();
                     if (error != webGLContext.NO_ERROR) {
                         console.log("gl error"+webGLContext.getError());

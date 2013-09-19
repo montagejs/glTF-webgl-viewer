@@ -450,24 +450,25 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 this.__transform = Object.create(Transform).init();
             }
 
-            var viewPointModifierMatrix = options.viewPointModifierMatrix;
             if (this.viewPoint) {
                 mat4.set(this.viewPoint.worldMatrix, this.__matrix);
-                var interpolatingViewPoint = options.interpolatingViewPoint;
-                if (interpolatingViewPoint) {
-                    var step = (time - interpolatingViewPoint.start) / 1000;
-                    if ((interpolatingViewPoint.previous != null) && (step < 1)) {
-                        //FIXME: this is wrong as it assumes that t1 & t2 can be interpolated but shouldn't be just like this
-                        //we should get the worldTransforms , decompose and then interpolate, here this works when both
-                        //nodes are under the root
-                        var t1 = interpolatingViewPoint.previous.transform;
-                        var t2 = this.viewPoint.transform;
-                        t1.interpolateToTransform(t2, step, this.__transform);
-                        mat4.multiply(this.viewPoint.parent.worldMatrix, this.__transform.matrix, this.__matrix);
+                if (options != null) {
+                    var viewPointModifierMatrix = options.viewPointModifierMatrix;
+                    var interpolatingViewPoint = options.interpolatingViewPoint;
+                    if (interpolatingViewPoint) {
+                        var step = (time - interpolatingViewPoint.start) / 1000;
+                        if ((interpolatingViewPoint.previous != null) && (step < 1)) {
+                            //FIXME: this is wrong as it assumes that t1 & t2 can be interpolated but shouldn't be just like this
+                            //we should get the worldTransforms , decompose and then interpolate, here this works when both
+                            //nodes are under the root
+                            var t1 = interpolatingViewPoint.previous.transform;
+                            var t2 = this.viewPoint.transform;
+                            t1.interpolateToTransform(t2, step, this.__transform);
+                            mat4.multiply(this.viewPoint.parent.worldMatrix, this.__transform.matrix, this.__matrix);
+                        }
                     }
+                    mat4.multiply(this.__matrix, viewPointModifierMatrix);
                 }
-
-                mat4.multiply(this.__matrix, viewPointModifierMatrix);
                 mat4.inverse(this.__matrix);
 
                 if (mat4.equal(this._viewPointMatrix, this.__matrix) === false) {

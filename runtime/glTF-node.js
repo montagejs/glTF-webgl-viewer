@@ -137,7 +137,7 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
         value: function() {
             this.__Base_init();
             this._children = [];
-            this._transform = Object.create(Transform).init();
+            this.transform = Object.create(Transform).init();
             this._properties["meshes"] = [];
 
             var self = this;

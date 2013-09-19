@@ -124,7 +124,11 @@ exports.Scene = Component3D.specialize( {
     },
 
     init: {
-        value:function() {
+        value:function(glTFElement) {
+            if (glTFElement) {
+                this.glTFElement = glTFElement;
+                this.status = "loaded";
+            }
             return this.initWithScene(this);
         }
     }

@@ -111,8 +111,7 @@ var Transform = exports.Transform = Object.create(Base, {
             }
 
             mat4.set(value, this._matrix);
-            //this._matrix = value;
-            this._dirty = false;
+            this._updateDirtyFlag(false);
             this._dirtyAffines = true;
         }
     },
