@@ -21,6 +21,10 @@
     border: none;
 }
 
+.options .hidden {
+    display: none;
+}
+
 .options h3 {
     margin: 0 0 10px 0;
     color: hsl(0,0%,30%);
