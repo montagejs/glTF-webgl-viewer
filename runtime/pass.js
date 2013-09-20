@@ -624,53 +624,53 @@ var ScenePassRenderer = Object.create(Object.prototype, {
 
 var ScenePass = exports.ScenePass = Object.create(Pass, {
 
-    _sceneRenderer: { value: null, writable: true },
+    _scenePassRenderer: { value: null, writable: true },
 
-    createSceneRendererIfNeeded: {
+    createScenePassRendererIfNeeded: {
         value: function() {
-            if (!this._sceneRenderer) {
-                this._sceneRenderer = Object.create(ScenePassRenderer).init();
+            if (!this._scenePassRenderer) {
+                this._scenePassRenderer = Object.create(ScenePassRenderer).init();
             }
         }
     },
 
-    sceneRenderer: {
+    scenePassRenderer: {
         get: function() {
-            this.createSceneRendererIfNeeded();
-            return this._sceneRenderer;
+            this.createScenePassRendererIfNeeded();
+            return this._scenePassRenderer;
         },
         set: function(value) {
-            this.createSceneRendererIfNeeded();
-            if (this._sceneRenderer != value) {
-                this._sceneRenderer = value;
+            this.createScenePassRendererIfNeeded();
+            if (this._scenePassRenderer != value) {
+                this._scenePassRenderer = value;
             }
         }
     },
 
     viewPoint: {
         get: function() {
-            return this.sceneRenderer ? this.sceneRenderer.viewPoint : null;
+            return this.scenePassRenderer ? this.scenePassRenderer.viewPoint : null;
         },
         set: function(viewpoint) {
-            if (this.sceneRenderer) {
-                this.sceneRenderer.viewPoint = viewpoint;
+            if (this.scenePassRenderer) {
+                this.scenePassRenderer.viewPoint = viewpoint;
             }
         }
     },
 
     scene: {
         get: function() {
-            return this.sceneRenderer.scene;
+            return this.scenePassRenderer.scene;
         },
         set: function(value) {
-            this.sceneRenderer.scene = value;
+            this.scenePassRenderer.scene = value;
         }
     },
 
     execute: {
         value: function(webGLRenderer, time, options) {
             //pickingRenderTarget
-            this.sceneRenderer.render(webGLRenderer, time, options);
+            this.scenePassRenderer.render(webGLRenderer, time, options);
         }
     },
 

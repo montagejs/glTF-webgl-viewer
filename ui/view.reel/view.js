@@ -855,8 +855,20 @@ exports.View = Component.specialize( {
         value: false, writable: true
     },
 
-    showBBOX: {
+    _showBBOX: {
         value: false, writable: true
+    },
+
+    showBBOX: {
+        get: function() {
+            return this._showBBOX;
+        },
+        set: function(flag) {
+            if (flag != this._showBBOX) {
+                this._showBBOX = flag;
+                this.needsDraw = true;
+            }
+        }
     },
 
     showGradient: {
@@ -898,7 +910,7 @@ exports.View = Component.specialize( {
             this.sceneRenderer.webGLRenderer.bindedProgram = null;
 
             var viewPoint = this.viewPoint;
-            var projectionMatrix = viewPoint.cameras[0].projection.matrix;
+            var projectionMatrix = viewPoint.glTFElement.cameras[0].projection.matrix;
 
             gl.disable(gl.CULL_FACE);
 
@@ -1013,21 +1025,12 @@ exports.View = Component.specialize( {
 
     handleSelectedNode: {
         value: function(nodeID) {
-            /*
-            if (this.orbitCamera)
-                this.displayAllBBOX(this.orbitCamera.getViewMat(), nodeID);
-            else {
-                var mat = mat4.create();
-                mat4.inverse(this.viewPoint.glTFElement.transform.matrix, mat);
-                this.displayAllBBOX(mat, nodeID);
-            }
-            */
         }
     },
 
     displayAllBBOX: {
-        value: function(cameraMatrix, selectedNodeID) {
-            if (!this.scene || !this.showBBOX)
+        value: function(cameraMatrix) {
+            if (!this.scene)
                 return;
             if (this.scene.glTFElement) {
                 var ctx = mat4.identity();
@@ -1037,7 +1040,7 @@ exports.View = Component.specialize( {
                 node.apply( function(node, parent, parentTransform) {
                     var modelMatrix = mat4.create();
                     mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
-                    if (node.boundingBox && node.id == selectedNodeID) {
+                    if (node.boundingBox) {
                         self.displayBBOX(node.boundingBox, cameraMatrix, modelMatrix);
                     }
                     return modelMatrix;
@@ -1305,6 +1308,10 @@ exports.View = Component.specialize( {
                     this.__renderOptions.delegate = null;
 
                     this.sceneRenderer.render(time, this.__renderOptions);
+
+                    //FIXME: ...create an API to retrive the actual viewPoint matrix...
+                    if (this.showBBOX)
+                        this.displayAllBBOX(this.sceneRenderer.technique.rootPass.scenePassRenderer._viewPointMatrix);
 
                     webGLContext.flush();
 
