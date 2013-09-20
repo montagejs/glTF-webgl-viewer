@@ -484,27 +484,8 @@ exports.View = Component.specialize( {
 
                         //compute hierarchical bbox for the whole scene
                         //this will be removed from this place when node bounding box become is implemented as hierarchical
-                        var ctx = mat4.identity();
                         var node = scene.rootNode;
-                        var sceneBBox = null;
-                        node.apply( function(node, parent, parentTransform) {
-                            var modelMatrix = mat4.create();
-                            mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
-                            if (node.boundingBox) {
-                                var bbox = Utilities.transformBBox(node.boundingBox, modelMatrix);
-
-                                if (sceneBBox) {
-                                    if (node.meshes) {
-                                        if (node.meshes.length > 0)
-                                            sceneBBox = Utilities.mergeBBox(bbox, sceneBBox);
-                                    }
-                                } else {
-                                    sceneBBox = bbox;
-                                }
-                            }
-                            return modelMatrix;
-                        }, true, ctx);
-
+                        var sceneBBox = node.getBoundingBox(true);
                         // arbitry set first coming camera as the view point
                         if (viewPoints.length) {
                             var shouldKeepViewPoint = false;
