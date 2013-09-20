@@ -217,6 +217,24 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
+    _playAnimation: { value: false, writable: true },
+
+    playAnimation: {
+        get: function() {
+            return this._playAnimation;
+        },
+        set: function(flag) {
+            this._playAnimation = flag;
+            if (this.view) {
+                if (flag) {
+                    this.view.play();
+                } else {
+                    this.view.pause();
+                }
+            }
+        }
+    },
+
     run: {
         value: function(scenePath) {
             this.loadScene();

@@ -68,6 +68,7 @@
 
 .options .checkbox {
     font-size: 16px;
+    margin: 2px 0 2px 0;
 }
 
 .option .image {
@@ -93,4 +94,13 @@
     background: url(montage-icon.png) no-repeat center;
     background-size: 100% auto;
     opacity: .1;
+}
+
+.glTFBranding {
+    width: 200px;
+    height: 100px;
+    margin: auto auto;
+    background: url(glTF_500.png) no-repeat center;
+    background-size: 100% auto;
+    opacity: 1;
 }

@@ -54,6 +54,10 @@ exports.Options = Montage.create(Component, /** @lends module:"montage/ui/stage.
         value: false
     },
 
+    playAnimation: {
+        value: false
+    },
+
     modelsController: {
         value: null
     },

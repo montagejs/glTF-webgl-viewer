@@ -135,15 +135,24 @@ POSSIBILITY OF SUCH DAMAGE.
             "bindings": {
                 "checked": {"<->": "@owner.showReflection"}
             }
+        },
+        "playAnimation": {
+            "prototype": "digit/ui/checkbox.reel",
+            "properties": {
+                "element": {"#": "playAnimation"}
+            },
+            "bindings": {
+                "checked": {"<->": "@owner.playAnimation"}
+            }
         }
     }
     </script>
 </head>
 <body>
     <div data-montage-id="options" class="options">
-        <h1 class="title">
-            GLTF Viewer
-        </h1>
+        <section class="optionsGroup">
+            <div class="glTFBranding"></div>
+        </section>
         <section class="optionsGroup hidden">
             <h3></h3>
             <div type="progress" data-montage-id="progress" class="progress"></div>
@@ -168,16 +177,27 @@ POSSIBILITY OF SUCH DAMAGE.
          </section>
         <section class="optionsGroup">
             <h3>
-                Rendering options
+                Options
             </h3>
+            <section>
             <label>
                 <input type="checkbox" data-montage-id="showReflection" class="checkbox">
                 Reflection
             </label>
+            </section>
+            <section>
             <label>
                 <input type="checkbox" data-montage-id="showBBOX" class="checkbox">
                 Bounding Box
             </label>
+            </section>
+            <section>
+            <label>
+                <input type="checkbox" data-montage-id="playAnimation" class="checkbox">
+                Play animation
+            </label>
+            </section>
+
         </section>
         <section class="optionsGroup">
             <h3>
