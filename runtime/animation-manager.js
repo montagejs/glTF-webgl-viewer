@@ -27,6 +27,40 @@ var Animation = require("runtime/animation").Animation;
 
 exports.AnimationManager = Object.create(Base, {
 
+    startTime: {
+        get: function() {
+            if (this.animations) {
+                if (this.animations.length > 0) {
+                    var startTime = this.animations[0].startTime;
+                    for (var i = 1 ; i < this.animations.length ; i++ ) {
+                        if (this.animations[i].startTime < startTime) {
+                            startTime = this.animations[i].startTime;
+                        }
+                    }
+                    return startTime;
+                }
+                return 0;
+            }
+        }
+    },
+
+    endTime: {
+        get: function() {
+            if (this.animations) {
+                if (this.animations.length > 0) {
+                    var endTime = this.animations[0].endTime;
+                    for (var i = 1 ; i < this.animations.length ; i++ ) {
+                        if (this.animations[i].endTime > endTime) {
+                            endTime = this.animations[i].endTime;
+                        }
+                    }
+                    return endTime;
+                }
+                return 0;
+            }
+        }
+    },
+
     _animations: { value: null, writable: true },
 
     animations: {

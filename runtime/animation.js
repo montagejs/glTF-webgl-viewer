@@ -26,20 +26,9 @@ var Base = require("runtime/base").Base;
 
 var Channel = exports.Channel = Object.create(Base, {
 
-    duration: { value: -1, writable:true
-        /*
-         get: function() {
+    startTime: { value: 0, writable:true },
 
-            var inputParameter = this.sampler.input;
-            var inputArray = this.getParameterArray(inputParameter, resourceManager);
-            if (inputArray) {
-                var count = inputParameter.count;
-                return inputArray[count - 1];
-            }
-            return -1;
-        }
-         */
-    },
+    endTime: { value: 0, writable:true },
 
     _sampler: { value: null, writable: true },
 
@@ -107,20 +96,34 @@ var Channel = exports.Channel = Object.create(Base, {
             if (inputArray && outputArray) {
                 time /= 1000;
                 var count = inputParameter.count;
-                this.duration = inputArray[count - 1];
-                time %= this.duration;
+
+                this.endTime = inputArray[count - 1];
+                this.startTime = inputArray[0];
+                //time %= this.endTime;
+
                 var lastKeyIndex = 0;
                 var i;
                 var keyIndex = 0;
                 var ratio = 0;
                 var timeDelta = 0;
+                var found = false;
+
+                var allBefore = true;
+                var allAfter = true;
                 if (count > 0) {
-                    for (i = lastKeyIndex ; i < count - 1 ; i++) {
-                        if ((inputArray[i] <= time) && (time < inputArray[i+1])) {
-                            lastKeyIndex = i;
-                            if (inputArray[i+1] != inputArray[i]) {
+                    if (time < this.startTime) {
+                        ratio = 0;
+                        lastKeyIndex = 0;
+                    } else if (time >= this.endTime) {
+                        ratio = 1;
+                        lastKeyIndex = count - 2;
+                    } else {
+                        for (i = lastKeyIndex ; i < count - 1 ; i++) {
+                            if ((inputArray[i] <= time) && (time < inputArray[i+1])) {
+                                lastKeyIndex = i;
                                 timeDelta = inputArray[i+1] - inputArray[i];
                                 ratio = (time - inputArray[i]) / timeDelta;
+                                break;
                             }
                         }
                     }
@@ -316,7 +319,9 @@ exports.Animation = Object.create(Base, {
 
     _samplers: { value: null, writable: true },
 
-    _duration: { value: 0, writable: true },
+    _startTime: { value: 0, writable: true },
+
+    _endTime: { value: 0, writable: true },
 
     channels: {
         get: function() {
@@ -354,12 +359,36 @@ exports.Animation = Object.create(Base, {
         }
     },
 
-    duration: {
+    startTime: {
         get: function() {
             if (this.channels) {
-                if (this.channels.length) {
-                    return this.channels[0].duration;
+                if (this.channels.length > 0) {
+                    var startTime = this.channels[0].startTime;
+                    for (var i = 1 ; i < this.channels.length ; i++ ) {
+                        if (this.channels[i].startTime < startTime) {
+                            startTime = this.channels[i].startTime;
+                        }
+                    }
+                    return startTime;
                 }
+                return 0;
+            }
+        }
+    },
+
+    endTime: {
+        get: function() {
+            if (this.channels) {
+                if (this.channels.length > 0) {
+                    var endTime = this.channels[0].endTime;
+                    for (var i = 1 ; i < this.channels.length ; i++ ) {
+                        if (this.channels[i].endTime > endTime) {
+                            endTime = this.channels[i].endTime;
+                        }
+                    }
+                    return endTime;
+                }
+                return 0;
             }
         }
     },

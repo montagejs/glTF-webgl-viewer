@@ -179,7 +179,16 @@ exports.View = Component.specialize( {
 
     //
 
-    _sceneTime: { value: 0, writable: true },
+    __sceneTime: { value: 0, writable: true },
+
+    _sceneTime: {
+        set: function(value) {
+            this.__sceneTime = value;
+        },
+        get: function() {
+            return this.__sceneTime;
+        }
+    },
 
     _lastTime: { value: 0, writable: true },
 
@@ -1178,11 +1187,16 @@ exports.View = Component.specialize( {
             }
 
             if (this.sceneRenderer && this.scene) {
+                var endTime = this.scene.glTFElement.endTime;
+
                 var animationManager = this.scene.glTFElement.animationManager;
                 if (this._state == this.PLAY && animationManager) {
                     this._sceneTime += time - this._lastTime;
-                    if (this.scene.glTFElement.duration !== -1) {
-                        if (this._sceneTime / 1000. > this.scene.glTFElement.duration) {
+
+
+
+                    if (endTime !== -1) {
+                        if (this._sceneTime / 1000. > endTime) {
                             if (this.automaticallyCycleThroughViewPoints == true) {
                                 var viewPointIndex = this._viewPointIndex;
                                 var viewPoints = this._getViewPoints(this.scene);
@@ -1199,7 +1213,7 @@ exports.View = Component.specialize( {
                                 }
                             }
                             if (this.loops) {
-                                this._sceneTime = this._sceneTime % this.scene.glTFElement.duration;
+                                this._sceneTime = endTime == 0 ? 0 : this._sceneTime % endTime;
                            } else {
                                 this.stop();
                             }
