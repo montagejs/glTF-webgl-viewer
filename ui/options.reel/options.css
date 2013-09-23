@@ -75,6 +75,10 @@
     margin: 0 auto;     
 }
 
+.options .digit-Checkbox:after {
+    content: none;
+}
+
 /* Custom */
 
 .speed .range {
