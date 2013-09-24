@@ -358,7 +358,6 @@ exports.View = Component.specialize( {
             if (status === "loaded") {
                 this.scene = object;
                 this.needsDraw = true;
-                this.interpolatingViewPoint = null;
             }
         }
     },
