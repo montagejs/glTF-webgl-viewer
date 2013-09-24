@@ -164,7 +164,7 @@ exports.View = Component.specialize( {
                     //trigger texture load/creation
                     var texture = resourceManager.getResource(evt.detail.value, this.sceneRenderer.webGLRenderer.textureDelegate, webGLContext);
                     if (texture) {
-                        this.needsDraw = true;
+                        this.resourceAvailable();
                     }
                 }
             }
