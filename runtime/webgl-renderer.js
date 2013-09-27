@@ -472,13 +472,15 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             this.resourceManager.setResource(primitive.semantics["NORMAL"].id, glResource);
             primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"].id, "count" : count, "byteStride" : 12}; //HACK
 
-            glResource =  gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
-            gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
-            glResource.componentType = gl.FLOAT;
-            glResource.componentsPerAttribute = 2;
-            this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"].id, glResource);
-            primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"].id, "count" : count, "byteStride" : 8}; //HACK
+            if (texcoords.length > 0) {
+                glResource =  gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+                gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
+                glResource.componentType = gl.FLOAT;
+                glResource.componentsPerAttribute = 2;
+                this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"].id, glResource);
+                primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"].id, "count" : count, "byteStride" : 8}; //HACK
+            }
 
             gl.bindBuffer(gl.ARRAY_BUFFER, previousBuffer);
 
@@ -488,20 +490,34 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
     setupCompressedMesh2: {
         value: function(mesh, vertexCount, positions, normals, texcoords, indices) {
-            var primitive = mesh.primitives[0];
             var gl = this.webGLContext;
             //create indices
-            var previousBuffer = gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING);
-            var glResource =  gl.createBuffer();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glResource);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, previousBuffer);
+            //var previousBuffer = gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING);
 
-            glResource.count = indices.length;
-            this.resourceManager.setResource(primitive.indices.id, glResource);
-            primitive.indices = { "id" : primitive.indices.id, "count" : glResource.count }; //HACK
+            var count = 0;
+            var index = 0;
+            var primitives = mesh.primitives;
+            for (var i = 0 ; i < primitives.length ; i++) {
+                var primitive = mesh.primitives[i];
+                var id = primitive.indices.id;
+                count = primitive.indices.count;
 
-            var count = vertexCount;
+                var primitiveIndices = new Uint16Array(indices, index, count);
+
+                var glResource =  gl.createBuffer();
+                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glResource);
+                gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, primitiveIndices, gl.STATIC_DRAW);
+
+                this.resourceManager.setResource(id, glResource);
+                glResource.count = count;
+                primitive.indices = { "id" : id, "count" : glResource.count };
+                index += count;
+            }
+
+            //if (previousBuffer)
+            //    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER_BINDING, previousBuffer);
+
+            count = vertexCount;
 
             positions = new Float32Array(positions, 0, count * 3);
             normals = new Float32Array(normals, 0, count * 3);
@@ -518,7 +534,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             this.resourceManager.setResource(primitive.semantics["POSITION"].id, glResource);
             primitive.semantics["POSITION"] = { "id" : primitive.semantics["POSITION"].id , "count" : count, "byteStride" : 12}; //HACK
 
-
             glResource =  gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
             gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
@@ -528,20 +543,18 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             this.resourceManager.setResource(primitive.semantics["NORMAL"].id, glResource);
             primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"].id, "count" : count, "byteStride" : 12}; //HACK
 
-            glResource =  gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
-            gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
-            glResource.componentType = gl.FLOAT;
-            glResource.componentsPerAttribute = 2;
-            this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"].id, glResource);
-            primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"].id, "count" : count, "byteStride" : 8}; //HACK
-
+            if (texcoords.length > 0) {
+                glResource =  gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+                gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
+                glResource.componentType = gl.FLOAT;
+                glResource.componentsPerAttribute = 2;
+                this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"].id, glResource);
+                primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"].id, "count" : count, "byteStride" : 8}; //HACK
+            }
             gl.bindBuffer(gl.ARRAY_BUFFER, previousBuffer);
-
-
         }
     },
-
 
     vertexAttributeBufferDelegate: {
         value: {
@@ -997,10 +1010,11 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 //FIXME should not assume 2 bytes per indices (WebGL supports one byte too…)
                 this.indicesDelegate.webGLContext = this.webGLContext;
 
-                if (primitiveDescription.compressed)
+                if (primitiveDescription.compressed) {
                     glIndices = this.resourceManager._getResource(primitive.indices.id);
-                else
+                } else {
                     glIndices = this.resourceManager.getResource(primitive.indices, this.indicesDelegate, primitive);
+                }
 
                 if (glIndices && available) {
                     //if (!primitiveDescription.mesh.loaded) {
