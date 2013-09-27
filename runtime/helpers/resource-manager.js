@@ -744,21 +744,21 @@ var global = window;
         _elementSizeForGLType: {
             value: function(glType) {
                 switch (glType) {
-                    case "FLOAT" :
+                    case WebGLRenderingContext.FLOAT :
                         return Float32Array.BYTES_PER_ELEMENT;
-                    case "UNSIGNED_BYTE" :
+                    case WebGLRenderingContext.UNSIGNED_BYTE:
                         return Uint8Array.BYTES_PER_ELEMENT;
-                    case "UNSIGNED_SHORT" :
+                    case WebGLRenderingContext.UNSIGNED_SHORT:
                         return Uint16Array.BYTES_PER_ELEMENT;
-                    case "FLOAT_VEC2" :
+                    case WebGLRenderingContext.FLOAT_VEC2:
                         return Float32Array.BYTES_PER_ELEMENT * 2;
-                    case "FLOAT_VEC3" :
+                    case WebGLRenderingContext.FLOAT_VEC3:
                         return Float32Array.BYTES_PER_ELEMENT * 3;
-                    case "FLOAT_VEC4" :
+                    case WebGLRenderingContext.FLOAT_VEC4:
                         return Float32Array.BYTES_PER_ELEMENT * 4;
-                    case "FLOAT_MAT4" :
+                    case WebGLRenderingContext.FLOAT_MAT4:
                         return Float32Array.BYTES_PER_ELEMENT * 16;
-                    case "FLOAT_MAT3" :
+                    case WebGLRenderingContext.FLOAT_MAT3:
                         return Float32Array.BYTES_PER_ELEMENT * 9;
                     default:
                         return null;
