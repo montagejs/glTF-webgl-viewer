@@ -254,7 +254,6 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                     mesh.compression.compressedData.bufferView =  this.getEntry(mesh.compression.compressedData.bufferView).entry;
                     mesh.compression.compressedData.id = entryID + "_compressedData"
                 }
-
             }
 
             this.storeEntry(entryID, mesh, description);
