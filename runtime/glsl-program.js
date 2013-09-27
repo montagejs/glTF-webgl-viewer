@@ -36,13 +36,6 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
     VERTEX_SHADER: { value: "x-shader/x-vertex" },
     FRAGMENT_SHADER: { value: "x-shader/x-fragment" },
 
-    _GLTypes:
-    {
-        enumerable: false,
-        value: null,
-        writable: true
-    },
-
     _shaders:
     {
         enumerable: false,
@@ -295,7 +288,7 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
         value: function(symbol,value)  {
             var existingValue = this.symbolToValue[symbol];
             var type = this.getTypeForSymbol(symbol);
-            var GL = this._GLTypes;
+            var GL = WebGLRenderingContext;
 
             if (( value != null) && (existingValue != null)) {
                 if (type === GL.FLOAT) {
@@ -412,11 +405,9 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             theSwitch[WebGLRenderingContext.SAMPLER_2D] = function uniform1i(GL, location , count, value) {
                 GL.uniform1i(location, value);
             };
-
             theSwitch[WebGLRenderingContext.SAMPLER_CUBE] = function uniform1i(GL, location , count, value) {
                 GL.uniform1i(location, value);
             };
-
 
             return theSwitch;
         })()
@@ -504,14 +495,6 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
                 this.attributeSymbols = [];
                 this.symbolToSemantic = {};
                 this.semanticToSymbol = {};
-                this._GLTypes = {
-                    "FLOAT" : GL.FLOAT,
-                    "FLOAT_MAT4" : GL.FLOAT_MAT4,
-                    "FLOAT_MAT3" : GL.FLOAT_MAT3,
-                    "FLOAT_VEC3" : GL.FLOAT_VEC3,
-                    "FLOAT_VEC2" : GL.FLOAT_VEC2,
-                    "FLOAT_VEC4" : GL.FLOAT_VEC4
-                }
 
                 var currentProgram = GL.getParameter( GL.CURRENT_PROGRAM );
                 GL.useProgram(this.GLProgram);
