@@ -818,9 +818,12 @@ var global = window;
                                         var subArray = res_.slice(request.range[0], request.range[1]);
 
                                         var delegate = request.delegate;
-                                        var convertedResource = delegate.convert(subArray, request.ctx);
-                                        resourceManager._storeResource(request.id, convertedResource);
-                                        delegate.resourceAvailable(convertedResource, request.ctx);
+                                        if (this._resources[request.id] == null) {
+                                            var convertedResource = delegate.convert(subArray, request.ctx);
+                                            resourceManager._storeResource(request.id, convertedResource);
+                                            delegate.resourceAvailable(convertedResource, request.ctx);
+                                        }
+
                                         self.fireResourceAvailable.call(self, request.id);
 
                                     }, self);
