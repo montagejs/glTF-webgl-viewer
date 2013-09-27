@@ -665,7 +665,7 @@ var global = window;
                     status = resourceStatus.status;
                 }
 
-                if ((this.wholeBuffer >= this.maxConcurrentRequests) && (request.type === "arraybuffer")) {
+                if (request.type === "arraybuffer") {
                     if (!status) {
                         var trNode = null;
                         var contRequests;
