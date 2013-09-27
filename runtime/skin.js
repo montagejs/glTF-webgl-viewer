@@ -70,7 +70,7 @@ exports.Skin = Object.create(Object.prototype, {
             var skeletons = Object.keys(this.nodesForSkeleton);
 
             var objectSpace = mat4.create();
-            mat4.inverse(node.worldTransform, objectSpace);
+            mat4.inverse(node.worldMatrix, objectSpace);
 
             skeletons.forEach(function(skeleton) {
                 var nodes = this.nodesForSkeleton[skeleton];
@@ -94,12 +94,11 @@ exports.Skin = Object.create(Object.prototype, {
                         var jointsCount = this.jointsIds.length;
                         var IBM = mat4.create();
                         for (var i = 0; i < jointsCount ; i++) {
-
                             for (var j = 0; j < 16 ; j++) {
                                 IBM[j] = inverseBindMatrices[(i * 16) + j];
                             }
 
-                            var JM = nodes[i].worldTransform;
+                            var JM = nodes[i].worldMatrix;
                             var destMat = mat4.identity();
                             mat4.multiply(destMat, objectSpace);
                             mat4.multiply(destMat, JM);
