@@ -296,14 +296,13 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
             var existingValue = this.symbolToValue[symbol];
             var type = this.getTypeForSymbol(symbol);
             var GL = this._GLTypes;
+
             if (( value != null) && (existingValue != null)) {
                 if (type === GL.FLOAT) {
                     if (value === existingValue) {
                         return;
                     }
-                }
-
-                if (type === GL.FLOAT_MAT4) {
+                } else if (type === GL.FLOAT_MAT4) {
                     if (value.length == 16) {
                         if (mat4.equal(existingValue, value)) {
                             return;
@@ -337,7 +336,9 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
 
             } else {
                 if (type === GL.FLOAT_MAT4) {
-                    existingValue = mat4.create();
+                    if (value.length === 16) {
+                        existingValue = mat4.create();
+                    }
                 } else if (type === GL.FLOAT_MAT3) {
                     existingValue = mat3.create();
                 } else if (type === GL.FLOAT_VEC3) {
@@ -357,7 +358,9 @@ var GLSLProgram = exports.GLSLProgram = Object.create(Object.prototype, {
 
             if (value != null) {
                 if (type === GL.FLOAT_MAT4) {
-                    value = mat4.set(value ,existingValue);
+                    if (value.length === 16) {
+                        value = mat4.set(value ,existingValue);
+                    }
                 } else if (type === GL.FLOAT_MAT3) {
                     value = mat3.set(value, existingValue);
                 } else if (type === GL.FLOAT_VEC3) {

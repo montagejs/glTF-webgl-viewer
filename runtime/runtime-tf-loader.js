@@ -167,8 +167,8 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                     if (parameter) {
                         var paramValue = null;
                         switch (parameter.type) {
-                            case "SAMPLER_CUBE":
-                            case "SAMPLER_2D":
+                            case WebGLRenderingContext.SAMPLER_CUBE:
+                            case WebGLRenderingContext.SAMPLER_2D:
                             {
                                 var entry = this.getEntry(value.value);
                                 if (entry) {
@@ -569,16 +569,16 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                 var parameterDescription = description.parameters[parameterSID];
                 //we can avoid code below if we add byteStride
                 switch (parameterDescription.type) {
-                    case "FLOAT_VEC4":
+                    case WebGLRenderingContext.FLOAT_VEC4:
                         componentsPerAttribute = 4;
                         break;
-                    case "FLOAT_VEC3":
+                    case WebGLRenderingContext.FLOAT_VEC3:
                         componentsPerAttribute = 3;
                         break;
-                    case "FLOAT_VEC2":
+                    case WebGLRenderingContext.FLOAT_VEC2:
                         componentsPerAttribute = 2;
                         break;
-                    case "FLOAT":
+                    case WebGLRenderingContext.FLOAT:
                         componentsPerAttribute = 1;
                         break;
                     default: {
