@@ -162,33 +162,29 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
             var parameters =  material.technique.parameters;
             material.parameters = JSON.parse(JSON.stringify(parameters)); //clone parameters
             if (values) {
-                values.forEach( function(value) {
-                    var parameter = parameters[value.parameter];
+                var parameterSid;
+                for (parameterSid in values) {
+                    var parameter = material.parameters[parameterSid];
                     if (parameter) {
+                        parameter.value = values[parameterSid];
                         var paramValue = null;
                         switch (parameter.type) {
                             case WebGLRenderingContext.SAMPLER_CUBE:
                             case WebGLRenderingContext.SAMPLER_2D:
                             {
-                                var entry = this.getEntry(value.value);
+                                var entry = this.getEntry(parameter.value);
                                 if (entry) {
                                     //this looks stupid, I need to get rid at least of .entry and treat within the getEntry method.
-                                    value.value = entry.entry;
-                                    paramValue = value;
-
-                                } else {
-                                    console.log("ERROR: can't find texture:"+value.value);
+                                    parameter.value = entry.entry;
                                 }
                             }
                                 break;
                             default: {
-                                paramValue = value;
                                 break;
                             }
                         }
                     }
-                    material.parameters[value.parameter] = paramValue;
-                }, this);
+                }
             }
 
             if (!this._materials) {
