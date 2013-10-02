@@ -1,0 +1,5296 @@
+{
+    "animations": {},
+    "asset": {
+        "generator": "collada2gltf@6c39102a416a8c561835645d5ddaddd8da8150c9"
+    },
+    "attributes": {
+        "attribute_10037": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 7833986,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1431.18,
+                2457.55,
+                2186.12
+            ],
+            "min": [
+                -379.32,
+                -674.416,
+                38.6379
+            ],
+            "type": 35665
+        },
+        "attribute_10039": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 8620370,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_10041": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 9406754,
+            "byteStride": 8,
+            "count": 65532,
+            "max": [
+                3.46824,
+                4.4476
+            ],
+            "min": [
+                -1.22097,
+                -1.9854
+            ],
+            "type": 35664
+        },
+        "attribute_11355": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 8791514,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                958.721,
+                3050.2,
+                1035.18
+            ],
+            "min": [
+                -894.725,
+                1158.08,
+                57.9923
+            ],
+            "type": 35665
+        },
+        "attribute_11357": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 9577898,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_11359": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 10364282,
+            "byteStride": 8,
+            "count": 65532,
+            "max": [
+                1.81172,
+                4.4476
+            ],
+            "min": [
+                -1.22097,
+                -0.81795
+            ],
+            "type": 35664
+        },
+        "attribute_12682": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 9501459,
+            "byteStride": 12,
+            "count": 22823,
+            "max": [
+                985.749,
+                2842.55,
+                2990.77
+            ],
+            "min": [
+                -1138.78,
+                -466.757,
+                42.1003
+            ],
+            "type": 35665
+        },
+        "attribute_12684": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 9775335,
+            "byteStride": 12,
+            "count": 22823,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_12686": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 10049211,
+            "byteStride": 8,
+            "count": 22823,
+            "max": [
+                1.99044,
+                1.11379
+            ],
+            "min": [
+                -0.934324,
+                -1.60343
+            ],
+            "type": 35664
+        },
+        "attribute_4419": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 382296,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1372.89,
+                2449.71,
+                2898.25
+            ],
+            "min": [
+                -1205.65,
+                -674.416,
+                37.9223
+            ],
+            "type": 35665
+        },
+        "attribute_4421": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 1168680,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_4423": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 1955064,
+            "byteStride": 8,
+            "count": 65532,
+            "max": [
+                0.796634,
+                1.09114
+            ],
+            "min": [
+                -1.51611,
+                -0.81762
+            ],
+            "type": 35664
+        },
+        "attribute_4468": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 1304325,
+            "byteStride": 12,
+            "count": 65533,
+            "max": [
+                1234.78,
+                3050.2,
+                3145.49
+            ],
+            "min": [
+                -1142.62,
+                -674.416,
+                37.9223
+            ],
+            "type": 35665
+        },
+        "attribute_4470": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 2090721,
+            "byteStride": 12,
+            "count": 65533,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_4472": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 2877117,
+            "byteStride": 8,
+            "count": 65533,
+            "max": [
+                1.62048,
+                1.76483
+            ],
+            "min": [
+                -2.83578,
+                -1.05936
+            ],
+            "type": 35664
+        },
+        "attribute_4508": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 2260209,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                913.55,
+                479.098,
+                1976.53
+            ],
+            "min": [
+                -185.972,
+                13.4941,
+                273.742
+            ],
+            "type": 35665
+        },
+        "attribute_4510": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 3046593,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_4512": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 3832977,
+            "byteStride": 8,
+            "count": 65532,
+            "max": [
+                0.522787,
+                1.05362
+            ],
+            "min": [
+                -0.710786,
+                0.289214
+            ],
+            "type": 35664
+        },
+        "attribute_4548": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 3131776,
+            "byteStride": 12,
+            "count": 65534,
+            "max": [
+                856.279,
+                2315.21,
+                1384.44
+            ],
+            "min": [
+                -42.2395,
+                107.936,
+                182.318
+            ],
+            "type": 35665
+        },
+        "attribute_4550": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 3918184,
+            "byteStride": 12,
+            "count": 65534,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_4552": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 4704592,
+            "byteStride": 8,
+            "count": 65534,
+            "max": [
+                3.83295,
+                2.73112
+            ],
+            "min": [
+                -4.35233,
+                -3.35233
+            ],
+            "type": 35664
+        },
+        "attribute_4588": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 3989863,
+            "byteStride": 12,
+            "count": 65534,
+            "max": [
+                907.087,
+                2362.29,
+                1961.39
+            ],
+            "min": [
+                -192.434,
+                1896.69,
+                1102.18
+            ],
+            "type": 35665
+        },
+        "attribute_4590": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 4776271,
+            "byteStride": 12,
+            "count": 65534,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_4592": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 5562679,
+            "byteStride": 8,
+            "count": 65534,
+            "max": [
+                0.522787,
+                1.05362
+            ],
+            "min": [
+                -0.710786,
+                0.289214
+            ],
+            "type": 35664
+        },
+        "attribute_5861": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 4891645,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1271.51,
+                2449.71,
+                3205.78
+            ],
+            "min": [
+                -759.899,
+                1.70215,
+                180.164
+            ],
+            "type": 35665
+        },
+        "attribute_5863": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 5678029,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_5865": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 6464413,
+            "byteStride": 8,
+            "count": 65532,
+            "max": [
+                5.59362,
+                2.73112
+            ],
+            "min": [
+                -10.0968,
+                -5.17422
+            ],
+            "type": 35664
+        },
+        "attribute_7398": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 5846302,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1437.12,
+                3021.26,
+                2991.65
+            ],
+            "min": [
+                -1163.72,
+                -645.475,
+                5.8382
+            ],
+            "type": 35665
+        },
+        "attribute_7400": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 6632686,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_7402": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 7419070,
+            "byteStride": 8,
+            "count": 65532,
+            "max": [
+                2.14042,
+                2.31231
+            ],
+            "min": [
+                -1.85381,
+                -1.62
+            ],
+            "type": 35664
+        },
+        "attribute_8719": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 6854722,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1453.3,
+                2993.67,
+                2995.66
+            ],
+            "min": [
+                -1163.72,
+                -81.7651,
+                37.9223
+            ],
+            "type": 35665
+        },
+        "attribute_8721": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 7641106,
+            "byteStride": 12,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": 35665
+        },
+        "attribute_8723": {
+            "bufferView": "bufferView_12698",
+            "byteOffset": 8427490,
+            "byteStride": 8,
+            "count": 65532,
+            "max": [
+                2.85389,
+                4.4476
+            ],
+            "min": [
+                -2.74293,
+                -1.9854
+            ],
+            "type": 35664
+        }
+    },
+    "bufferViews": {
+        "bufferView_12698": {
+            "buffer": "challengeFlattened",
+            "byteLength": 0,
+            "byteOffset": 0,
+            "target": "ARRAY_BUFFER"
+        },
+        "bufferView_12699": {
+            "buffer": "challengeFlattened",
+            "byteLength": 0,
+            "byteOffset": 0,
+            "target": "ELEMENT_ARRAY_BUFFER"
+        },
+        "bufferView_12700": {
+            "buffer": "challengeFlattened",
+            "byteLength": 9701664,
+            "byteOffset": 0
+        }
+    },
+    "buffers": {
+        "challengeFlattened": {
+            "byteLength": 9701664,
+            "path": "challengeFlattened.txt"
+        }
+    },
+    "images": {
+        "image_0": {
+            "path": "material_1.jpg"
+        },
+        "image_1": {
+            "path": "material_10.bmp"
+        },
+        "image_10": {
+            "path": "material_2.jpg"
+        },
+        "image_11": {
+            "path": "material_20.jpg"
+        },
+        "image_12": {
+            "path": "material_21.jpg"
+        },
+        "image_13": {
+            "path": "material_3.jpg"
+        },
+        "image_14": {
+            "path": "material_7.jpg"
+        },
+        "image_15": {
+            "path": "material_8.jpg"
+        },
+        "image_16": {
+            "path": "material_9.jpg"
+        },
+        "image_2": {
+            "path": "material_10_0.bmp"
+        },
+        "image_3": {
+            "path": "material_11.jpg"
+        },
+        "image_4": {
+            "path": "material_12.jpg"
+        },
+        "image_5": {
+            "path": "material_13.jpg"
+        },
+        "image_6": {
+            "path": "material_15.jpg"
+        },
+        "image_7": {
+            "path": "material_17.jpg"
+        },
+        "image_8": {
+            "path": "material_18.jpg"
+        },
+        "image_9": {
+            "path": "material_19.jpg"
+        }
+    },
+    "indices": {
+        "indices_10035": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 7437116,
+            "count": 198435,
+            "type": 5123
+        },
+        "indices_11353": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 8396450,
+            "count": 197532,
+            "type": 5123
+        },
+        "indices_12671": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 9356523,
+            "count": 52710,
+            "type": 5123
+        },
+        "indices_12680": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 9461943,
+            "count": 19758,
+            "type": 5123
+        },
+        "indices_4411": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 0,
+            "count": 30,
+            "type": 5123
+        },
+        "indices_4414": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 60,
+            "count": 19728,
+            "type": 5123
+        },
+        "indices_4417": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 39516,
+            "count": 171390,
+            "type": 5123
+        },
+        "indices_4439": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 989559,
+            "count": 80406,
+            "type": 5123
+        },
+        "indices_4448": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 1150371,
+            "count": 7200,
+            "type": 5123
+        },
+        "indices_4457": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 1164771,
+            "count": 23832,
+            "type": 5123
+        },
+        "indices_4466": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 1212435,
+            "count": 45945,
+            "type": 5123
+        },
+        "indices_4506": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 1979529,
+            "count": 140340,
+            "type": 5123
+        },
+        "indices_4546": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 2851876,
+            "count": 139950,
+            "type": 5123
+        },
+        "indices_4586": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 3709963,
+            "count": 139950,
+            "type": 5123
+        },
+        "indices_4626": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4594537,
+            "count": 132135,
+            "type": 5123
+        },
+        "indices_4635": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4858807,
+            "count": 13170,
+            "type": 5123
+        },
+        "indices_4644": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885147,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4653": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885195,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4662": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885243,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4671": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885291,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4680": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885339,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4689": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885387,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4698": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885435,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4707": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885483,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4716": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885531,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4725": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885579,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4734": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885627,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4743": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885675,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4752": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885723,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4761": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885771,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4770": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885819,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4779": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885867,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4788": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885915,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4797": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4885963,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4806": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886011,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4815": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886059,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4824": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886107,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4833": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886155,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4842": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886203,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4851": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886251,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4860": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886299,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4869": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886347,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4878": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886395,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4887": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886443,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4896": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886491,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4905": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886539,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4914": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886587,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4923": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886635,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4932": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886683,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4941": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886731,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4950": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886779,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4959": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886827,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4968": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886875,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4977": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886923,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4986": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4886971,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_4995": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887019,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5004": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887067,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5013": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887115,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5022": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887163,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5031": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887211,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5040": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887259,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5049": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887307,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5058": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887355,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5067": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887403,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5076": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887451,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5085": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887499,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5094": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887547,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5103": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887595,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5112": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887643,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5121": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887691,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5130": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887739,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5139": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887787,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5148": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887835,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5157": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887883,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5166": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887931,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5175": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4887979,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5184": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888027,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5193": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888075,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5202": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888123,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5211": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888171,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5220": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888219,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5229": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888267,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5238": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888315,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5247": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888363,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5256": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888411,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5265": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888459,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5274": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888507,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5283": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888555,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5292": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888603,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5301": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888651,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5310": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888699,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5319": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888747,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5328": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888795,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5337": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888843,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5346": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888891,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5355": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888939,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5364": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4888987,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5373": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889035,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5382": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889083,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5391": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889131,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5400": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889179,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5409": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889227,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5418": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889275,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5427": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889323,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5436": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889371,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5445": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889419,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5454": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889467,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5463": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889515,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5472": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889563,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5481": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889611,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5490": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889659,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5499": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889707,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5508": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889755,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5517": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889803,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5526": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889851,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5535": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889899,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5544": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889947,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5553": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4889995,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5562": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890043,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5571": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890091,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5580": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890139,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5589": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890187,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5598": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890235,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5607": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890283,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5616": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890331,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5625": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890379,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5634": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890427,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5643": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890475,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5652": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890523,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5661": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890571,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5670": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890619,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5679": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890667,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5688": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890715,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5697": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890763,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5706": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890811,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5715": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890859,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5724": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890907,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5733": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4890955,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5742": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891003,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5751": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891051,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5760": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891099,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5769": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891147,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5778": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891195,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5787": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891243,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5796": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891291,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5805": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891339,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5814": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891387,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5823": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891435,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5832": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891483,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5841": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891531,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5850": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891579,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_5859": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 4891627,
+            "count": 9,
+            "type": 5123
+        },
+        "indices_6721": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480116,
+            "count": 15,
+            "type": 5123
+        },
+        "indices_6730": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480146,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6739": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480194,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6748": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480242,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6757": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480290,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6766": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480338,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6775": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480386,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6784": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480434,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6793": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480482,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6802": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480530,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6811": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480578,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6820": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480626,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6829": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480674,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6838": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480722,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6847": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480770,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6856": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480818,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6865": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480866,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6874": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480914,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6883": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5480962,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6892": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481010,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6901": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481058,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6910": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481106,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6919": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481154,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6928": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481202,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6937": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481250,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_6946": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481298,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_6955": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481454,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_6964": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481610,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_6973": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481766,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_6982": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5481922,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_6991": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5482078,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7000": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5482234,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7009": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5482390,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7018": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5482546,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7027": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5482702,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7036": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5482858,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7045": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5483014,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7054": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5483170,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7063": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5483326,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7072": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5483482,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7081": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5483638,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7090": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5483794,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7099": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5483950,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7108": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5484106,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7117": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5484262,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7126": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5484418,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7135": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5484574,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7144": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5484730,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7153": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5484886,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7162": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5485042,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7171": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5485198,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7180": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5485354,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7189": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5485510,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7198": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5485666,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7207": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5485822,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7216": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5485978,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7225": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5486134,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7234": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5486290,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7243": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5486446,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7252": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5486602,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7261": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5486758,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7270": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5486914,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7279": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5487070,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7288": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5487226,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7297": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5487382,
+            "count": 78,
+            "type": 5123
+        },
+        "indices_7306": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5487538,
+            "count": 1548,
+            "type": 5123
+        },
+        "indices_7315": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5490634,
+            "count": 2814,
+            "type": 5123
+        },
+        "indices_7324": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5496262,
+            "count": 1272,
+            "type": 5123
+        },
+        "indices_7333": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5498806,
+            "count": 24,
+            "type": 5123
+        },
+        "indices_7342": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5498854,
+            "count": 42,
+            "type": 5123
+        },
+        "indices_7351": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5498938,
+            "count": 432,
+            "type": 5123
+        },
+        "indices_7360": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5499802,
+            "count": 1482,
+            "type": 5123
+        },
+        "indices_7369": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5502766,
+            "count": 924,
+            "type": 5123
+        },
+        "indices_7378": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5504614,
+            "count": 1404,
+            "type": 5123
+        },
+        "indices_7387": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5507422,
+            "count": 66,
+            "type": 5123
+        },
+        "indices_7396": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 5507554,
+            "count": 169374,
+            "type": 5123
+        },
+        "indices_8708": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 6468652,
+            "count": 42558,
+            "type": 5123
+        },
+        "indices_8717": {
+            "bufferView": "bufferView_12699",
+            "byteOffset": 6553768,
+            "count": 150477,
+            "type": 5123
+        }
+    },
+    "materials": {
+        "ID11511": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_2"
+                }
+            },
+            "name": "material_10_0"
+        },
+        "ID20": {
+            "instanceTechnique": {
+                "technique": "technique3",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": [
+                        0,
+                        0,
+                        0,
+                        0.411765
+                    ],
+                    "transparency": 0.411765
+                }
+            },
+            "name": "material_14"
+        },
+        "ID264": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_5"
+                }
+            },
+            "name": "material_13"
+        },
+        "ID349": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_6"
+                }
+            },
+            "name": "material_15"
+        },
+        "ID3677": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_16"
+                }
+            },
+            "name": "material_9"
+        },
+        "ID44": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_4"
+                }
+            },
+            "name": "material_12"
+        },
+        "ID56970": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_7"
+                }
+            },
+            "name": "material_17"
+        },
+        "ID57113": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_8"
+                }
+            },
+            "name": "material_18"
+        },
+        "ID57130": {
+            "instanceTechnique": {
+                "technique": "technique4",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_9",
+                    "transparency": 0.54
+                }
+            },
+            "name": "material_19"
+        },
+        "ID58557": {
+            "instanceTechnique": {
+                "technique": "technique1",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            },
+            "name": "material"
+        },
+        "ID58767": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_11"
+                }
+            },
+            "name": "material_20"
+        },
+        "ID58780": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_12"
+                }
+            },
+            "name": "material_21"
+        },
+        "ID58845": {
+            "instanceTechnique": {
+                "technique": "technique1",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": [
+                        0.811765,
+                        0.686275,
+                        0.686275,
+                        1
+                    ]
+                }
+            },
+            "name": "material_4"
+        },
+        "ID60035": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_0"
+                }
+            },
+            "name": "material_1"
+        },
+        "ID60133": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_10"
+                }
+            },
+            "name": "material_2"
+        },
+        "ID61770": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_13"
+                }
+            },
+            "name": "material_3"
+        },
+        "ID7": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_1"
+                }
+            },
+            "name": "material_10"
+        },
+        "ID896": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_3"
+                }
+            },
+            "name": "material_11"
+        },
+        "ID919": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_14"
+                }
+            },
+            "name": "material_7"
+        },
+        "ID944": {
+            "instanceTechnique": {
+                "technique": "technique2",
+                "values": {
+                    "ambient": [
+                        0.2,
+                        0.2,
+                        0.2,
+                        1
+                    ],
+                    "diffuse": "texture_image_15"
+                }
+            },
+            "name": "material_8"
+        }
+    },
+    "meshes": {
+        "geometry23": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 0,
+                        "count": 989559,
+                        "indicesCount": 191148,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65532
+                    }
+                }
+            },
+            "name": "geometry23",
+            "primitives": [
+                {
+                    "indices": "indices_4411",
+                    "material": "ID58557",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4421",
+                        "POSITION": "attribute_4419",
+                        "TEXCOORD_0": "attribute_4423"
+                    }
+                },
+                {
+                    "indices": "indices_4414",
+                    "material": "ID60035",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4421",
+                        "POSITION": "attribute_4419",
+                        "TEXCOORD_0": "attribute_4423"
+                    }
+                },
+                {
+                    "indices": "indices_4417",
+                    "material": "ID7",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4421",
+                        "POSITION": "attribute_4419",
+                        "TEXCOORD_0": "attribute_4423"
+                    }
+                }
+            ]
+        },
+        "geometry23-1": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 989559,
+                        "count": 989970,
+                        "indicesCount": 157383,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65533
+                    }
+                }
+            },
+            "name": "geometry23-1",
+            "primitives": [
+                {
+                    "indices": "indices_4439",
+                    "material": "ID7",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4470",
+                        "POSITION": "attribute_4468",
+                        "TEXCOORD_0": "attribute_4472"
+                    }
+                },
+                {
+                    "indices": "indices_4448",
+                    "material": "ID11511",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4470",
+                        "POSITION": "attribute_4468",
+                        "TEXCOORD_0": "attribute_4472"
+                    }
+                },
+                {
+                    "indices": "indices_4457",
+                    "material": "ID896",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4470",
+                        "POSITION": "attribute_4468",
+                        "TEXCOORD_0": "attribute_4472"
+                    }
+                },
+                {
+                    "indices": "indices_4466",
+                    "material": "ID44",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4470",
+                        "POSITION": "attribute_4468",
+                        "TEXCOORD_0": "attribute_4472"
+                    }
+                }
+            ]
+        },
+        "geometry23-10": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 9356523,
+                        "count": 345141,
+                        "indicesCount": 72468,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 22823
+                    }
+                }
+            },
+            "name": "geometry23-10",
+            "primitives": [
+                {
+                    "indices": "indices_12671",
+                    "material": "ID944",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_12684",
+                        "POSITION": "attribute_12682",
+                        "TEXCOORD_0": "attribute_12686"
+                    }
+                },
+                {
+                    "indices": "indices_12680",
+                    "material": "ID3677",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_12684",
+                        "POSITION": "attribute_12682",
+                        "TEXCOORD_0": "attribute_12686"
+                    }
+                }
+            ]
+        },
+        "geometry23-2": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 1979529,
+                        "count": 872347,
+                        "indicesCount": 140340,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65532
+                    }
+                }
+            },
+            "name": "geometry23-2",
+            "primitives": [
+                {
+                    "indices": "indices_4506",
+                    "material": "ID44",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4510",
+                        "POSITION": "attribute_4508",
+                        "TEXCOORD_0": "attribute_4512"
+                    }
+                }
+            ]
+        },
+        "geometry23-3": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 2851876,
+                        "count": 858087,
+                        "indicesCount": 139950,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65534
+                    }
+                }
+            },
+            "name": "geometry23-3",
+            "primitives": [
+                {
+                    "indices": "indices_4546",
+                    "material": "ID44",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4550",
+                        "POSITION": "attribute_4548",
+                        "TEXCOORD_0": "attribute_4552"
+                    }
+                }
+            ]
+        },
+        "geometry23-4": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 3709963,
+                        "count": 884574,
+                        "indicesCount": 139950,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65534
+                    }
+                }
+            },
+            "name": "geometry23-4",
+            "primitives": [
+                {
+                    "indices": "indices_4586",
+                    "material": "ID44",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_4590",
+                        "POSITION": "attribute_4588",
+                        "TEXCOORD_0": "attribute_4592"
+                    }
+                }
+            ]
+        },
+        "geometry23-5": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 4594537,
+                        "count": 885579,
+                        "indicesCount": 148554,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65532
+                    }
+                }
+            },
+            "name": "geometry23-5",
+            "primitives": [
+                {
+                    "indices": "indices_4626",
+                    "material": "ID44",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4635",
+                    "material": "ID264",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4644",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4653",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4662",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4671",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4680",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4689",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4698",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4707",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4716",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4725",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4734",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4743",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4752",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4761",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4770",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4779",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4788",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4797",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4806",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4815",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4824",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4833",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4842",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4851",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4860",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4869",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4878",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4887",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4896",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4905",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4914",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4923",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4932",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4941",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4950",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4959",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4968",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4977",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4986",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_4995",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5004",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5013",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5022",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5031",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5040",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5049",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5058",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5067",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5076",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5085",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5094",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5103",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5112",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5121",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5130",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5139",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5148",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5157",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5166",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5175",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5184",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5193",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5202",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5211",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5220",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5229",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5238",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5247",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5256",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5265",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5274",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5283",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5292",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5301",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5310",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5319",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5328",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5337",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5346",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5355",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5364",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5373",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5382",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5391",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5400",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5409",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5418",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5427",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5436",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5445",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5454",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5463",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5472",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5481",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5490",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5499",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5508",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5517",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5526",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5535",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5544",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5553",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5562",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5571",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5580",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5589",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5598",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5607",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5616",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5625",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5634",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5643",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5652",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5661",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5670",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5679",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5688",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5697",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5706",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5715",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5724",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5733",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5742",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5751",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5760",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5769",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5778",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5787",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5796",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5805",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5814",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5823",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5832",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5841",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5850",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                },
+                {
+                    "indices": "indices_5859",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_5863",
+                        "POSITION": "attribute_5861",
+                        "TEXCOORD_0": "attribute_5865"
+                    }
+                }
+            ]
+        },
+        "geometry23-6": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 5480116,
+                        "count": 988536,
+                        "indicesCount": 183093,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65532
+                    }
+                }
+            },
+            "name": "geometry23-6",
+            "primitives": [
+                {
+                    "indices": "indices_6721",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6730",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6739",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6748",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6757",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6766",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6775",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6784",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6793",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6802",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6811",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6820",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6829",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6838",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6847",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6856",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6865",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6874",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6883",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6892",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6901",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6910",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6919",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6928",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6937",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6946",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6955",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6964",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6973",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6982",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_6991",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7000",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7009",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7018",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7027",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7036",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7045",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7054",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7063",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7072",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7081",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7090",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7099",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7108",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7117",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7126",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7135",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7144",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7153",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7162",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7171",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7180",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7189",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7198",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7207",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7216",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7225",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7234",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7243",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7252",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7261",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7270",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7279",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7288",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7297",
+                    "material": "ID20",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7306",
+                    "material": "ID349",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7315",
+                    "material": "ID56970",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7324",
+                    "material": "ID57113",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7333",
+                    "material": "ID57130",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7342",
+                    "material": "ID57130",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7351",
+                    "material": "ID60133",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7360",
+                    "material": "ID58767",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7369",
+                    "material": "ID58780",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7378",
+                    "material": "ID61770",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7387",
+                    "material": "ID58845",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                },
+                {
+                    "indices": "indices_7396",
+                    "material": "ID919",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_7400",
+                        "POSITION": "attribute_7398",
+                        "TEXCOORD_0": "attribute_7402"
+                    }
+                }
+            ]
+        },
+        "geometry23-7": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 6468652,
+                        "count": 968464,
+                        "indicesCount": 193035,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65532
+                    }
+                }
+            },
+            "name": "geometry23-7",
+            "primitives": [
+                {
+                    "indices": "indices_8708",
+                    "material": "ID919",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_8721",
+                        "POSITION": "attribute_8719",
+                        "TEXCOORD_0": "attribute_8723"
+                    }
+                },
+                {
+                    "indices": "indices_8717",
+                    "material": "ID944",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_8721",
+                        "POSITION": "attribute_8719",
+                        "TEXCOORD_0": "attribute_8723"
+                    }
+                }
+            ]
+        },
+        "geometry23-8": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 7437116,
+                        "count": 959334,
+                        "indicesCount": 198435,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65532
+                    }
+                }
+            },
+            "name": "geometry23-8",
+            "primitives": [
+                {
+                    "indices": "indices_10035",
+                    "material": "ID944",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_10039",
+                        "POSITION": "attribute_10037",
+                        "TEXCOORD_0": "attribute_10041"
+                    }
+                }
+            ]
+        },
+        "geometry23-9": {
+            "extensions": {
+                "Open3DGC-compression": {
+                    "compressedData": {
+                        "bufferView": "bufferView_12700",
+                        "byteOffset": 8396450,
+                        "count": 960073,
+                        "indicesCount": 197532,
+                        "mode": "",
+                        "type": 5121,
+                        "verticesCount": 65532
+                    }
+                }
+            },
+            "name": "geometry23-9",
+            "primitives": [
+                {
+                    "indices": "indices_11353",
+                    "material": "ID944",
+                    "primitive": "TRIANGLES",
+                    "semantics": {
+                        "NORMAL": "attribute_11357",
+                        "POSITION": "attribute_11355",
+                        "TEXCOORD_0": "attribute_11359"
+                    }
+                }
+            ]
+        }
+    },
+    "nodes": {
+        "nodeFromflattenedMesh": {
+            "children": [],
+            "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "meshes": [
+                "geometry23",
+                "geometry23-1",
+                "geometry23-2",
+                "geometry23-3",
+                "geometry23-4",
+                "geometry23-5",
+                "geometry23-6",
+                "geometry23-7",
+                "geometry23-8",
+                "geometry23-9",
+                "geometry23-10"
+            ],
+            "name": "nodeFromflattenedMesh"
+        }
+    },
+    "profile": "WebGL 1.0.2",
+    "programs": {
+        "program_0": {
+            "fragmentShader": "challengeFlattened0FS",
+            "vertexShader": "challengeFlattened0VS"
+        },
+        "program_1": {
+            "fragmentShader": "challengeFlattened2FS",
+            "vertexShader": "challengeFlattened2VS"
+        },
+        "program_2": {
+            "fragmentShader": "challengeFlattened4FS",
+            "vertexShader": "challengeFlattened4VS"
+        },
+        "program_3": {
+            "fragmentShader": "challengeFlattened6FS",
+            "vertexShader": "challengeFlattened6VS"
+        }
+    },
+    "samplers": {
+        "sampler_0": {
+            "magFilter": 9729,
+            "minFilter": 9729,
+            "wrapS": 10497,
+            "wrapT": 10497
+        }
+    },
+    "scene": "defaultScene",
+    "scenes": {
+        "defaultScene": {
+            "nodes": [
+                "nodeFromflattenedMesh"
+            ]
+        }
+    },
+    "shaders": {
+        "challengeFlattened0FS": {
+            "path": "challengeFlattened0FS.glsl"
+        },
+        "challengeFlattened0VS": {
+            "path": "challengeFlattened0VS.glsl"
+        },
+        "challengeFlattened2FS": {
+            "path": "challengeFlattened2FS.glsl"
+        },
+        "challengeFlattened2VS": {
+            "path": "challengeFlattened2VS.glsl"
+        },
+        "challengeFlattened4FS": {
+            "path": "challengeFlattened4FS.glsl"
+        },
+        "challengeFlattened4VS": {
+            "path": "challengeFlattened4VS.glsl"
+        },
+        "challengeFlattened6FS": {
+            "path": "challengeFlattened6FS.glsl"
+        },
+        "challengeFlattened6VS": {
+            "path": "challengeFlattened6VS.glsl"
+        }
+    },
+    "skins": {},
+    "techniques": {
+        "technique1": {
+            "parameters": {
+                "ambient": {
+                    "type": 35666
+                },
+                "diffuse": {
+                    "type": 35666
+                },
+                "normal": {
+                    "semantic": "NORMAL",
+                    "type": 35665
+                },
+                "normalMatrix": {
+                    "semantic": "WORLDVIEWINVERSETRANSPOSE",
+                    "type": 35675
+                },
+                "position": {
+                    "semantic": "POSITION",
+                    "type": 35665
+                },
+                "projectionMatrix": {
+                    "semantic": "PROJECTION",
+                    "type": 35676
+                },
+                "worldViewMatrix": {
+                    "semantic": "WORLDVIEW",
+                    "type": 35676
+                }
+            },
+            "pass": "defaultPass",
+            "passes": {
+                "defaultPass": {
+                    "instanceProgram": {
+                        "attributes": {
+                            "a_normal": "normal",
+                            "a_position": "position"
+                        },
+                        "program": "program_0",
+                        "uniforms": {
+                            "u_ambient": "ambient",
+                            "u_diffuse": "diffuse",
+                            "u_normalMatrix": "normalMatrix",
+                            "u_projectionMatrix": "projectionMatrix",
+                            "u_worldViewMatrix": "worldViewMatrix"
+                        }
+                    },
+                    "states": {
+                        "blendEnable": 0,
+                        "cullFaceEnable": 1,
+                        "depthMask": 1,
+                        "depthTestEnable": 1
+                    }
+                }
+            }
+        },
+        "technique2": {
+            "parameters": {
+                "ambient": {
+                    "type": 35666
+                },
+                "diffuse": {
+                    "type": 35678
+                },
+                "normal": {
+                    "semantic": "NORMAL",
+                    "type": 35665
+                },
+                "normalMatrix": {
+                    "semantic": "WORLDVIEWINVERSETRANSPOSE",
+                    "type": 35675
+                },
+                "position": {
+                    "semantic": "POSITION",
+                    "type": 35665
+                },
+                "projectionMatrix": {
+                    "semantic": "PROJECTION",
+                    "type": 35676
+                },
+                "texcoord0": {
+                    "semantic": "TEXCOORD_0",
+                    "type": 35664
+                },
+                "worldViewMatrix": {
+                    "semantic": "WORLDVIEW",
+                    "type": 35676
+                }
+            },
+            "pass": "defaultPass",
+            "passes": {
+                "defaultPass": {
+                    "instanceProgram": {
+                        "attributes": {
+                            "a_normal": "normal",
+                            "a_position": "position",
+                            "a_texcoord0": "texcoord0"
+                        },
+                        "program": "program_1",
+                        "uniforms": {
+                            "u_ambient": "ambient",
+                            "u_diffuse": "diffuse",
+                            "u_normalMatrix": "normalMatrix",
+                            "u_projectionMatrix": "projectionMatrix",
+                            "u_worldViewMatrix": "worldViewMatrix"
+                        }
+                    },
+                    "states": {
+                        "blendEnable": 0,
+                        "cullFaceEnable": 1,
+                        "depthMask": 1,
+                        "depthTestEnable": 1
+                    }
+                }
+            }
+        },
+        "technique3": {
+            "parameters": {
+                "ambient": {
+                    "type": 35666
+                },
+                "diffuse": {
+                    "type": 35666
+                },
+                "normal": {
+                    "semantic": "NORMAL",
+                    "type": 35665
+                },
+                "normalMatrix": {
+                    "semantic": "WORLDVIEWINVERSETRANSPOSE",
+                    "type": 35675
+                },
+                "position": {
+                    "semantic": "POSITION",
+                    "type": 35665
+                },
+                "projectionMatrix": {
+                    "semantic": "PROJECTION",
+                    "type": 35676
+                },
+                "transparency": {
+                    "type": 5126
+                },
+                "worldViewMatrix": {
+                    "semantic": "WORLDVIEW",
+                    "type": 35676
+                }
+            },
+            "pass": "defaultPass",
+            "passes": {
+                "defaultPass": {
+                    "instanceProgram": {
+                        "attributes": {
+                            "a_normal": "normal",
+                            "a_position": "position"
+                        },
+                        "program": "program_2",
+                        "uniforms": {
+                            "u_ambient": "ambient",
+                            "u_diffuse": "diffuse",
+                            "u_normalMatrix": "normalMatrix",
+                            "u_projectionMatrix": "projectionMatrix",
+                            "u_transparency": "transparency",
+                            "u_worldViewMatrix": "worldViewMatrix"
+                        }
+                    },
+                    "states": {
+                        "blendEnable": 1,
+                        "blendEquation": 32774,
+                        "blendFunc": {
+                            "dfactor": 771,
+                            "sfactor": 770
+                        },
+                        "cullFaceEnable": 1,
+                        "depthMask": 0,
+                        "depthTestEnable": 1
+                    }
+                }
+            }
+        },
+        "technique4": {
+            "parameters": {
+                "ambient": {
+                    "type": 35666
+                },
+                "diffuse": {
+                    "type": 35678
+                },
+                "normal": {
+                    "semantic": "NORMAL",
+                    "type": 35665
+                },
+                "normalMatrix": {
+                    "semantic": "WORLDVIEWINVERSETRANSPOSE",
+                    "type": 35675
+                },
+                "position": {
+                    "semantic": "POSITION",
+                    "type": 35665
+                },
+                "projectionMatrix": {
+                    "semantic": "PROJECTION",
+                    "type": 35676
+                },
+                "texcoord0": {
+                    "semantic": "TEXCOORD_0",
+                    "type": 35664
+                },
+                "transparency": {
+                    "type": 5126
+                },
+                "worldViewMatrix": {
+                    "semantic": "WORLDVIEW",
+                    "type": 35676
+                }
+            },
+            "pass": "defaultPass",
+            "passes": {
+                "defaultPass": {
+                    "instanceProgram": {
+                        "attributes": {
+                            "a_normal": "normal",
+                            "a_position": "position",
+                            "a_texcoord0": "texcoord0"
+                        },
+                        "program": "program_3",
+                        "uniforms": {
+                            "u_ambient": "ambient",
+                            "u_diffuse": "diffuse",
+                            "u_normalMatrix": "normalMatrix",
+                            "u_projectionMatrix": "projectionMatrix",
+                            "u_transparency": "transparency",
+                            "u_worldViewMatrix": "worldViewMatrix"
+                        }
+                    },
+                    "states": {
+                        "blendEnable": 1,
+                        "blendEquation": 32774,
+                        "blendFunc": {
+                            "dfactor": 771,
+                            "sfactor": 770
+                        },
+                        "cullFaceEnable": 1,
+                        "depthMask": 0,
+                        "depthTestEnable": 1
+                    }
+                }
+            }
+        }
+    },
+    "textures": {
+        "texture_image_0": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_0",
+            "target": 3553
+        },
+        "texture_image_1": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_1",
+            "target": 3553
+        },
+        "texture_image_10": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_10",
+            "target": 3553
+        },
+        "texture_image_11": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_11",
+            "target": 3553
+        },
+        "texture_image_12": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_12",
+            "target": 3553
+        },
+        "texture_image_13": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_13",
+            "target": 3553
+        },
+        "texture_image_14": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_14",
+            "target": 3553
+        },
+        "texture_image_15": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_15",
+            "target": 3553
+        },
+        "texture_image_16": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_16",
+            "target": 3553
+        },
+        "texture_image_2": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_2",
+            "target": 3553
+        },
+        "texture_image_3": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_3",
+            "target": 3553
+        },
+        "texture_image_4": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_4",
+            "target": 3553
+        },
+        "texture_image_5": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_5",
+            "target": 3553
+        },
+        "texture_image_6": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_6",
+            "target": 3553
+        },
+        "texture_image_7": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_7",
+            "target": 3553
+        },
+        "texture_image_8": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_8",
+            "target": 3553
+        },
+        "texture_image_9": {
+            "format": 6408,
+            "internalFormat": 6408,
+            "sampler": "sampler_0",
+            "source": "image_9",
+            "target": 3553
+        }
+    }
+}
