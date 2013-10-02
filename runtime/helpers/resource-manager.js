@@ -558,6 +558,7 @@ var global = window;
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', path, true);
                 xhr.responseType = (type === this.ARRAY_BUFFER) ? "arraybuffer" : "text";
+
                 if (request.range) {
                     var header = "bytes=" + request.range[0] + "-" + (request.range[1] - 1);
                     xhr.setRequestHeader("Range", header);
@@ -567,7 +568,6 @@ var global = window;
                 xhr.onload = function(e) {
                     if ((this.status == 200) || (this.status == 206)) {
                         self._resourcesBeingProcessedCount--;
-
                         if (request.kind === "multi-parts") {
                             request.requests.forEach( function(req_) {
                                 var subArray = this.response.slice(req_.range[0] - request.range[0], req_.range[1] - request.range[0]);
@@ -838,7 +838,7 @@ var global = window;
 
                             var bufferRequest = {
                                 "id" : buffer.id,
-                                "type" : "arraybuffer",
+                                "type" : wrappedBufferRequest.type,
                                 "path" : buffer.description.path,
                                 "delegate" : delegate,
                                 "ctx" : ctx,

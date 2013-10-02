@@ -67,10 +67,93 @@ exports.SceneRenderer = Object.create(Object.prototype, {
         }
     },
 
-    //All the code within the compressedMeshDelegate comes from webgl-loader project
-    //http://www.apache.org/licenses/LICENSE-2.0
+
     compressedMeshDelegate: {
         value: {
+            str2ab: function(str) {
+                  var buf = new ArrayBuffer(str.length);
+                  var bufView = new Uint8Array(buf);
+                  for (var i=0, strLen=str.length; i<strLen; i++) {
+                      bufView[i] = str.charCodeAt(i);
+                  }
+                  return buf;
+              },
+
+            decode: function (arrayBuffer, resType) {
+                    if (arrayBuffer) {
+                        function str2ab(str) {
+                        }
+                        if (resType === "text") {
+                            var bstream = new o3dgc.BinaryStream(this.str2ab(arrayBuffer));
+                        } else {
+                            var bstream = new o3dgc.BinaryStream(arrayBuffer);
+                        }
+                        var decoder = new o3dgc.SC3DMCDecoder();
+                        var timer = new o3dgc.Timer();
+                        var ifs = new o3dgc.IndexedFaceSet();
+                        timer.Tic();
+                        decoder.DecodeHeader(ifs, bstream);
+                        timer.Toc();
+                        console.log("DecodeHeader time (ms) " + timer.GetElapsedTime());
+                        // allocate memory
+                        var byteSize = 3 * 2 * ifs.GetNCoordIndex() +
+                            3 * 4 * ifs.GetNCoord() +
+                            3 * 4 * ifs.GetNNormal() +
+                            3 * 4 * ifs.GetNColor() +
+                            2 * 4 * ifs.GetNTexCoord();
+                        var buffer = new ArrayBuffer(byteSize);
+                        var shift = 0;
+                        if (ifs.GetNCoordIndex() > 0) {
+                            ifs.SetCoordIndex(new Int16Array(buffer, shift, 3 * ifs.GetNCoordIndex()));
+                            shift += 6 * ifs.GetNCoordIndex();
+                        }
+                        if (ifs.GetNCoord() > 0) {
+                            var nc = 3 * ifs.GetNCoord();
+                            ifs.SetCoord(new Float32Array(buffer, shift, nc));
+                            shift += 12 * ifs.GetNCoord();
+                        }
+                        if (ifs.GetNNormal() > 0) {
+                            ifs.SetNormal(new Float32Array(buffer, shift, 3 * ifs.GetNNormal()));
+                            shift += 12 * ifs.GetNNormal();
+                        }
+                        if (ifs.GetNColor() > 0) {
+                            ifs.SetColor(new Float32Array(buffer, shift, 3 * ifs.GetNColor()));
+                            shift += 12 * ifs.GetNColor();
+                        }
+                        if (ifs.GetNTexCoord() > 0) {
+                            ifs.GetTexCoord(new Float32Array(buffer, shift, 2 * ifs.GetNTexCoord()));
+                            shift += 8 * ifs.GetNTexCoord();
+                        }
+                        /*
+                        console.log("Mesh info ");
+                        console.log("\t# coords    " + ifs.GetNCoord());
+                        console.log("\t# normals   " + ifs.GetNNormal());
+                        console.log("\t# texcoords " + ifs.GetNTexCoord());
+                        console.log("\t# triangles " + ifs.GetNCoordIndex());
+                        */
+                        // decode mesh
+                        timer.Tic();
+                        decoder.DecodePlayload(ifs, bstream);
+                        timer.Toc();
+                        /*
+                        var size = arrayBuffer.byteLength;
+                        console.log("DecodePlayload time " + timer.GetElapsedTime() + " ms, " + size + " bytes (" + (8.0 * size / ifs.GetNCoord()) + " bpv)");
+                        console.log("Details");
+                        var stats = decoder.GetStats();
+                        console.log("\t CoordIndex         " + stats.m_timeCoordIndex + " ms, " + stats.m_streamSizeCoordIndex + " bytes (" + (8.0 * stats.m_streamSizeCoordIndex / ifs.GetNCoord()) + " bpv)");
+                        console.log("\t Coord              " + stats.m_timeCoord + " ms, " + stats.m_streamSizeCoord + " bytes (" + (8.0 * stats.m_streamSizeCoord / ifs.GetNCoord()) + " bpv)");
+                        console.log("\t Normal             " + stats.m_timeNormal + " ms, " + stats.m_streamSizeNormal + " bytes (" + (8.0 * stats.m_streamSizeNormal / ifs.GetNCoord()) + " bpv)");
+                        console.log("\t TexCoord           " + stats.m_timeTexCoord + " ms, " + stats.m_streamSizeTexCoord + " bytes (" + (8.0 * stats.m_streamSizeTexCoord / ifs.GetNCoord()) + " bpv)");
+                        console.log("\t Color              " + stats.m_timeColor + " ms, " + stats.m_streamSizeColor + " bytes (" + (8.0 * stats.m_streamSizeColor / ifs.GetNCoord()) + " bpv)");
+                        console.log("\t Float Attributes   " + stats.m_timeFloatAttribute + " ms, " + stats.m_streamSizeFloatAttribute + " bytes (" + (8.0 * stats.m_streamSizeFloatAttribute / ifs.GetNCoord()) + " bpv)");
+                        console.log("\t Integer Attributes " + stats.m_timeFloatAttribute + " ms, " + stats.m_streamSizeFloatAttribute + " bytes (" + (8.0 * stats.m_streamSizeFloatAttribute / ifs.GetNCoord()) + " bpv)");
+                        console.log("\t Reorder            " + stats.m_timeReorder + " ms,  " + 0 + " bytes (" + 0.0 + " bpv)");
+                        //SaveOBJ(ifs, fileName);
+                        */
+                        return ifs;
+                    }
+            },
+
 
             handleError: function(errorCode, info) {
                 console.log("ERROR:vertexAttributeBufferDelegate:"+errorCode+" :"+info);
@@ -155,8 +238,6 @@ exports.SceneRenderer = Object.create(Object.prototype, {
                             });
                     }
                 } else {
-                    var outputBuffer = Module.testDecode(resource);
-
                     var trianglesCount = 0;
                     var vertexCount = 0;
                     var mesh = ctx.mesh;
@@ -164,23 +245,14 @@ exports.SceneRenderer = Object.create(Object.prototype, {
                         vertexCount = compression.compressedData.verticesCount;
                         trianglesCount = compression.compressedData.indicesCount / 3;
                     }
-                    var buf = new ArrayBuffer(outputBuffer.length);
-                    var bufView = new Uint8Array(buf);
-                    for (var i = 0 , strLen = outputBuffer.length; i < strLen; i++) {
-                        bufView[i] = outputBuffer.charCodeAt(i);
-                    }
 
-                    var indicesShort = new Uint16Array(buf, 0, compression.compressedData.indicesCount);
-                    var bufPos = buf.slice(Uint16Array.BYTES_PER_ELEMENT * compression.compressedData.indicesCount , (Uint16Array.BYTES_PER_ELEMENT * compression.compressedData.indicesCount ) + Float32Array.BYTES_PER_ELEMENT * vertexCount * 3);
-                    var positions = new Float32Array(bufPos);
+                    var ifs = this.decode(resource, "text");
+                    var n = 3 * ifs.GetNCoord();
 
-                    var offsetNormal = (Uint16Array.BYTES_PER_ELEMENT * compression.compressedData.indicesCount) + Float32Array.BYTES_PER_ELEMENT * vertexCount * 3;
-                    var normPos = buf.slice(offsetNormal, offsetNormal + Float32Array.BYTES_PER_ELEMENT * vertexCount * 3);
-                    var normals = new Float32Array(normPos);
-
-                    var offsetTexcoord = offsetNormal + Float32Array.BYTES_PER_ELEMENT * vertexCount * 3;
-                    var texCoordPos = buf.slice(offsetTexcoord, offsetTexcoord + Float32Array.BYTES_PER_ELEMENT * vertexCount * 2);
-                    var texCoords = new Float32Array(texCoordPos);
+                    var indicesShort = ifs.GetCoordIndex();
+                    var positions = ifs.GetCoord();
+                    var texCoords = ifs.GetNTexCoord() > 0 ? ifs.GetTexCoord() : null;
+                    var normals = ifs.GetNNormal() > 0 ? ifs.GetNormal() : null;
 
                     ctx.renderer.setupCompressedMesh2(ctx.mesh, vertexCount, positions, normals, texCoords, indicesShort);
                 }

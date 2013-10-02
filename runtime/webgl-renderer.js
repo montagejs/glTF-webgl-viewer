@@ -324,11 +324,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             //    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER_BINDING, previousBuffer);
 
             count = vertexCount;
-
-            positions = new Float32Array(positions, 0, count * 3);
-            normals = new Float32Array(normals, 0, count * 3);
-            texcoords = new Float32Array(texcoords, 0, count * 2);
-
             previousBuffer = gl.getParameter(gl.ARRAY_BUFFER_BINDING);
 
             glResource =  gl.createBuffer();
@@ -340,16 +335,18 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             this.resourceManager.setResource(primitive.semantics["POSITION"].id, glResource);
             primitive.semantics["POSITION"] = { "id" : primitive.semantics["POSITION"].id , "count" : count, "byteStride" : 12}; //HACK
 
-            glResource =  gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
-            gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
-            glResource.componentType = gl.FLOAT;
-            glResource.componentsPerAttribute = 3;
+            if (normals != null) {
+                glResource =  gl.createBuffer();
+                gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+                gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
+                glResource.componentType = gl.FLOAT;
+                glResource.componentsPerAttribute = 3;
 
-            this.resourceManager.setResource(primitive.semantics["NORMAL"].id, glResource);
-            primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"].id, "count" : count, "byteStride" : 12}; //HACK
+                this.resourceManager.setResource(primitive.semantics["NORMAL"].id, glResource);
+                primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"].id, "count" : count, "byteStride" : 12}; //HACK
+            }
 
-            if (texcoords.length > 0) {
+            if (texcoords != null) {
                 glResource =  gl.createBuffer();
                 gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
                 gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
@@ -358,6 +355,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"].id, glResource);
                 primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"].id, "count" : count, "byteStride" : 8}; //HACK
             }
+
             gl.bindBuffer(gl.ARRAY_BUFFER, previousBuffer);
         }
     },
