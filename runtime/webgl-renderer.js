@@ -295,7 +295,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
     },
 
     setupCompressedMesh2: {
-        value: function(mesh, vertexCount, positions, normals, texcoords, indices) {
+        value: function(mesh, vertexCount, positions, normals, ifs, floatAttributesIndexes, indices) {
             var gl = this.webGLContext;
             //create indices
             //var previousBuffer = gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING);
@@ -303,12 +303,14 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             var count = 0;
             var index = 0;
             var primitives = mesh.primitives;
+
+            //setup indices
             for (var i = 0 ; i < primitives.length ; i++) {
+                //First we set the indices
                 var primitive = mesh.primitives[i];
                 var id = primitive.indices.id;
                 count = primitive.indices.count;
-
-                var primitiveIndices = new Uint16Array(indices, index, count);
+                var primitiveIndices = new Int16Array(indices.subarray(index, index + count ));
 
                 var glResource =  gl.createBuffer();
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glResource);
@@ -318,6 +320,36 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 glResource.count = count;
                 primitive.indices = { "id" : id, "count" : glResource.count };
                 index += count;
+                //Then we setup vertex attributes with potentially multiple set, like color and texcoord
+            }
+
+            var semantic;
+            var idToSemantic = {};
+            //now setup vertex attributes, to do so we build a map of id->vertexAttribute for all used sources in the mesh
+            for (var i = 0 ; i < primitives.length ; i++) {
+                //First we set the indices
+                var primitive = mesh.primitives[i];
+                for (semantic in primitive.semantics) {
+                    var vertexAttribute = primitive.semantics[semantic];
+                    idToSemantic[vertexAttribute.baseId] = semantic;
+                }
+            }
+
+            for (var attributeId in idToSemantic) {
+                var vertexAttributeIndex = floatAttributesIndexes[attributeId];
+                if (vertexAttributeIndex != null) {
+                    var semantic = idToSemantic[attributeId];
+                    debugger;
+                    var componentsPerAttribute =ifs.GetFloatAttributeDim(vertexAttributeIndex);
+                    glResource =  gl.createBuffer();
+                    gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
+                    gl.bufferData(gl.ARRAY_BUFFER, ifs.GetFloatAttribute(vertexAttributeIndex), gl.STATIC_DRAW);
+                    glResource.componentType = gl.FLOAT;
+                    glResource.componentsPerAttribute = componentsPerAttribute;
+                    this.resourceManager.setResource(primitive.semantics[semantic].id, glResource);
+                    //FIXME:
+                    primitive.semantics[semantic] = { "id" : primitive.semantics[semantic].id, "count" : count, "byteStride" : componentsPerAttribute * 4};
+                }
             }
 
             //if (previousBuffer)
@@ -341,19 +373,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 gl.bufferData(gl.ARRAY_BUFFER, normals, gl.STATIC_DRAW);
                 glResource.componentType = gl.FLOAT;
                 glResource.componentsPerAttribute = 3;
-
                 this.resourceManager.setResource(primitive.semantics["NORMAL"].id, glResource);
                 primitive.semantics["NORMAL"] = { "id" : primitive.semantics["NORMAL"].id, "count" : count, "byteStride" : 12}; //HACK
-            }
-
-            if (texcoords != null) {
-                glResource =  gl.createBuffer();
-                gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
-                gl.bufferData(gl.ARRAY_BUFFER, texcoords, gl.STATIC_DRAW);
-                glResource.componentType = gl.FLOAT;
-                glResource.componentsPerAttribute = 2;
-                this.resourceManager.setResource(primitive.semantics["TEXCOORD_0"].id, glResource);
-                primitive.semantics["TEXCOORD_0"] = { "id" : primitive.semantics["TEXCOORD_0"].id, "count" : count, "byteStride" : 8}; //HACK
             }
 
             gl.bindBuffer(gl.ARRAY_BUFFER, previousBuffer);
