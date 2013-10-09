@@ -79,11 +79,11 @@ exports.SceneRenderer = Object.create(Object.prototype, {
                   return buf;
               },
 
-            decode: function (arrayBuffer, resType) {
+            decode: function (arrayBuffer, isAscii) {
                     if (arrayBuffer) {
                         function str2ab(str) {
                         }
-                        if (resType === "text") {
+                        if (isAscii) {
                             var bstream = new o3dgc.BinaryStream(this.str2ab(arrayBuffer));
                         } else {
                             var bstream = new o3dgc.BinaryStream(arrayBuffer);
@@ -96,33 +96,30 @@ exports.SceneRenderer = Object.create(Object.prototype, {
                         timer.Toc();
                         console.log("DecodeHeader time (ms) " + timer.GetElapsedTime());
                         // allocate memory
-                        var byteSize = 3 * 2 * ifs.GetNCoordIndex() +
+                        var byteSize =
                             3 * 4 * ifs.GetNCoord() +
-                            3 * 4 * ifs.GetNNormal() +
-                            3 * 4 * ifs.GetNColor() +
-                            2 * 4 * ifs.GetNTexCoord();
+                            3 * 4 * ifs.GetNNormal();
                         var buffer = new ArrayBuffer(byteSize);
+                        var bufferIndices = new ArrayBuffer(3 * 2 * ifs.GetNCoordIndex());
+
                         var shift = 0;
                         if (ifs.GetNCoordIndex() > 0) {
-                            ifs.SetCoordIndex(new Int16Array(buffer, shift, 3 * ifs.GetNCoordIndex()));
-                            shift += 6 * ifs.GetNCoordIndex();
+                            ifs.SetCoordIndex(new Uint16Array(bufferIndices, 0, 3 * ifs.GetNCoordIndex()));
                         }
                         if (ifs.GetNCoord() > 0) {
-                            var nc = 3 * ifs.GetNCoord();
-                            ifs.SetCoord(new Float32Array(buffer, shift, nc));
+                            ifs.SetCoord(new Float32Array(buffer, shift, 3 * ifs.GetNCoord()));
                             shift += 12 * ifs.GetNCoord();
                         }
                         if (ifs.GetNNormal() > 0) {
                             ifs.SetNormal(new Float32Array(buffer, shift, 3 * ifs.GetNNormal()));
                             shift += 12 * ifs.GetNNormal();
                         }
-                        if (ifs.GetNColor() > 0) {
-                            ifs.SetColor(new Float32Array(buffer, shift, 3 * ifs.GetNColor()));
-                            shift += 12 * ifs.GetNColor();
-                        }
-                        if (ifs.GetNTexCoord() > 0) {
-                            ifs.GetTexCoord(new Float32Array(buffer, shift, 2 * ifs.GetNTexCoord()));
-                            shift += 8 * ifs.GetNTexCoord();
+
+                        var numNumFloatAttributes = ifs.GetNumFloatAttributes();
+                        for (var a = 0; a < numNumFloatAttributes; ++a){
+                            if (ifs.GetNFloatAttribute(a) > 0) {
+                                ifs.SetFloatAttribute(a, new Float32Array(ifs.GetFloatAttributeDim(a) * ifs.GetNFloatAttribute(a)));
+                            }
                         }
                         /*
                         console.log("Mesh info ");
@@ -238,23 +235,17 @@ exports.SceneRenderer = Object.create(Object.prototype, {
                             });
                     }
                 } else {
-                    var trianglesCount = 0;
                     var vertexCount = 0;
                     var mesh = ctx.mesh;
                     if (compression.compressedData) {
-                        vertexCount = compression.compressedData.verticesCount;
-                        trianglesCount = compression.compressedData.indicesCount / 3;
+                        var compressedData = compression.compressedData;
+                        vertexCount = compressedData.verticesCount;
+                        var ifs = this.decode(resource, compressedData.mode === "ascii");
+                        var indicesShort = ifs.GetCoordIndex();
+                        var positions = ifs.GetCoord();
+                        var normals = ifs.GetNNormal() > 0 ? ifs.GetNormal() : null;
+                        ctx.renderer.setupCompressedMesh2(ctx.mesh, vertexCount, positions, normals, ifs, compressedData.floatAttributesIndexes, indicesShort);
                     }
-
-                    var ifs = this.decode(resource, "text");
-                    var n = 3 * ifs.GetNCoord();
-
-                    var indicesShort = ifs.GetCoordIndex();
-                    var positions = ifs.GetCoord();
-                    var texCoords = ifs.GetNTexCoord() > 0 ? ifs.GetTexCoord() : null;
-                    var normals = ifs.GetNNormal() > 0 ? ifs.GetNormal() : null;
-
-                    ctx.renderer.setupCompressedMesh2(ctx.mesh, vertexCount, positions, normals, texCoords, indicesShort);
                 }
 
                 return resource;
