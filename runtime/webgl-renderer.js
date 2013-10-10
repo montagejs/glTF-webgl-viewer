@@ -674,6 +674,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
             createTextureFromImageAndSampler: function(image, sampler) {
                 var gl = this.webGLContext;
+                var activeTexture = gl.getParameter(gl.ACTIVE_TEXTURE)
+                var textureBinding = gl.getParameter(gl.TEXTURE_BINDING_2D);
+                gl.activeTexture(gl.TEXTURE0);
 
                 var canvas = null;
                 var minFilter = this.getGLFilter(sampler.minFilter);
@@ -685,7 +688,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     (minFilter === gl.LINEAR_MIPMAP_NEAREST) ||
                     (minFilter === gl.NEAREST_MIPMAP_LINEAR) ||
                     (minFilter === gl.LINEAR_MIPMAP_LINEAR));
-
+/*
                 if (usesMipMaps ||  (wrapS === gl.REPEAT) || (wrapT === gl.REPEAT)) {
 
                     var width = parseInt(image.width);
@@ -711,6 +714,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         image = canvas;
                     }
                 }
+*/
 
                 var texture = gl.createTexture();
                 gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -730,7 +734,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     gl.generateMipmap(gl.TEXTURE_2D);
                 }
 
-                gl.bindTexture(gl.TEXTURE_2D, null);
+                gl.bindTexture(gl.TEXTURE_2D, textureBinding);
+                gl.activeTexture(activeTexture);
                 return texture;
             },
 
@@ -768,7 +773,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, resource.source.videoElement);
                     gl.bindTexture(gl.TEXTURE_2D, null);
-
                     return texture;
                 }
 
@@ -871,9 +875,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     var uniformIsSampler2D = glType === gl.SAMPLER_2D;
 
                     if (uniformIsSamplerCube) {
-                        texture = value;
                         this.textureDelegate.webGLContext = this.webGLContext;
-                        var texture = this.resourceManager.getResource(texture, this.textureDelegate, this.webGLContext);
+                        texture = this.resourceManager.getResource(value, this.textureDelegate, this.webGLContext);
                         if (texture) {
                             gl.activeTexture(gl.TEXTURE0 + currentTexture);
                             gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
@@ -885,10 +888,24 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             }
                         }
                     } else if (uniformIsSampler2D) {
-                        texture = value;
                         this.textureDelegate.webGLContext = this.webGLContext;
-                        var texture = this.resourceManager.getResource(texture, this.textureDelegate, this.webGLContext);
-                        if (texture) {
+
+                        texture = this.resourceManager.getResource(value, this.textureDelegate, this.webGLContext);
+                        if (texture == null) {
+                            //HACK:FIXME to reuse previous texture, will go away
+                            if (primitive.diffuse != null) {
+                                texture = primitive.diffuse;
+                            } 
+                        }
+
+                        if (texture != null) {
+                            //HACK: to keep track of texture
+                            if (primitive.diffuse == null) {
+                                if (parameter.parameter === "diffuse") {
+                                    primitive.diffuse = texture;
+                                }
+                            }
+
                             gl.activeTexture(gl.TEXTURE0 + currentTexture);
                             gl.bindTexture(gl.TEXTURE_2D, texture);
                             if (parameter.value.source.videoElement) {
@@ -903,12 +920,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             if (typeof samplerLocation !== "undefined") {
                                 program.setValueForSymbol(symbol, currentTexture);
                                 currentTexture++;
-                            }
-                        }
-                        //we prefer to bail out if the texture is not ready
-                        if (texture == null) {
-                            return;
-                        }
+                            } 
+                        } 
+
                     } else {
                         program.setValueForSymbol(symbol, value);
                     }
