@@ -238,12 +238,11 @@ exports.SceneRenderer = Object.create(Object.prototype, {
         }
     },
 
-
     init: {
         value: function( webGLRenderer, options) {
             this.webGLRenderer = webGLRenderer;
             this.createTechniqueIfNeeded();
-            this.loadPickingTechnique();
+            //this.loadPickingTechnique();
             return this;
         }
     },
