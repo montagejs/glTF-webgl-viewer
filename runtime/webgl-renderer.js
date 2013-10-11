@@ -688,7 +688,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     (minFilter === gl.LINEAR_MIPMAP_NEAREST) ||
                     (minFilter === gl.NEAREST_MIPMAP_LINEAR) ||
                     (minFilter === gl.LINEAR_MIPMAP_LINEAR));
-/*
+
                 if (usesMipMaps ||  (wrapS === gl.REPEAT) || (wrapT === gl.REPEAT)) {
 
                     var width = parseInt(image.width);
@@ -714,7 +714,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         image = canvas;
                     }
                 }
-*/
+
 
                 var texture = gl.createTexture();
                 gl.bindTexture(gl.TEXTURE_2D, texture);
