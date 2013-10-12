@@ -338,16 +338,21 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             for (var attributeId in idToSemantic) {
                 var vertexAttributeIndex = floatAttributesIndexes[attributeId];
                 if (vertexAttributeIndex != null) {
+                    var attr = ifs.GetFloatAttribute(vertexAttributeIndex);
                     var semantic = idToSemantic[attributeId];
-                    debugger;
+                    if (semantic === "JOINT") {
+                        for (var k = 0 ; k < attr.length ; k++) {
+                            attr[k] = Math.floor(attr[k] + 0.5);
+                        }
+                    }
+
                     var componentsPerAttribute =ifs.GetFloatAttributeDim(vertexAttributeIndex);
                     glResource =  gl.createBuffer();
                     gl.bindBuffer(gl.ARRAY_BUFFER, glResource);
-                    gl.bufferData(gl.ARRAY_BUFFER, ifs.GetFloatAttribute(vertexAttributeIndex), gl.STATIC_DRAW);
+                    gl.bufferData(gl.ARRAY_BUFFER, attr, gl.STATIC_DRAW);
                     glResource.componentType = gl.FLOAT;
                     glResource.componentsPerAttribute = componentsPerAttribute;
                     this.resourceManager.setResource(primitive.semantics[semantic].id, glResource);
-                    //FIXME:
                     primitive.semantics[semantic] = { "id" : primitive.semantics[semantic].id, "count" : count, "byteStride" : componentsPerAttribute * 4};
                 }
             }
