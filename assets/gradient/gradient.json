@@ -1,6 +1,6 @@
 {
     "asset": {
-        "generator": "collada2gltf 0.1.0"
+        "generator": "hand-written"
     },
     "attributes": {
         "attribute_22": {
@@ -18,7 +18,7 @@
                 -0.5,
                 -0.5
             ],
-            "type": "FLOAT_VEC3"
+            "type": 35665
         }
     },
     "bufferViews": {
@@ -26,13 +26,13 @@
             "buffer": "gradient.bin",
             "byteLength": 48,
             "byteOffset": 0,
-            "target": "ARRAY_BUFFER"
+            "target": 34962
         },
         "bufferView_29": {
             "buffer": "gradient.bin",
             "byteLength": 12,
             "byteOffset": 48,
-            "target": "ELEMENT_ARRAY_BUFFER"
+            "target": 34963
         }
     },
     "buffers": {
@@ -55,7 +55,7 @@
             "bufferView": "bufferView_29",
             "byteOffset": 0,
             "count": 6,
-            "type": "UNSIGNED_SHORT"
+            "type": 5123
         }
     },
     "materials": {
@@ -121,7 +121,7 @@
         "technique1": {
             "parameters": {
                 "color0": {
-                    "type": "FLOAT_VEC3",
+                    "type": 35665,
                     "value": [
                         1,
                         1,
@@ -129,7 +129,7 @@
                     ]
                 },
                 "color1": {
-                    "type": "FLOAT_VEC3",
+                    "type": 35665,
                     "value": [
                         0,
                         0,
@@ -138,11 +138,11 @@
                 },
                 "position": {
                     "semantic": "POSITION",
-                    "type": "FLOAT_VEC3"
+                    "type": 35665
                 },
                 "projectionMatrix": {
                     "semantic": "PROJECTION",
-                    "type": "FLOAT_MAT4"
+                    "type": 35676
                 }
             },
             "pass": "gradientPass",
@@ -161,10 +161,10 @@
                     },
                     "states": {
                         "blendEnable": true,
-                        "blendEquation": "FUNC_ADD",
+                        "blendEquation": 32774,
                         "blendFunc": {
-                            "dfactor": "ONE_MINUS_SRC_ALPHA",
-                            "sfactor": "SRC_ALPHA"
+                            "dfactor": 771,
+                            "sfactor": 770
                         },
                         "cullFaceEnable": false,
                         "depthMask": false,
