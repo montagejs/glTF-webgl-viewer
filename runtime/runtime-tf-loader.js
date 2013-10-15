@@ -37,7 +37,6 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
             buffer.id = entryID;
             this.storeEntry(entryID, buffer, description);
             this.totalBufferSize += description.byteLength;
-            description.type = "arraybuffer";
             return true;
         }
     },
@@ -580,6 +579,20 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                     default: {
                         console.log("type:"+parameterDescription.type+" byteStride not handled");
                         break;
+                    }
+                }
+
+                if (parameterDescription.extensions) {
+                    var extensions = parameterDescription.extensions;
+                    if (extensions) {
+                        var compressionObject = extensions["Open3DGC-compression"];
+                        if (compressionObject) {
+                            var compressedData = compressionObject["compressedData"];
+                            if (compressedData) {
+                                compressedData.bufferView = this.getEntry(compressedData.bufferView).entry;
+                                compressedData.id = entryID + parameterSID + "_compressedData";
+                            }
+                        }
                     }
                 }
 
