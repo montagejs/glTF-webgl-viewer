@@ -409,8 +409,6 @@ var global = window;
         XMLHTTPREQUEST_STATUS_ERROR: { value: "XMLHTTPREQUEST_STATUS_ERROR" },
         NOT_FOUND: { value: "NOT_FOUND" },
         // misc constants
-        ARRAY_BUFFER: { value: "arraybuffer" },
-
         _resources: { value: null, writable: true },
 
         _requestTrees: { value: null, writable: true },
@@ -557,7 +555,7 @@ var global = window;
 
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', path, true);
-                xhr.responseType = (type === this.ARRAY_BUFFER) ? "arraybuffer" : "text";
+                xhr.responseType = type;
 
                 if (request.range) {
                     var header = "bytes=" + request.range[0] + "-" + (request.range[1] - 1);
@@ -774,16 +772,21 @@ var global = window;
         _handleWrappedBufferViewResourceLoading: {
             value: function(wrappedBufferView, delegate, ctx) {
 
+                var requestType = "arraybuffer";
                 var bufferView = wrappedBufferView.bufferView;
                 if (bufferView) {
                     var buffer = bufferView.buffer;
                     var byteOffset = wrappedBufferView.byteOffset + bufferView.description.byteOffset;
                     var range = [byteOffset , (this._elementSizeForGLType(wrappedBufferView.type) * wrappedBufferView.count) + byteOffset];
+                    if (buffer.description) {
+                        if (buffer.description.type)
+                            requestType = buffer.description.type;
+                    }
 
                     var wrappedBufferRequest = {
                         "id" : wrappedBufferView.id,
                         "range" : range,
-                        "type" : wrappedBufferView.requestType ? wrappedBufferView.requestType : buffer.description.type,
+                        "type" : requestType,
                         "path" : buffer.description.path,
                         "delegate" : delegate,
                         "ctx" : ctx,
@@ -838,7 +841,7 @@ var global = window;
 
                             var bufferRequest = {
                                 "id" : buffer.id,
-                                "type" : wrappedBufferRequest.type,
+                                "type" : requestType,
                                 "path" : buffer.description.path,
                                 "delegate" : delegate,
                                 "ctx" : ctx,

@@ -69,8 +69,68 @@ var Channel = exports.Channel = Object.create(Base, {
                 console.log("ERROR:parameterDelegate:"+errorCode+" :"+info);
             },
 
+            decode: function(arrayBuffer, parameter) {
+                if (arrayBuffer, parameter) {
+                    function str2ab(str) {
+                        var buf = new ArrayBuffer(str.length);
+                        var bufView = new Uint8Array(buf);
+                        for (var i = 0 , strLen = str.length ; i<strLen ; i++) {
+                            bufView[i] = str.charCodeAt(i);
+                        }
+                        return buf;
+                    }
+
+                    var resType = "text";
+
+                    if (resType === "text") {
+                        var bstream = new o3dgc.BinaryStream(str2ab(arrayBuffer));
+                        var size = arrayBuffer.length;
+                    }
+                    else{
+                        var bstream = new o3dgc.BinaryStream(arrayBuffer);
+                        var size = arrayBuffer.byteLength;
+                    }
+
+                    var decoder = new o3dgc.DynamicVectorDecoder();
+                    var dynamicVector = new o3dgc.DynamicVector();
+                    var timer = new o3dgc.Timer();
+                    timer.Tic();
+                    decoder.DecodeHeader(dynamicVector, bstream);
+                    timer.Toc();
+                    console.log("DecodeHeader time (ms) " + timer.GetElapsedTime());
+                    // allocate memory
+                    if (dynamicVector.GetNVector() > 0 && dynamicVector.GetDimVector()) {
+                        dynamicVector.SetVectors(new Float32Array(dynamicVector.GetNVector() * dynamicVector.GetDimVector()));
+                        dynamicVector.SetMinArray(new Float32Array(dynamicVector.GetDimVector()));
+                        dynamicVector.SetMaxArray(new Float32Array(dynamicVector.GetDimVector()));
+                        dynamicVector.SetStride(dynamicVector.GetDimVector());
+                    }
+                    console.log("Dynamic vector info:"+parameter.id);
+                    console.log("\t# vectors   " + dynamicVector.GetNVector());
+                    console.log("\tdim         " + dynamicVector.GetDimVector());
+                    // decode DV
+                    timer.Tic();
+                    decoder.DecodePlayload(dynamicVector, bstream);
+                    timer.Toc();
+                    console.log("DecodePlayload time " + timer.GetElapsedTime() + " ms, " + size + " bytes (" + (8.0 * size / dynamicVector.GetNVector()) + " bpv)");
+
+                    return dynamicVector.GetVectors();
+                }
+            },
+
             convert: function (resource, ctx) {
-                //FIXME:harcode float32
+                var parameter = ctx;
+                if (parameter.extensions) {
+                    var extensions = parameter.extensions;
+                    var compression = extensions["Open3DGC-compression"];
+                    if (compression) {
+                        var compressionData = compression["compressedData"];
+                        if (compressionData) {
+                            return this.decode(resource, ctx);
+                        }
+                    }
+                }
+
                 return new Float32Array(resource);
             },
 
@@ -81,7 +141,17 @@ var Channel = exports.Channel = Object.create(Base, {
 
     getParameterArray: {
         value: function(parameter, resourceManager) {
-            return resourceManager.getResource(parameter, this.parameterDelegate, null);
+            if (parameter.extensions) {
+                var extensions = parameter.extensions;
+                var compression = extensions["Open3DGC-compression"];
+                if (compression) {
+                    var compressionData = compression["compressedData"];
+                    if (compressionData) {
+                        return resourceManager.getResource(compressionData, this.parameterDelegate, parameter);
+                    }
+                }
+            }
+            return resourceManager.getResource(parameter, this.parameterDelegate, parameter);
         }
     },
 

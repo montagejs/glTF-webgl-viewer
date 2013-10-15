@@ -243,9 +243,6 @@ var global = window;
                             break;
                         }
                     } else {
-                        if (typeof description.type === "undefined") {
-                            description.type = type;
-                        }
 
                         if (methodForType[type]) {
                             if (methodForType[type].call(this, entryID, description, this._state.userInfo) === false) {
