@@ -80,7 +80,7 @@ var Channel = exports.Channel = Object.create(Base, {
                         return buf;
                     }
 
-                    var resType = "text";
+                    var resType = parameter.extensions["Open3DGC-compression"].compressedData.mode == "ascii" ? "text" : "arraybuffer";
 
                     if (resType === "text") {
                         var bstream = new o3dgc.BinaryStream(str2ab(arrayBuffer));
