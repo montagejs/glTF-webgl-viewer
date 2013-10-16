@@ -1,12 +1,12 @@
 {
     "animations": {},
     "asset": {
-        "generator": "collada2gltf@6c39102a416a8c561835645d5ddaddd8da8150c9"
+        "generator": "collada2gltf@da4029e4fb0b7b7036551e2548de1afc50965caf"
     },
     "attributes": {
         "attribute_10037": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 7833986,
+            "byteOffset": 16776352,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -23,7 +23,7 @@
         },
         "attribute_10039": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 8620370,
+            "byteOffset": 17562736,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -40,7 +40,7 @@
         },
         "attribute_10041": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 9406754,
+            "byteOffset": 18349120,
             "byteStride": 8,
             "count": 65532,
             "max": [
@@ -55,7 +55,7 @@
         },
         "attribute_11355": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 8791514,
+            "byteOffset": 18873376,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -72,7 +72,7 @@
         },
         "attribute_11357": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 9577898,
+            "byteOffset": 19659760,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -89,7 +89,7 @@
         },
         "attribute_11359": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 10364282,
+            "byteOffset": 20446144,
             "byteStride": 8,
             "count": 65532,
             "max": [
@@ -104,7 +104,7 @@
         },
         "attribute_12682": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 9501459,
+            "byteOffset": 20970400,
             "byteStride": 12,
             "count": 22823,
             "max": [
@@ -121,7 +121,7 @@
         },
         "attribute_12684": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 9775335,
+            "byteOffset": 21244276,
             "byteStride": 12,
             "count": 22823,
             "max": [
@@ -138,7 +138,7 @@
         },
         "attribute_12686": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 10049211,
+            "byteOffset": 21518152,
             "byteStride": 8,
             "count": 22823,
             "max": [
@@ -153,7 +153,7 @@
         },
         "attribute_4419": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 382296,
+            "byteOffset": 0,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -170,7 +170,7 @@
         },
         "attribute_4421": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 1168680,
+            "byteOffset": 786384,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -187,7 +187,7 @@
         },
         "attribute_4423": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 1955064,
+            "byteOffset": 1572768,
             "byteStride": 8,
             "count": 65532,
             "max": [
@@ -202,7 +202,7 @@
         },
         "attribute_4468": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 1304325,
+            "byteOffset": 2097024,
             "byteStride": 12,
             "count": 65533,
             "max": [
@@ -219,7 +219,7 @@
         },
         "attribute_4470": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 2090721,
+            "byteOffset": 2883420,
             "byteStride": 12,
             "count": 65533,
             "max": [
@@ -236,7 +236,7 @@
         },
         "attribute_4472": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 2877117,
+            "byteOffset": 3669816,
             "byteStride": 8,
             "count": 65533,
             "max": [
@@ -251,7 +251,7 @@
         },
         "attribute_4508": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 2260209,
+            "byteOffset": 4194080,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -268,7 +268,7 @@
         },
         "attribute_4510": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 3046593,
+            "byteOffset": 4980464,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -285,7 +285,7 @@
         },
         "attribute_4512": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 3832977,
+            "byteOffset": 5766848,
             "byteStride": 8,
             "count": 65532,
             "max": [
@@ -300,7 +300,7 @@
         },
         "attribute_4548": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 3131776,
+            "byteOffset": 6291104,
             "byteStride": 12,
             "count": 65534,
             "max": [
@@ -317,7 +317,7 @@
         },
         "attribute_4550": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 3918184,
+            "byteOffset": 7077512,
             "byteStride": 12,
             "count": 65534,
             "max": [
@@ -334,7 +334,7 @@
         },
         "attribute_4552": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 4704592,
+            "byteOffset": 7863920,
             "byteStride": 8,
             "count": 65534,
             "max": [
@@ -349,7 +349,7 @@
         },
         "attribute_4588": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 3989863,
+            "byteOffset": 8388192,
             "byteStride": 12,
             "count": 65534,
             "max": [
@@ -366,7 +366,7 @@
         },
         "attribute_4590": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 4776271,
+            "byteOffset": 9174600,
             "byteStride": 12,
             "count": 65534,
             "max": [
@@ -383,7 +383,7 @@
         },
         "attribute_4592": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 5562679,
+            "byteOffset": 9961008,
             "byteStride": 8,
             "count": 65534,
             "max": [
@@ -398,7 +398,7 @@
         },
         "attribute_5861": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 4891645,
+            "byteOffset": 10485280,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -415,7 +415,7 @@
         },
         "attribute_5863": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 5678029,
+            "byteOffset": 11271664,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -432,7 +432,7 @@
         },
         "attribute_5865": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 6464413,
+            "byteOffset": 12058048,
             "byteStride": 8,
             "count": 65532,
             "max": [
@@ -447,7 +447,7 @@
         },
         "attribute_7398": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 5846302,
+            "byteOffset": 12582304,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -464,7 +464,7 @@
         },
         "attribute_7400": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 6632686,
+            "byteOffset": 13368688,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -481,7 +481,7 @@
         },
         "attribute_7402": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 7419070,
+            "byteOffset": 14155072,
             "byteStride": 8,
             "count": 65532,
             "max": [
@@ -496,7 +496,7 @@
         },
         "attribute_8719": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 6854722,
+            "byteOffset": 14679328,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -513,7 +513,7 @@
         },
         "attribute_8721": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 7641106,
+            "byteOffset": 15465712,
             "byteStride": 12,
             "count": 65532,
             "max": [
@@ -530,7 +530,7 @@
         },
         "attribute_8723": {
             "bufferView": "bufferView_12698",
-            "byteOffset": 8427490,
+            "byteOffset": 16252096,
             "byteStride": 8,
             "count": 65532,
             "max": [
@@ -547,26 +547,32 @@
     "bufferViews": {
         "bufferView_12698": {
             "buffer": "challengeFlattened",
-            "byteLength": 0,
+            "byteLength": 21700736,
             "byteOffset": 0,
             "target": "ARRAY_BUFFER"
         },
         "bufferView_12699": {
             "buffer": "challengeFlattened",
-            "byteLength": 0,
-            "byteOffset": 0,
+            "byteLength": 3523776,
+            "byteOffset": 21700736,
             "target": "ELEMENT_ARRAY_BUFFER"
         },
         "bufferView_12700": {
             "buffer": "challengeFlattened",
-            "byteLength": 9701664,
-            "byteOffset": 0
+            "byteLength": 0,
+            "byteOffset": 25224512
         }
     },
     "buffers": {
         "challengeFlattened": {
-            "byteLength": 9701664,
-            "path": "challengeFlattened.txt"
+            "byteLength": 25224512,
+            "path": "challengeFlattened.bin",
+            "type": "arraybuffer"
+        },
+        "challengeFlattenedcompression": {
+            "byteLength": 0,
+            "path": "challengeFlattenedcompression.bin",
+            "type": "text"
         }
     },
     "images": {
@@ -625,25 +631,25 @@
     "indices": {
         "indices_10035": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 7437116,
+            "byteOffset": 2586906,
             "count": 198435,
             "type": 5123
         },
         "indices_11353": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 8396450,
+            "byteOffset": 2983776,
             "count": 197532,
             "type": 5123
         },
         "indices_12671": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 9356523,
+            "byteOffset": 3378840,
             "count": 52710,
             "type": 5123
         },
         "indices_12680": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 9461943,
+            "byteOffset": 3484260,
             "count": 19758,
             "type": 5123
         },
@@ -667,1339 +673,1339 @@
         },
         "indices_4439": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 989559,
+            "byteOffset": 382296,
             "count": 80406,
             "type": 5123
         },
         "indices_4448": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 1150371,
+            "byteOffset": 543108,
             "count": 7200,
             "type": 5123
         },
         "indices_4457": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 1164771,
+            "byteOffset": 557508,
             "count": 23832,
             "type": 5123
         },
         "indices_4466": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 1212435,
+            "byteOffset": 605172,
             "count": 45945,
             "type": 5123
         },
         "indices_4506": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 1979529,
+            "byteOffset": 697062,
             "count": 140340,
             "type": 5123
         },
         "indices_4546": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 2851876,
+            "byteOffset": 977742,
             "count": 139950,
             "type": 5123
         },
         "indices_4586": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 3709963,
+            "byteOffset": 1257642,
             "count": 139950,
             "type": 5123
         },
         "indices_4626": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4594537,
+            "byteOffset": 1537542,
             "count": 132135,
             "type": 5123
         },
         "indices_4635": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4858807,
+            "byteOffset": 1801812,
             "count": 13170,
             "type": 5123
         },
         "indices_4644": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885147,
+            "byteOffset": 1828152,
             "count": 24,
             "type": 5123
         },
         "indices_4653": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885195,
+            "byteOffset": 1828200,
             "count": 24,
             "type": 5123
         },
         "indices_4662": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885243,
+            "byteOffset": 1828248,
             "count": 24,
             "type": 5123
         },
         "indices_4671": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885291,
+            "byteOffset": 1828296,
             "count": 24,
             "type": 5123
         },
         "indices_4680": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885339,
+            "byteOffset": 1828344,
             "count": 24,
             "type": 5123
         },
         "indices_4689": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885387,
+            "byteOffset": 1828392,
             "count": 24,
             "type": 5123
         },
         "indices_4698": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885435,
+            "byteOffset": 1828440,
             "count": 24,
             "type": 5123
         },
         "indices_4707": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885483,
+            "byteOffset": 1828488,
             "count": 24,
             "type": 5123
         },
         "indices_4716": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885531,
+            "byteOffset": 1828536,
             "count": 24,
             "type": 5123
         },
         "indices_4725": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885579,
+            "byteOffset": 1828584,
             "count": 24,
             "type": 5123
         },
         "indices_4734": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885627,
+            "byteOffset": 1828632,
             "count": 24,
             "type": 5123
         },
         "indices_4743": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885675,
+            "byteOffset": 1828680,
             "count": 24,
             "type": 5123
         },
         "indices_4752": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885723,
+            "byteOffset": 1828728,
             "count": 24,
             "type": 5123
         },
         "indices_4761": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885771,
+            "byteOffset": 1828776,
             "count": 24,
             "type": 5123
         },
         "indices_4770": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885819,
+            "byteOffset": 1828824,
             "count": 24,
             "type": 5123
         },
         "indices_4779": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885867,
+            "byteOffset": 1828872,
             "count": 24,
             "type": 5123
         },
         "indices_4788": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885915,
+            "byteOffset": 1828920,
             "count": 24,
             "type": 5123
         },
         "indices_4797": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4885963,
+            "byteOffset": 1828968,
             "count": 24,
             "type": 5123
         },
         "indices_4806": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886011,
+            "byteOffset": 1829016,
             "count": 24,
             "type": 5123
         },
         "indices_4815": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886059,
+            "byteOffset": 1829064,
             "count": 24,
             "type": 5123
         },
         "indices_4824": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886107,
+            "byteOffset": 1829112,
             "count": 24,
             "type": 5123
         },
         "indices_4833": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886155,
+            "byteOffset": 1829160,
             "count": 24,
             "type": 5123
         },
         "indices_4842": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886203,
+            "byteOffset": 1829208,
             "count": 24,
             "type": 5123
         },
         "indices_4851": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886251,
+            "byteOffset": 1829256,
             "count": 24,
             "type": 5123
         },
         "indices_4860": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886299,
+            "byteOffset": 1829304,
             "count": 24,
             "type": 5123
         },
         "indices_4869": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886347,
+            "byteOffset": 1829352,
             "count": 24,
             "type": 5123
         },
         "indices_4878": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886395,
+            "byteOffset": 1829400,
             "count": 24,
             "type": 5123
         },
         "indices_4887": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886443,
+            "byteOffset": 1829448,
             "count": 24,
             "type": 5123
         },
         "indices_4896": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886491,
+            "byteOffset": 1829496,
             "count": 24,
             "type": 5123
         },
         "indices_4905": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886539,
+            "byteOffset": 1829544,
             "count": 24,
             "type": 5123
         },
         "indices_4914": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886587,
+            "byteOffset": 1829592,
             "count": 24,
             "type": 5123
         },
         "indices_4923": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886635,
+            "byteOffset": 1829640,
             "count": 24,
             "type": 5123
         },
         "indices_4932": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886683,
+            "byteOffset": 1829688,
             "count": 24,
             "type": 5123
         },
         "indices_4941": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886731,
+            "byteOffset": 1829736,
             "count": 24,
             "type": 5123
         },
         "indices_4950": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886779,
+            "byteOffset": 1829784,
             "count": 24,
             "type": 5123
         },
         "indices_4959": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886827,
+            "byteOffset": 1829832,
             "count": 24,
             "type": 5123
         },
         "indices_4968": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886875,
+            "byteOffset": 1829880,
             "count": 24,
             "type": 5123
         },
         "indices_4977": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886923,
+            "byteOffset": 1829928,
             "count": 24,
             "type": 5123
         },
         "indices_4986": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4886971,
+            "byteOffset": 1829976,
             "count": 24,
             "type": 5123
         },
         "indices_4995": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887019,
+            "byteOffset": 1830024,
             "count": 24,
             "type": 5123
         },
         "indices_5004": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887067,
+            "byteOffset": 1830072,
             "count": 24,
             "type": 5123
         },
         "indices_5013": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887115,
+            "byteOffset": 1830120,
             "count": 24,
             "type": 5123
         },
         "indices_5022": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887163,
+            "byteOffset": 1830168,
             "count": 24,
             "type": 5123
         },
         "indices_5031": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887211,
+            "byteOffset": 1830216,
             "count": 24,
             "type": 5123
         },
         "indices_5040": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887259,
+            "byteOffset": 1830264,
             "count": 24,
             "type": 5123
         },
         "indices_5049": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887307,
+            "byteOffset": 1830312,
             "count": 24,
             "type": 5123
         },
         "indices_5058": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887355,
+            "byteOffset": 1830360,
             "count": 24,
             "type": 5123
         },
         "indices_5067": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887403,
+            "byteOffset": 1830408,
             "count": 24,
             "type": 5123
         },
         "indices_5076": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887451,
+            "byteOffset": 1830456,
             "count": 24,
             "type": 5123
         },
         "indices_5085": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887499,
+            "byteOffset": 1830504,
             "count": 24,
             "type": 5123
         },
         "indices_5094": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887547,
+            "byteOffset": 1830552,
             "count": 24,
             "type": 5123
         },
         "indices_5103": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887595,
+            "byteOffset": 1830600,
             "count": 24,
             "type": 5123
         },
         "indices_5112": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887643,
+            "byteOffset": 1830648,
             "count": 24,
             "type": 5123
         },
         "indices_5121": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887691,
+            "byteOffset": 1830696,
             "count": 24,
             "type": 5123
         },
         "indices_5130": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887739,
+            "byteOffset": 1830744,
             "count": 24,
             "type": 5123
         },
         "indices_5139": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887787,
+            "byteOffset": 1830792,
             "count": 24,
             "type": 5123
         },
         "indices_5148": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887835,
+            "byteOffset": 1830840,
             "count": 24,
             "type": 5123
         },
         "indices_5157": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887883,
+            "byteOffset": 1830888,
             "count": 24,
             "type": 5123
         },
         "indices_5166": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887931,
+            "byteOffset": 1830936,
             "count": 24,
             "type": 5123
         },
         "indices_5175": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4887979,
+            "byteOffset": 1830984,
             "count": 24,
             "type": 5123
         },
         "indices_5184": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888027,
+            "byteOffset": 1831032,
             "count": 24,
             "type": 5123
         },
         "indices_5193": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888075,
+            "byteOffset": 1831080,
             "count": 24,
             "type": 5123
         },
         "indices_5202": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888123,
+            "byteOffset": 1831128,
             "count": 24,
             "type": 5123
         },
         "indices_5211": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888171,
+            "byteOffset": 1831176,
             "count": 24,
             "type": 5123
         },
         "indices_5220": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888219,
+            "byteOffset": 1831224,
             "count": 24,
             "type": 5123
         },
         "indices_5229": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888267,
+            "byteOffset": 1831272,
             "count": 24,
             "type": 5123
         },
         "indices_5238": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888315,
+            "byteOffset": 1831320,
             "count": 24,
             "type": 5123
         },
         "indices_5247": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888363,
+            "byteOffset": 1831368,
             "count": 24,
             "type": 5123
         },
         "indices_5256": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888411,
+            "byteOffset": 1831416,
             "count": 24,
             "type": 5123
         },
         "indices_5265": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888459,
+            "byteOffset": 1831464,
             "count": 24,
             "type": 5123
         },
         "indices_5274": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888507,
+            "byteOffset": 1831512,
             "count": 24,
             "type": 5123
         },
         "indices_5283": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888555,
+            "byteOffset": 1831560,
             "count": 24,
             "type": 5123
         },
         "indices_5292": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888603,
+            "byteOffset": 1831608,
             "count": 24,
             "type": 5123
         },
         "indices_5301": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888651,
+            "byteOffset": 1831656,
             "count": 24,
             "type": 5123
         },
         "indices_5310": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888699,
+            "byteOffset": 1831704,
             "count": 24,
             "type": 5123
         },
         "indices_5319": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888747,
+            "byteOffset": 1831752,
             "count": 24,
             "type": 5123
         },
         "indices_5328": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888795,
+            "byteOffset": 1831800,
             "count": 24,
             "type": 5123
         },
         "indices_5337": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888843,
+            "byteOffset": 1831848,
             "count": 24,
             "type": 5123
         },
         "indices_5346": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888891,
+            "byteOffset": 1831896,
             "count": 24,
             "type": 5123
         },
         "indices_5355": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888939,
+            "byteOffset": 1831944,
             "count": 24,
             "type": 5123
         },
         "indices_5364": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4888987,
+            "byteOffset": 1831992,
             "count": 24,
             "type": 5123
         },
         "indices_5373": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889035,
+            "byteOffset": 1832040,
             "count": 24,
             "type": 5123
         },
         "indices_5382": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889083,
+            "byteOffset": 1832088,
             "count": 24,
             "type": 5123
         },
         "indices_5391": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889131,
+            "byteOffset": 1832136,
             "count": 24,
             "type": 5123
         },
         "indices_5400": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889179,
+            "byteOffset": 1832184,
             "count": 24,
             "type": 5123
         },
         "indices_5409": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889227,
+            "byteOffset": 1832232,
             "count": 24,
             "type": 5123
         },
         "indices_5418": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889275,
+            "byteOffset": 1832280,
             "count": 24,
             "type": 5123
         },
         "indices_5427": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889323,
+            "byteOffset": 1832328,
             "count": 24,
             "type": 5123
         },
         "indices_5436": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889371,
+            "byteOffset": 1832376,
             "count": 24,
             "type": 5123
         },
         "indices_5445": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889419,
+            "byteOffset": 1832424,
             "count": 24,
             "type": 5123
         },
         "indices_5454": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889467,
+            "byteOffset": 1832472,
             "count": 24,
             "type": 5123
         },
         "indices_5463": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889515,
+            "byteOffset": 1832520,
             "count": 24,
             "type": 5123
         },
         "indices_5472": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889563,
+            "byteOffset": 1832568,
             "count": 24,
             "type": 5123
         },
         "indices_5481": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889611,
+            "byteOffset": 1832616,
             "count": 24,
             "type": 5123
         },
         "indices_5490": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889659,
+            "byteOffset": 1832664,
             "count": 24,
             "type": 5123
         },
         "indices_5499": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889707,
+            "byteOffset": 1832712,
             "count": 24,
             "type": 5123
         },
         "indices_5508": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889755,
+            "byteOffset": 1832760,
             "count": 24,
             "type": 5123
         },
         "indices_5517": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889803,
+            "byteOffset": 1832808,
             "count": 24,
             "type": 5123
         },
         "indices_5526": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889851,
+            "byteOffset": 1832856,
             "count": 24,
             "type": 5123
         },
         "indices_5535": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889899,
+            "byteOffset": 1832904,
             "count": 24,
             "type": 5123
         },
         "indices_5544": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889947,
+            "byteOffset": 1832952,
             "count": 24,
             "type": 5123
         },
         "indices_5553": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4889995,
+            "byteOffset": 1833000,
             "count": 24,
             "type": 5123
         },
         "indices_5562": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890043,
+            "byteOffset": 1833048,
             "count": 24,
             "type": 5123
         },
         "indices_5571": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890091,
+            "byteOffset": 1833096,
             "count": 24,
             "type": 5123
         },
         "indices_5580": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890139,
+            "byteOffset": 1833144,
             "count": 24,
             "type": 5123
         },
         "indices_5589": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890187,
+            "byteOffset": 1833192,
             "count": 24,
             "type": 5123
         },
         "indices_5598": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890235,
+            "byteOffset": 1833240,
             "count": 24,
             "type": 5123
         },
         "indices_5607": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890283,
+            "byteOffset": 1833288,
             "count": 24,
             "type": 5123
         },
         "indices_5616": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890331,
+            "byteOffset": 1833336,
             "count": 24,
             "type": 5123
         },
         "indices_5625": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890379,
+            "byteOffset": 1833384,
             "count": 24,
             "type": 5123
         },
         "indices_5634": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890427,
+            "byteOffset": 1833432,
             "count": 24,
             "type": 5123
         },
         "indices_5643": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890475,
+            "byteOffset": 1833480,
             "count": 24,
             "type": 5123
         },
         "indices_5652": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890523,
+            "byteOffset": 1833528,
             "count": 24,
             "type": 5123
         },
         "indices_5661": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890571,
+            "byteOffset": 1833576,
             "count": 24,
             "type": 5123
         },
         "indices_5670": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890619,
+            "byteOffset": 1833624,
             "count": 24,
             "type": 5123
         },
         "indices_5679": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890667,
+            "byteOffset": 1833672,
             "count": 24,
             "type": 5123
         },
         "indices_5688": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890715,
+            "byteOffset": 1833720,
             "count": 24,
             "type": 5123
         },
         "indices_5697": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890763,
+            "byteOffset": 1833768,
             "count": 24,
             "type": 5123
         },
         "indices_5706": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890811,
+            "byteOffset": 1833816,
             "count": 24,
             "type": 5123
         },
         "indices_5715": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890859,
+            "byteOffset": 1833864,
             "count": 24,
             "type": 5123
         },
         "indices_5724": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890907,
+            "byteOffset": 1833912,
             "count": 24,
             "type": 5123
         },
         "indices_5733": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4890955,
+            "byteOffset": 1833960,
             "count": 24,
             "type": 5123
         },
         "indices_5742": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891003,
+            "byteOffset": 1834008,
             "count": 24,
             "type": 5123
         },
         "indices_5751": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891051,
+            "byteOffset": 1834056,
             "count": 24,
             "type": 5123
         },
         "indices_5760": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891099,
+            "byteOffset": 1834104,
             "count": 24,
             "type": 5123
         },
         "indices_5769": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891147,
+            "byteOffset": 1834152,
             "count": 24,
             "type": 5123
         },
         "indices_5778": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891195,
+            "byteOffset": 1834200,
             "count": 24,
             "type": 5123
         },
         "indices_5787": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891243,
+            "byteOffset": 1834248,
             "count": 24,
             "type": 5123
         },
         "indices_5796": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891291,
+            "byteOffset": 1834296,
             "count": 24,
             "type": 5123
         },
         "indices_5805": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891339,
+            "byteOffset": 1834344,
             "count": 24,
             "type": 5123
         },
         "indices_5814": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891387,
+            "byteOffset": 1834392,
             "count": 24,
             "type": 5123
         },
         "indices_5823": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891435,
+            "byteOffset": 1834440,
             "count": 24,
             "type": 5123
         },
         "indices_5832": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891483,
+            "byteOffset": 1834488,
             "count": 24,
             "type": 5123
         },
         "indices_5841": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891531,
+            "byteOffset": 1834536,
             "count": 24,
             "type": 5123
         },
         "indices_5850": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891579,
+            "byteOffset": 1834584,
             "count": 24,
             "type": 5123
         },
         "indices_5859": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 4891627,
+            "byteOffset": 1834632,
             "count": 9,
             "type": 5123
         },
         "indices_6721": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480116,
+            "byteOffset": 1834650,
             "count": 15,
             "type": 5123
         },
         "indices_6730": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480146,
+            "byteOffset": 1834680,
             "count": 24,
             "type": 5123
         },
         "indices_6739": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480194,
+            "byteOffset": 1834728,
             "count": 24,
             "type": 5123
         },
         "indices_6748": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480242,
+            "byteOffset": 1834776,
             "count": 24,
             "type": 5123
         },
         "indices_6757": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480290,
+            "byteOffset": 1834824,
             "count": 24,
             "type": 5123
         },
         "indices_6766": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480338,
+            "byteOffset": 1834872,
             "count": 24,
             "type": 5123
         },
         "indices_6775": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480386,
+            "byteOffset": 1834920,
             "count": 24,
             "type": 5123
         },
         "indices_6784": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480434,
+            "byteOffset": 1834968,
             "count": 24,
             "type": 5123
         },
         "indices_6793": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480482,
+            "byteOffset": 1835016,
             "count": 24,
             "type": 5123
         },
         "indices_6802": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480530,
+            "byteOffset": 1835064,
             "count": 24,
             "type": 5123
         },
         "indices_6811": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480578,
+            "byteOffset": 1835112,
             "count": 24,
             "type": 5123
         },
         "indices_6820": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480626,
+            "byteOffset": 1835160,
             "count": 24,
             "type": 5123
         },
         "indices_6829": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480674,
+            "byteOffset": 1835208,
             "count": 24,
             "type": 5123
         },
         "indices_6838": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480722,
+            "byteOffset": 1835256,
             "count": 24,
             "type": 5123
         },
         "indices_6847": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480770,
+            "byteOffset": 1835304,
             "count": 24,
             "type": 5123
         },
         "indices_6856": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480818,
+            "byteOffset": 1835352,
             "count": 24,
             "type": 5123
         },
         "indices_6865": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480866,
+            "byteOffset": 1835400,
             "count": 24,
             "type": 5123
         },
         "indices_6874": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480914,
+            "byteOffset": 1835448,
             "count": 24,
             "type": 5123
         },
         "indices_6883": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5480962,
+            "byteOffset": 1835496,
             "count": 24,
             "type": 5123
         },
         "indices_6892": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481010,
+            "byteOffset": 1835544,
             "count": 24,
             "type": 5123
         },
         "indices_6901": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481058,
+            "byteOffset": 1835592,
             "count": 24,
             "type": 5123
         },
         "indices_6910": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481106,
+            "byteOffset": 1835640,
             "count": 24,
             "type": 5123
         },
         "indices_6919": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481154,
+            "byteOffset": 1835688,
             "count": 24,
             "type": 5123
         },
         "indices_6928": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481202,
+            "byteOffset": 1835736,
             "count": 24,
             "type": 5123
         },
         "indices_6937": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481250,
+            "byteOffset": 1835784,
             "count": 24,
             "type": 5123
         },
         "indices_6946": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481298,
+            "byteOffset": 1835832,
             "count": 78,
             "type": 5123
         },
         "indices_6955": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481454,
+            "byteOffset": 1835988,
             "count": 78,
             "type": 5123
         },
         "indices_6964": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481610,
+            "byteOffset": 1836144,
             "count": 78,
             "type": 5123
         },
         "indices_6973": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481766,
+            "byteOffset": 1836300,
             "count": 78,
             "type": 5123
         },
         "indices_6982": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5481922,
+            "byteOffset": 1836456,
             "count": 78,
             "type": 5123
         },
         "indices_6991": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5482078,
+            "byteOffset": 1836612,
             "count": 78,
             "type": 5123
         },
         "indices_7000": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5482234,
+            "byteOffset": 1836768,
             "count": 78,
             "type": 5123
         },
         "indices_7009": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5482390,
+            "byteOffset": 1836924,
             "count": 78,
             "type": 5123
         },
         "indices_7018": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5482546,
+            "byteOffset": 1837080,
             "count": 78,
             "type": 5123
         },
         "indices_7027": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5482702,
+            "byteOffset": 1837236,
             "count": 78,
             "type": 5123
         },
         "indices_7036": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5482858,
+            "byteOffset": 1837392,
             "count": 78,
             "type": 5123
         },
         "indices_7045": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5483014,
+            "byteOffset": 1837548,
             "count": 78,
             "type": 5123
         },
         "indices_7054": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5483170,
+            "byteOffset": 1837704,
             "count": 78,
             "type": 5123
         },
         "indices_7063": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5483326,
+            "byteOffset": 1837860,
             "count": 78,
             "type": 5123
         },
         "indices_7072": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5483482,
+            "byteOffset": 1838016,
             "count": 78,
             "type": 5123
         },
         "indices_7081": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5483638,
+            "byteOffset": 1838172,
             "count": 78,
             "type": 5123
         },
         "indices_7090": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5483794,
+            "byteOffset": 1838328,
             "count": 78,
             "type": 5123
         },
         "indices_7099": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5483950,
+            "byteOffset": 1838484,
             "count": 78,
             "type": 5123
         },
         "indices_7108": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5484106,
+            "byteOffset": 1838640,
             "count": 78,
             "type": 5123
         },
         "indices_7117": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5484262,
+            "byteOffset": 1838796,
             "count": 78,
             "type": 5123
         },
         "indices_7126": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5484418,
+            "byteOffset": 1838952,
             "count": 78,
             "type": 5123
         },
         "indices_7135": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5484574,
+            "byteOffset": 1839108,
             "count": 78,
             "type": 5123
         },
         "indices_7144": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5484730,
+            "byteOffset": 1839264,
             "count": 78,
             "type": 5123
         },
         "indices_7153": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5484886,
+            "byteOffset": 1839420,
             "count": 78,
             "type": 5123
         },
         "indices_7162": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5485042,
+            "byteOffset": 1839576,
             "count": 78,
             "type": 5123
         },
         "indices_7171": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5485198,
+            "byteOffset": 1839732,
             "count": 78,
             "type": 5123
         },
         "indices_7180": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5485354,
+            "byteOffset": 1839888,
             "count": 78,
             "type": 5123
         },
         "indices_7189": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5485510,
+            "byteOffset": 1840044,
             "count": 78,
             "type": 5123
         },
         "indices_7198": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5485666,
+            "byteOffset": 1840200,
             "count": 78,
             "type": 5123
         },
         "indices_7207": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5485822,
+            "byteOffset": 1840356,
             "count": 78,
             "type": 5123
         },
         "indices_7216": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5485978,
+            "byteOffset": 1840512,
             "count": 78,
             "type": 5123
         },
         "indices_7225": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5486134,
+            "byteOffset": 1840668,
             "count": 78,
             "type": 5123
         },
         "indices_7234": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5486290,
+            "byteOffset": 1840824,
             "count": 78,
             "type": 5123
         },
         "indices_7243": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5486446,
+            "byteOffset": 1840980,
             "count": 78,
             "type": 5123
         },
         "indices_7252": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5486602,
+            "byteOffset": 1841136,
             "count": 78,
             "type": 5123
         },
         "indices_7261": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5486758,
+            "byteOffset": 1841292,
             "count": 78,
             "type": 5123
         },
         "indices_7270": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5486914,
+            "byteOffset": 1841448,
             "count": 78,
             "type": 5123
         },
         "indices_7279": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5487070,
+            "byteOffset": 1841604,
             "count": 78,
             "type": 5123
         },
         "indices_7288": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5487226,
+            "byteOffset": 1841760,
             "count": 78,
             "type": 5123
         },
         "indices_7297": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5487382,
+            "byteOffset": 1841916,
             "count": 78,
             "type": 5123
         },
         "indices_7306": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5487538,
+            "byteOffset": 1842072,
             "count": 1548,
             "type": 5123
         },
         "indices_7315": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5490634,
+            "byteOffset": 1845168,
             "count": 2814,
             "type": 5123
         },
         "indices_7324": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5496262,
+            "byteOffset": 1850796,
             "count": 1272,
             "type": 5123
         },
         "indices_7333": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5498806,
+            "byteOffset": 1853340,
             "count": 24,
             "type": 5123
         },
         "indices_7342": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5498854,
+            "byteOffset": 1853388,
             "count": 42,
             "type": 5123
         },
         "indices_7351": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5498938,
+            "byteOffset": 1853472,
             "count": 432,
             "type": 5123
         },
         "indices_7360": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5499802,
+            "byteOffset": 1854336,
             "count": 1482,
             "type": 5123
         },
         "indices_7369": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5502766,
+            "byteOffset": 1857300,
             "count": 924,
             "type": 5123
         },
         "indices_7378": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5504614,
+            "byteOffset": 1859148,
             "count": 1404,
             "type": 5123
         },
         "indices_7387": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5507422,
+            "byteOffset": 1861956,
             "count": 66,
             "type": 5123
         },
         "indices_7396": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 5507554,
+            "byteOffset": 1862088,
             "count": 169374,
             "type": 5123
         },
         "indices_8708": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 6468652,
+            "byteOffset": 2200836,
             "count": 42558,
             "type": 5123
         },
         "indices_8717": {
             "bufferView": "bufferView_12699",
-            "byteOffset": 6553768,
+            "byteOffset": 2285952,
             "count": 150477,
             "type": 5123
         }
@@ -2325,19 +2331,6 @@
     },
     "meshes": {
         "geometry23": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 0,
-                        "count": 989559,
-                        "indicesCount": 191148,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65532
-                    }
-                }
-            },
             "name": "geometry23",
             "primitives": [
                 {
@@ -2373,19 +2366,6 @@
             ]
         },
         "geometry23-1": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 989559,
-                        "count": 989970,
-                        "indicesCount": 157383,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65533
-                    }
-                }
-            },
             "name": "geometry23-1",
             "primitives": [
                 {
@@ -2431,19 +2411,6 @@
             ]
         },
         "geometry23-10": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 9356523,
-                        "count": 345141,
-                        "indicesCount": 72468,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 22823
-                    }
-                }
-            },
             "name": "geometry23-10",
             "primitives": [
                 {
@@ -2469,19 +2436,6 @@
             ]
         },
         "geometry23-2": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 1979529,
-                        "count": 872347,
-                        "indicesCount": 140340,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65532
-                    }
-                }
-            },
             "name": "geometry23-2",
             "primitives": [
                 {
@@ -2497,19 +2451,6 @@
             ]
         },
         "geometry23-3": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 2851876,
-                        "count": 858087,
-                        "indicesCount": 139950,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65534
-                    }
-                }
-            },
             "name": "geometry23-3",
             "primitives": [
                 {
@@ -2525,19 +2466,6 @@
             ]
         },
         "geometry23-4": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 3709963,
-                        "count": 884574,
-                        "indicesCount": 139950,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65534
-                    }
-                }
-            },
             "name": "geometry23-4",
             "primitives": [
                 {
@@ -2553,19 +2481,6 @@
             ]
         },
         "geometry23-5": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 4594537,
-                        "count": 885579,
-                        "indicesCount": 148554,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65532
-                    }
-                }
-            },
             "name": "geometry23-5",
             "primitives": [
                 {
@@ -3951,19 +3866,6 @@
             ]
         },
         "geometry23-6": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 5480116,
-                        "count": 988536,
-                        "indicesCount": 183093,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65532
-                    }
-                }
-            },
             "name": "geometry23-6",
             "primitives": [
                 {
@@ -4729,19 +4631,6 @@
             ]
         },
         "geometry23-7": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 6468652,
-                        "count": 968464,
-                        "indicesCount": 193035,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65532
-                    }
-                }
-            },
             "name": "geometry23-7",
             "primitives": [
                 {
@@ -4767,19 +4656,6 @@
             ]
         },
         "geometry23-8": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 7437116,
-                        "count": 959334,
-                        "indicesCount": 198435,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65532
-                    }
-                }
-            },
             "name": "geometry23-8",
             "primitives": [
                 {
@@ -4795,19 +4671,6 @@
             ]
         },
         "geometry23-9": {
-            "extensions": {
-                "Open3DGC-compression": {
-                    "compressedData": {
-                        "bufferView": "bufferView_12700",
-                        "byteOffset": 8396450,
-                        "count": 960073,
-                        "indicesCount": 197532,
-                        "mode": "",
-                        "type": 5121,
-                        "verticesCount": 65532
-                    }
-                }
-            },
             "name": "geometry23-9",
             "primitives": [
                 {
