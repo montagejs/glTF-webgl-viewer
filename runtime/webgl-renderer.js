@@ -60,8 +60,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
     _debugProgram: { value: null, writable: true },
 
-    _lambertProgram: { value: null, writable: true },
-
     _resourceManager: { value: null, writable: true },
 
     _webGLContext: { value : null, writable: true },
@@ -138,39 +136,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
         }
     },
 
-    //FIXME:needs to be updated to reflect latest changes
-    lambertProgram: {
-        get: function() {
-            if (!this._lambertProgram) {
-                this._lambertProgram = Object.create(GLSLProgram);
-
-                var lambertVS = "precision highp float;" +
-                    "attribute vec3 vert;"  +
-                    "attribute vec3 normal; " +
-                    "varying vec3 v_normal; " +
-                    "uniform mat4 u_mvMatrix; " +
-                    "uniform mat3 u_normalMatrix; " +
-                    "uniform mat4 u_projMatrix; " +
-                    "void main(void) { " +
-                    "v_normal = normalize(u_normalMatrix * normal); " +
-                    "gl_Position = u_projMatrix * u_mvMatrix * vec4(vert,1.0); }"
-
-                var lambertFS = "precision highp float;" +
-                    " uniform vec3 color;" +
-                    " varying vec3 v_normal;" +
-                    " void main(void) { " +
-                    " vec3 normal = normalize(v_normal); " +
-                    " float lambert = max(dot(normal,vec3(0.,0.,1.)), 0.);" +
-                    " gl_FragColor = vec4(color.xyz *lambert, 1.); }";
-
-                this._lambertProgram.initWithShaders( { "x-shader/x-vertex" : lambertVS , "x-shader/x-fragment" : lambertFS } );
-                if (!this._lambertProgram.build(this.webGLContext)) {
-                    console.log(this._lambertProgram.errorLogs);
-                }
-            }
-            return this._lambertProgram;
-        }
-    },
 
     webGLContext: {
         get: function() {
@@ -188,7 +153,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 //FIXME: this should be in init
                 this._resourceManager = Object.create(WebGLTFResourceManager);
                 this._resourceManager.init();
-                this._resourceManager.webGLContext = this.webGLContext;
             }
 
             return this._resourceManager;
@@ -453,18 +417,12 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
     textureDelegate: {
         value: {
-            webGLContext:  {
-                value: null, writable: true
-            },
-
             getGLFilter: function(filter) {
-                var gl = this.webGLContext;
-                return filter == null ? gl.LINEAR : filter;
+                return filter == null ? WebGLRenderingContext.LINEAR : filter;
             },
 
             getGLWrapMode: function(wrapMode) {
-                var gl = this.webGLContext;
-                return wrapMode == null ? gl.REPEAT : wrapMode;
+                return wrapMode == null ? WebGLRenderingContext.REPEAT : wrapMode;
             },
 
             handleError: function(errorCode, info) {
@@ -486,8 +444,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             },
 
             installCubemapSide: function(gl, target, texture, content) {
-                var gl = this.webGLContext;
-
                 gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
                 gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, content);
                 gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -557,8 +513,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 if (usesMipMaps) {
                     gl.generateMipmap(gl.TEXTURE_2D);
                 }
-
-
 
                 gl.bindTexture(gl.TEXTURE_2D, textureBinding);
                 gl.activeTexture(activeTexture);
@@ -701,7 +655,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     var uniformIsSampler2D = glType === gl.SAMPLER_2D;
 
                     if (uniformIsSamplerCube) {
-                        this.textureDelegate.webGLContext = this.webGLContext;
                         texture = this.resourceManager.getResource(value, this.textureDelegate, this.webGLContext);
                         if (texture) {
                             gl.activeTexture(gl.TEXTURE0 + currentTexture);
@@ -714,8 +667,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             }
                         }
                     } else if (uniformIsSampler2D) {
-                        this.textureDelegate.webGLContext = this.webGLContext;
-
                         texture = this.resourceManager.getResource(value, this.textureDelegate, this.webGLContext);
                         if (texture != null) {
                             //HACK: to keep track of texture
@@ -803,9 +754,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     }
                 }
                 var glIndices = null;
-                //FIXME should not assume 2 bytes per indices (WebGL supports one byte too…)
-                this.indicesDelegate.webGLContext = this.webGLContext;
-
                 if (primitiveDescription.compressed) {
                     glIndices = this.resourceManager._getResource(primitive.indices.id);
                 } else {

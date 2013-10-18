@@ -650,11 +650,6 @@ exports.View = Component.specialize( {
 
             //webGLContext = WebGLDebugUtils.makeDebugContext(webGLContext, throwOnGLError);
 
-            if (window.contextID == null)
-                window.contextID =  0;
-            webGLContext.contextID = window.contextID;
-            window.contextID++;
-
             if (webGLContext == null) {
                 console.log("Please check that your browser enables & supports WebGL");
                 return

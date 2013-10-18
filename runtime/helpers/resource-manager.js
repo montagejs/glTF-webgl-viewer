@@ -380,9 +380,6 @@ var RequestTreeNode = Object.create(Object, {
 });
 
 exports.WebGLTFResourceManager = Object.create(Object, {
-
-    webGLContext : { value: null, writable:true },
-
     // errors
     MISSING_DESCRIPTION: { value: "MISSING_DESCRIPTION" },
     INVALID_PATH: { value: "INVALID_PATH" },
@@ -765,6 +762,7 @@ exports.WebGLTFResourceManager = Object.create(Object, {
                 }
 
                 var wrappedBufferRequest = {
+                    "source" : wrappedBufferView,
                     "id" : wrappedBufferView.id,
                     "range" : range,
                     "type" : requestType,
@@ -803,7 +801,7 @@ exports.WebGLTFResourceManager = Object.create(Object, {
 
                                     var delegate = request.delegate;
                                     if (this._resources[request.id] == null) {
-                                        var convertedResource = delegate.convert(wrappedBufferView, subArray, request.ctx);
+                                        var convertedResource = delegate.convert(request.source, subArray, request.ctx);
                                         resourceManager._storeResource(request.id, convertedResource);
                                         delegate.resourceAvailable(convertedResource, request.ctx);
                                     }
@@ -986,22 +984,10 @@ exports.WebGLTFResourceManager = Object.create(Object, {
             var self = this;
             if (resource.source) {
                 if (resource.source.type === "image") {
-                    var contextID = ctx.contextID;
-                    console.log("gl contextID:"+contextID);
                     this._handleImageLoading(resource.source,
                         function(image, id, gl) {
-                            var updatedContextID = self.webGLContext.contextID;
-                            console.log("image loaded, context:"+updatedContextID);
-                            if (updatedContextID != contextID) {
-                                debugger;
-                            }
-
                             var convertedResource = delegate.convert(image, resource, gl);
                             delete self._resourcesStatus[resource.id];
-
-                            if (updatedContextID != convertedResource.contextID) {
-                                debugger;
-                            }
 
                             self._storeResource(resource.id, convertedResource);
                             delegate.resourceAvailable(convertedResource, gl);
