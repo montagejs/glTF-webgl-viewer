@@ -383,7 +383,6 @@ exports.Utilities = Object.create(Object.prototype, {
             mat3.transpose(amat3);
             quat4.fromRotationMatrix(amat3, rotation);
             quat4.normalize(rotation);
-
         }
     },
 

@@ -222,7 +222,7 @@ exports.SceneRenderer = Object.create(Object.prototype, {
             },
 
 
-            convert: function (resource, ctx) {
+            convert: function (source, resource, ctx) {
                 var compression = ctx.mesh.compression;
                 if (compression.type == "won-compression") {
                     var indexRange = compression.indexRange;

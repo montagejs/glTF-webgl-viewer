@@ -85,18 +85,19 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(firstTime) {
             if(firstTime) {
                 this.modelsController.content = [
+                    { "name": "duck", "path": "model/duck/duck.json"},
                     { "name": "Buggy",              "path": "model/rambler/Rambler.json"},
                     { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
-                    { "name": "duck", "path": "model/duck/duck.json"},
-                    { "name": "Wine", "path": "model/wine/wine.json"}
-                    /*,
+                    { "name": "Wine", "path": "model/wine/wine.json"},
+                    { "name": "vc",                 "path": "model/vc/vc.json"}
+
+                    ,
 
 
                     { "name": "Buggy", "path": "model/rambler/Rambler.json"},
 
                     { "name": "challenge",          "path": "model/challenge/challengeFlattened.json"},
                     { "name": "monster", "path": "model/monster/monster.json"},
-                    { "name": "vc",                 "path": "model/vc/vc.json"},
 
                     { "name": "testShadows",    "path": "model/test_shadows/test_shadows.json"},
 
@@ -122,11 +123,9 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                     { "name": "Wine",               "path": "model/wine/wine.json"},
                     { "name": "balloon",            "path": "model/baloon3/baloon.json"},
                     { "name": "frigate",            "path": "model/frigate/frigate.json"},
-                    { "name": "brainsteam",         "path": "model/brainsteam/brainsteam.json"},
+                    { "name": "brainsteam",         "path": "model/brainsteam/brainsteam2.json"},
                     { "name": "FemurTri",           "path": "model/femur/FemurTri.json"},
-                    { "name": "monster",            "path": "model/monster/monster.json"},
-                    { "name": "FemurPoly",          "path": "model/femur/FemurPoly.json"}
-*/
+                    { "name": "monster",            "path": "model/monster/monster.json"}
                 ];
                 this.modelPath = this.modelsController.content[0].path;
             }

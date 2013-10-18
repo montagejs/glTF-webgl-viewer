@@ -58,16 +58,13 @@ exports.MeshResourceLoader = Object.create(ResourceLoader, {
         value: function(delegate, resources, ctx) {
             var webGLContext = this.webGLRenderer.webGLContext;
 
-            //FIXME: this is wrong, we should propare the webGLContext in the callback and not need to set it in the delegate
-            delegate.webGLContext = webGLContext;
-
             //Load images an upload texture
             var resourceIds = Object.keys(resources);
             resourceIds.forEach(function(resourceId) {
                 //FIXME: handle the case of vertexBuffer who expect the resource to be passed as context
                 //We want here to change the resource manager to prevent this
                 //convert/resourveAvailable method of delegate should have resource has first argument
-                var resource = this.webGLRenderer.resourceManager.getResource(resources[resourceId], delegate, ctx == null ? webGLContext : resources[resourceId]);
+                var resource = this.webGLRenderer.resourceManager.getResource(resources[resourceId], delegate, webGLContext);
                 if (resource == null) {
                     this._addTrackedId(resourceId);
                 }

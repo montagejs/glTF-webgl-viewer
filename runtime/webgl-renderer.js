@@ -26,7 +26,7 @@
 
 require("runtime/dependencies/gl-matrix");
 var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
-var ResourceManager = require("runtime/helpers/resource-manager").ResourceManager;
+var WebGLTFResourceManager = require("runtime/helpers/resource-manager").WebGLTFResourceManager;
 
 exports.WebGLRenderer = Object.create(Object.prototype, {
 
@@ -186,8 +186,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
         get: function() {
             if (!this._resourceManager) {
                 //FIXME: this should be in init
-                this._resourceManager = Object.create(ResourceManager);
+                this._resourceManager = Object.create(WebGLTFResourceManager);
                 this._resourceManager.init();
+                this._resourceManager.webGLContext = this.webGLContext;
             }
 
             return this._resourceManager;
@@ -206,8 +207,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             },
 
             //should be called only once
-            convert: function (resource, ctx) {
-                var gl = this.webGLContext;
+            convert: function (source, resource, ctx) {
+                var gl = ctx;
                 var previousBuffer = gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING);
                 var glResource =  gl.createBuffer();
                 gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glResource);
@@ -430,9 +431,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 console.log("ERROR:vertexAttributeBufferDelegate:"+errorCode+" :"+info);
             },
 
-            convert: function (resource, ctx) {
-                var attribute = ctx;
-                var gl = this.webGLContext;
+            convert: function (source, resource, ctx) {
+                var attribute = source;
+                var gl = ctx;
                 var previousBuffer = gl.getParameter(gl.ARRAY_BUFFER_BINDING);
 
                 var glResource =  gl.createBuffer();
@@ -492,8 +493,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
             },
 
-            createTextureFromImageAndSampler: function(image, sampler) {
-                var gl = this.webGLContext;
+            createTextureFromImageAndSampler: function(image, sampler, gl) {
                 var activeTexture = gl.getParameter(gl.ACTIVE_TEXTURE)
                 var textureBinding = gl.getParameter(gl.TEXTURE_BINDING_2D);
                 gl.activeTexture(gl.TEXTURE0);
@@ -537,6 +537,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
 
                 var texture = gl.createTexture();
+                texture.contextID = gl.contextID;
+
                 gl.bindTexture(gl.TEXTURE_2D, texture);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrapS);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrapT);
@@ -556,16 +558,20 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     gl.generateMipmap(gl.TEXTURE_2D);
                 }
 
+
+
                 gl.bindTexture(gl.TEXTURE_2D, textureBinding);
                 gl.activeTexture(activeTexture);
+
+
                 return texture;
             },
 
             //should be called only once
-            convert: function (resource, ctx) {
-                var gl = this.webGLContext;
-                if (resource.sources) {
-                    if (resource.sources.length === 6) {
+            convert: function (source, resource, ctx) {
+                var gl = ctx;
+                if (source) {
+                    if (source.length === 6) {
                         //we must have a cube map here:
                         var cubeTexture = gl.createTexture();
                         gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubeTexture);
@@ -574,19 +580,19 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
                         gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_X, cubeTexture, ctx[0]);
-                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, cubeTexture, ctx[1]);
-                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, cubeTexture, ctx[2]);
-                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, cubeTexture, ctx[3]);
-                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, cubeTexture, ctx[4]);
-                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, cubeTexture, ctx[5]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_X, cubeTexture, source[0]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, cubeTexture, source[1]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, cubeTexture, source[2]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, cubeTexture, source[3]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, cubeTexture, source[4]);
+                        this.installCubemapSide(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, cubeTexture, source[5]);
 
                         return cubeTexture;
                     }
 
-                } else if (resource.source.type == "video") {
+                } else if (source.type == "video") {
                     //for now, naive handling of videos
-                    resource.source.videoElement = ctx;
+                    resource.source.videoElement = source;
                     var texture = gl.createTexture();
                     gl.bindTexture(gl.TEXTURE_2D, texture);
                     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -598,7 +604,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                     return texture;
                 }
 
-                return this.createTextureFromImageAndSampler(ctx, resource.sampler);
+                return this.createTextureFromImageAndSampler(source, resource.sampler, gl);
             },
 
             resourceAvailable: function (glResource, ctx) {
@@ -711,21 +717,8 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         this.textureDelegate.webGLContext = this.webGLContext;
 
                         texture = this.resourceManager.getResource(value, this.textureDelegate, this.webGLContext);
-                        if (texture == null) {
-                            //HACK:FIXME to reuse previous texture, will go away
-                            if (primitive.diffuse != null) {
-                                texture = primitive.diffuse;
-                            } 
-                        }
-
                         if (texture != null) {
                             //HACK: to keep track of texture
-                            if (primitive.diffuse == null) {
-                                if (parameter.parameter === "diffuse") {
-                                    primitive.diffuse = texture;
-                                }
-                            }
-
                             gl.activeTexture(gl.TEXTURE0 + currentTexture);
                             gl.bindTexture(gl.TEXTURE_2D, texture);
                             if (parameter.value.source.videoElement) {
@@ -752,7 +745,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             program.commit(gl);
 
             var availableCount = 0;
-            this.vertexAttributeBufferDelegate.webGLContext = this.webGLContext;
 
             //----- bind attributes -----
             var attributes = pass.instanceProgram.attributes;
@@ -763,15 +755,12 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 parameter = parameters[parameter];
                 var semantic = parameter.semantic;
                 var accessor = primitive.semantics[semantic];
-                if (accessor == null) {
-                    //FIXME: converter should never generate something that puts us in this situation
-                    continue;
-                }
+
                 var glResource = null;
                 if (primitiveDescription.compressed) {
                     glResource = this.resourceManager._getResource( accessor.id);
                 } else {
-                    glResource = this.resourceManager.getResource( accessor, this.vertexAttributeBufferDelegate, accessor);
+                    glResource = this.resourceManager.getResource( accessor, this.vertexAttributeBufferDelegate, this.webGLContext);
                 }
 
                     // this call will bind the resource when available
@@ -820,7 +809,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 if (primitiveDescription.compressed) {
                     glIndices = this.resourceManager._getResource(primitive.indices.id);
                 } else {
-                    glIndices = this.resourceManager.getResource(primitive.indices, this.indicesDelegate, primitive);
+                    glIndices = this.resourceManager.getResource(primitive.indices, this.indicesDelegate, this.webGLContext);
                 }
 
                 if (glIndices && available) {
@@ -844,7 +833,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             },
 
             //should be called only once
-            convert: function (resource, ctx) {
+            convert: function (source, resource, ctx) {
                 var gl = ctx;
                 var glslProgram = Object.create(GLSLProgram);
                 glslProgram.initWithShaders( resource );

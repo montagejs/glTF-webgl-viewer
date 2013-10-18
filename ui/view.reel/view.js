@@ -133,7 +133,6 @@ exports.View = Component.specialize( {
     },
 
     // Montage
-
     constructor: {
         value: function View() {
             this.super();
@@ -160,7 +159,7 @@ exports.View = Component.specialize( {
             var resourceManager = this.getResourceManager();
             if (resourceManager && this.sceneRenderer) {
                 if (this.sceneRenderer.webGLRenderer) {
-                    var webGLContext= this.sceneRenderer.webGLRenderer.webGLContext;
+                    var webGLContext = this.sceneRenderer.webGLRenderer.webGLContext;
                     //trigger texture load/creation
                     var texture = resourceManager.getResource(evt.detail.value, this.sceneRenderer.webGLRenderer.textureDelegate, webGLContext);
                     if (texture) {
@@ -178,7 +177,6 @@ exports.View = Component.specialize( {
     },
 
     //
-
     __sceneTime: { value: 0, writable: true },
 
     _sceneTime: {
@@ -631,7 +629,7 @@ exports.View = Component.specialize( {
 
     _contextAttributes : { value: null, writable: true },
 
-    _shouldForceClear: { value: false, writable: true },
+    _shouldForceClear: { value: true, writable: true },
 
     enterDocument: {
         value: function(firstTime) {
@@ -652,6 +650,10 @@ exports.View = Component.specialize( {
 
             //webGLContext = WebGLDebugUtils.makeDebugContext(webGLContext, throwOnGLError);
 
+            if (window.contextID == null)
+                window.contextID =  0;
+            webGLContext.contextID = window.contextID;
+            window.contextID++;
 
             if (webGLContext == null) {
                 console.log("Please check that your browser enables & supports WebGL");
@@ -1063,6 +1065,10 @@ exports.View = Component.specialize( {
 
     width: {
         get: function() {
+            if (this._width == null) {
+                var computedStyle = window.getComputedStyle(this.element, null);
+                return parseInt(computedStyle["width"]);
+            }
             return this._width;
         },
         set: function(value) {
@@ -1079,6 +1085,10 @@ exports.View = Component.specialize( {
 
     height: {
         get: function() {
+            if (this._height == null) {
+                var computedStyle = window.getComputedStyle(this.element, null);
+                return parseInt(computedStyle["height"]);
+            }
             return this._height;
         },
         set: function(value) {
@@ -1118,7 +1128,6 @@ exports.View = Component.specialize( {
 
     draw: {
         value: function() {
-
             //bail out if we don't allow to have resources progressively loaded
             //we should show a loading progress here
             if ((this.allowsProgressiveSceneLoading === false) && (this._sceneResourcesLoaded === false)) {
@@ -1137,22 +1146,22 @@ exports.View = Component.specialize( {
                 webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
             }
 
-            width = this._width;
-            height = this._height;
+            width = this.width;
+            height = this.height;
 
             //as indicated here: http://www.khronos.org/webgl/wiki/HandlingHighDPI
             //set draw buffer and canvas size
             if ((width != this.canvas.width) || (height != this.canvas.height)) {
-                this.canvas.style.width = (this._width / this.scaleFactor) + "px";
-                this.canvas.style.height = (this._height / this.scaleFactor) + "px";
-                this.canvas.width = this._width;
-                this.canvas.height = this._height;
-                webGLContext.viewport(0, 0, this._width, this._height);
+                this.canvas.style.width = (width / this.scaleFactor) + "px";
+                this.canvas.style.height = (height / this.scaleFactor) + "px";
+                this.canvas.width = width;
+                this.canvas.height = height;
+                webGLContext.viewport(0, 0, width, height);
             }
 
             if (this.viewPoint) {
                 if (this.viewPoint.glTFElement)
-                    this.viewPoint.glTFElement.cameras[0].projection.aspectRatio =  this._width / this._height;
+                    this.viewPoint.glTFElement.cameras[0].projection.aspectRatio =  width / height;
             }
 
             if (this._scene == null || this.viewPoint == null || this._disableRendering)
@@ -1192,8 +1201,6 @@ exports.View = Component.specialize( {
                 var animationManager = this.scene.glTFElement.animationManager;
                 if (this._state == this.PLAY && animationManager) {
                     this._sceneTime += time - this._lastTime;
-
-
 
                     if (endTime !== -1) {
                         if (this._sceneTime / 1000. > endTime) {

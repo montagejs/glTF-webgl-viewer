@@ -118,7 +118,7 @@ var Channel = exports.Channel = Object.create(Base, {
                 }
             },
 
-            convert: function (resource, ctx) {
+            convert: function (source, resource, ctx) {
                 var parameter = ctx;
                 if (parameter.extensions) {
                     var extensions = parameter.extensions;

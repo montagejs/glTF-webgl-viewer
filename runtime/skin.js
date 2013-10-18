@@ -56,7 +56,7 @@ exports.Skin = Object.create(Object.prototype, {
                 console.log("ERROR:vertexAttributeBufferDelegate:"+errorCode+" :"+info);
             },
 
-            convert: function (resource, ctx) {
+            convert: function (source, resource, ctx) {
                 return new Float32Array(resource);
             },
 
@@ -115,11 +115,8 @@ exports.Skin = Object.create(Object.prototype, {
                             }
                         }, this)
                     }, this);
-
                 }
-
             }, this);
-
         }
     }
 
