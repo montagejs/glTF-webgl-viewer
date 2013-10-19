@@ -56,6 +56,7 @@ var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
 var URL = require("montage/core/url");
 var Projection = require("runtime/projection").Projection;
 var Camera = require("runtime/camera").Camera;
+var BBox = require("runtime/utilities").BBox;
 
 /**
     Description TODO
@@ -311,19 +312,7 @@ exports.View = Component.specialize( {
         }
     },
 
-    translateComposer: {
-        value: null
-    },
-
-    modelController: {
-        value: null
-    },
-
-    update: {
-        value: function() {
-            this.needsDraw = true;
-        }
-    },
+    translateComposer: { value: null, writable: true },
 
     scaleFactor: { value: (window.devicePixelRatio || 1), writable: true},
 
@@ -487,11 +476,8 @@ exports.View = Component.specialize( {
                         this.orbitCamera = null;
                         var viewPoints= this._getViewPoints(m3dScene);
                         var hasCamera = viewPoints.length > 0;
-
-                        //compute hierarchical bbox for the whole scene
-                        //this will be removed from this place when node bounding box become is implemented as hierarchical
-                        var node = scene.rootNode;
-                        var sceneBBox = node.getBoundingBox(true);
+                        var sceneBBox =  scene.rootNode.getBoundingBox(true);
+                        var bbox = Object.create(BBox).init(sceneBBox[0], sceneBBox[1]);
                         // arbitry set first coming camera as the view point
                         if (viewPoints.length) {
                             var shouldKeepViewPoint = false;
@@ -506,7 +492,8 @@ exports.View = Component.specialize( {
                         } else {
                             //TODO: make that a default projection method
                             var projection = Object.create(Projection);
-                            projection.initWithDescription( {   "projection":"perspective",
+                            projection.initWithDescription( {
+                                "projection":"perspective",
                                 "yfov":45,
                                 "aspectRatio":1,
                                 "znear":0.1,
@@ -530,28 +517,10 @@ exports.View = Component.specialize( {
                             this.viewPoint = m3dNode;
                         }
 
-                        if (sceneBBox && !hasCamera) {
-                            var sceneSize = [(sceneBBox[1][0] - sceneBBox[0][0]) ,
-                                (sceneBBox[1][1] - sceneBBox[0][1]) ,
-                                (sceneBBox[1][2] - sceneBBox[0][2]) ];
-
-                            //size to fit
-                            var scaleFactor = sceneSize[0] > sceneSize[1] ? sceneSize[0] : sceneSize[1];
-                            scaleFactor = sceneSize[2] > scaleFactor ? sceneSize[2] : scaleFactor;
-
-                            scaleFactor =  1 / scaleFactor;
-                            var scaleMatrix = mat4.scale(mat4.identity(), [scaleFactor, scaleFactor, scaleFactor]);
-                            center = vec3.createFrom(0,0,(sceneSize[2]*scaleFactor)/2);
-                            var translationVector = vec3.createFrom(    -((sceneSize[0] / 2) + sceneBBox[0][0]),
-                                -((sceneSize[1] / 2) + sceneBBox[0][1]),
-                                -( sceneBBox[0][2]));
-
-                            var translation = mat4.translate(scaleMatrix, [
-                                translationVector[0],
-                                translationVector[1],
-                                translationVector[2]]);
-
-                            mat4.set(translation, scene.rootNode.transform.matrix);
+                        if (bbox && !hasCamera) {
+                            center = vec3.createFrom(0,0,(bbox.size[2]*bbox.computeScaleFactor())/2);
+                            var rescaleMat = bbox.computeUnitMatrix([0, 0, bbox.size[2]/2]);
+                            mat4.set(rescaleMat, scene.rootNode.transform.matrix);
                             scene.rootNode.transform._updateDirtyFlag(false);
                         }
 

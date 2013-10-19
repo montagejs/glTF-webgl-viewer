@@ -25,6 +25,91 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require("runtime/dependencies/gl-matrix");
+
+exports.BBox = Object.create(Object.prototype, {
+
+    _dirty: { value: true, writable:true },
+    _size: { value: null, writable: true },
+    _min: { value: null, writable: true },
+    _max: { value: null, writable: true },
+
+    min: {
+        get: function() {
+            return this._min;
+        },
+        set: function(value) {
+            this._min = value;
+            this._dirty = true;
+        }
+    },
+
+    max: {
+        get: function() {
+            return this._max;
+        },
+        set: function(value) {
+            this._max = value;
+            this._dirty = true;
+        }
+    },
+
+    init: {
+        value:function(min, max) {
+            this.min = min;
+            this.max = max;
+            return this;
+        }
+    },
+
+    size: {
+        get: function() {
+            if (this._dirty) {
+                var min = this.min;
+                var max = this.max;
+                this._size = [
+                    (max[0] - min[0]) ,
+                    (max[1] - min[1]) ,
+                    (max[2] - min[2])];
+                this._dirty = false;
+            }
+            return this._size;
+        }
+    },
+
+    computeScaleFactor: {
+        value: function() {
+            var size = this.size;
+            //size to fit
+            var scaleFactor = size[0] > size[1] ? size[0] : size[1];
+            scaleFactor = size[2] > scaleFactor ? size[2] : scaleFactor;
+            scaleFactor =  1. / scaleFactor;
+            return scaleFactor;
+        }
+    },
+
+    computeUnitMatrix: {
+        value: function(offset) {
+            var size = this.size;
+            var min = this.min;
+            if (offset == null)
+                offset = [0, 0, 0];
+            //size to fit
+            var scaleFactor = this.computeScaleFactor();
+            var scaleMatrix = mat4.scale(mat4.identity(), [scaleFactor, scaleFactor, scaleFactor]);
+            var translationVector = vec3.createFrom(
+                offset[0] -((size[0] / 2) + min[0]),
+                offset[1] -((size[1] / 2) + min[1]),
+                offset[2] -((size[2] / 2) + min[2]));
+            var translation = mat4.translate(scaleMatrix, [
+                translationVector[0],
+                translationVector[1],
+                translationVector[2]]);
+            return translation;
+        }
+    }
+});
+
+
 exports.Utilities = Object.create(Object.prototype, {
 
     vec3Min: {
