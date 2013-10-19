@@ -903,131 +903,6 @@ exports.View = Component.specialize( {
         }
     },
 
-
-    displayBBOX: {
-        value: function(bbox, cameraMatrix, modelMatrix) {
-
-            if (!this.sceneRenderer || !this.scene)
-                return;
-            if (!this.sceneRenderer.technique.rootPass.viewPoint)
-                return;
-            var gl = this.getWebGLContext();
-            var self = this;
-
-            this.sceneRenderer.webGLRenderer.bindedProgram = null;
-
-            var viewPoint = this.viewPoint;
-            var projectionMatrix = viewPoint.glTFElement.cameras[0].projection.matrix;
-
-            gl.disable(gl.CULL_FACE);
-
-            if (!this._BBOXProgram) {
-                this._BBOXProgram = Object.create(GLSLProgram);
-
-                var vertexShader =  "precision highp float;" +
-                                    "attribute vec3 vert;"  +
-                                    "uniform mat4 u_projMatrix; " +
-                                    "uniform mat4 u_vMatrix; " +
-                                    "uniform mat4 u_mMatrix; " +
-                                    "void main(void) { " +
-                                    "gl_Position = u_projMatrix * u_vMatrix * u_mMatrix * vec4(vert,1.0); }";
-
-                var fragmentShader =    "precision highp float;" +
-                                    "uniform float u_transparency; " +
-                                        " void main(void) { " +
-                                     " gl_FragColor = vec4(vec3(1.,1.,1.) , u_transparency);" +
-                                    "}";
-
-                this._BBOXProgram.initWithShaders( {    "x-shader/x-vertex" : vertexShader , 
-                                                        "x-shader/x-fragment" : fragmentShader } );
-                if (!this._BBOXProgram.build(gl))
-                    console.log(this._BBOXProgram.errorLogs);
-            }
-
-            var min = [bbox[0][0], bbox[0][1], bbox[0][2]];
-            var max = [bbox[1][0], bbox[1][1], bbox[1][2]];
-
-            var X = 0;
-            var Y = 1;
-            var Z = 2;
-
-            if (!this._BBOXIndices) {
-                var indices = [ 0, 1,
-                                1, 2,
-                                2, 3,
-                                3, 0,
-                                4, 5,
-                                5, 6,
-                                6, 7,
-                                7, 4,
-                                3, 7,
-                                2, 6,
-                                0, 4,
-                                1, 5];
-
-                this._BBOXIndices = gl.createBuffer();
-                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._BBOXIndices);
-                gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
-            }
-
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._BBOXIndices);
-
-            if (!this._BBOXVertexBuffer) {
-                this._BBOXVertexBuffer = gl.createBuffer();
-                gl.bindBuffer(gl.ARRAY_BUFFER, this._BBOXVertexBuffer);
-            }
-            gl.bindBuffer(gl.ARRAY_BUFFER, this._BBOXVertexBuffer);
-
-            var vertices = [
-                    max[X], min[Y], min[Z], 
-                    max[X], max[Y], min[Z], 
-                    min[X], max[Y], min[Z], 
-                    min[X], min[Y], min[Z], 
-                    max[X], min[Y], max[Z], 
-                    max[X], max[Y], max[Z], 
-                    min[X], max[Y], max[Z], 
-                    min[X], min[Y], max[Z]
-            ];
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-
-            var vertLocation = this._BBOXProgram.getLocationForSymbol("vert");
-            if (typeof vertLocation !== "undefined") {
-                gl.enableVertexAttribArray(vertLocation);
-                gl.vertexAttribPointer(vertLocation, 3, gl.FLOAT, false, 12, 0);
-            }
-
-            this.sceneRenderer.webGLRenderer.bindedProgram = this._BBOXProgram;
-
-            var projectionMatrixLocation = this._BBOXProgram.getLocationForSymbol("u_projMatrix");
-            if (projectionMatrixLocation) {
-                this._BBOXProgram.setValueForSymbol("u_projMatrix",projectionMatrix);
-            }
-
-            var mMatrixLocation = this._BBOXProgram.getLocationForSymbol("u_mMatrix");
-            if (mMatrixLocation) {
-                this._BBOXProgram.setValueForSymbol("u_mMatrix",modelMatrix);
-            }
-
-            var vMatrixLocation = this._BBOXProgram.getLocationForSymbol("u_vMatrix");
-            if (vMatrixLocation) {
-                this._BBOXProgram.setValueForSymbol("u_vMatrix",cameraMatrix);
-            }
-
-            var transparency = this._BBOXProgram.getLocationForSymbol("u_transparency");
-            if (transparency) {
-                this._BBOXProgram.setValueForSymbol("u_transparency",1 /*mesh.step*/);
-            }
-
-            this._BBOXProgram.commit(gl);
-            //void drawElements(GLenum mode, GLsizei count, GLenum type, GLintptr offset);
-            gl.drawElements(gl.LINES, 24, gl.UNSIGNED_SHORT, 0);
-            gl.disableVertexAttribArray(vertLocation);
-
-            gl.disable(gl.BLEND);
-            gl.enable(gl.CULL_FACE);
-        }
-    },
-
     selectedNode: { value: null, writable:true },
 
     handleSelectedNode: {
@@ -1048,7 +923,9 @@ exports.View = Component.specialize( {
                     var modelMatrix = mat4.create();
                     mat4.multiply( parentTransform, node.transform.matrix, modelMatrix);
                     if (node.boundingBox) {
-                        self.displayBBOX(node.boundingBox, cameraMatrix, modelMatrix);
+                        var viewPoint = self.viewPoint;
+                        var projectionMatrix = viewPoint.glTFElement.cameras[0].projection.matrix;
+                        self.getWebGLRenderer().drawBBOX(node.boundingBox, cameraMatrix, modelMatrix, projectionMatrix);
                     }
                     return modelMatrix;
                 }, true, ctx);
