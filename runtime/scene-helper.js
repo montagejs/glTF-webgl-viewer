@@ -37,6 +37,38 @@ var BBox = require("runtime/utilities").BBox;
 
 exports.SceneHelper = Object.create(Object.prototype, {
 
+    getGLTFViewPoints: {
+        value: function(scene) {
+            var viewPoints = [];
+            var node = scene.glTFElement.rootNode;
+            node.apply( function(node, parent, parentTransform) {
+                if (node.cameras) {
+                    if (node.cameras.length)
+                        viewPoints = viewPoints.concat(node);
+                }
+                return null;
+            }, true, null);
+            return viewPoints;
+        }
+    },
+
+    //we don't want to cache this to avoid synchronization here, so we don't want to call it often either :)
+    getViewPoints: {
+        value: function(scene) {
+            var viewPoints = this.getGLTFViewPoints(scene);
+            var m3dNodes = [];
+            viewPoints.forEach( function(viewPoint) {
+                var m3dNode = Montage.create(Node);
+                m3dNode.scene = scene;
+                //FIXME: should have probably used baseId here
+                m3dNode.id = viewPoint.baseId;
+                m3dNodes.push(m3dNode);
+            }, this);
+
+            return m3dNodes;
+        }
+    },
+
     createNodeIncludingCamera: {
         value: function(cameraName, m3dScene) {
             var scene = m3dScene.glTFElement;

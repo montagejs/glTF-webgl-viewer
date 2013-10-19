@@ -416,43 +416,10 @@ exports.View = Component.specialize( {
         }
     },
 
-    _getGLTFViewPoints: {
-        value: function(scene) {
-            var viewPoints = [];
-            var node = scene.glTFElement.rootNode;
-            node.apply( function(node, parent, parentTransform) {
-                if (node.cameras) {
-                    if (node.cameras.length)
-                        viewPoints = viewPoints.concat(node);
-                }
-                return null;
-            }, true, null);
-            return viewPoints;
-        }
-    },
-
-    //we don't want to cache this to avoid synchronization here, so we don't want to call it often either :)
-    _getViewPoints: {
-        value: function(scene) {
-            var viewPoints = this._getGLTFViewPoints(scene);
-
-            var m3dNodes = [];
-            viewPoints.forEach( function(viewPoint) {
-                var m3dNode = Montage.create(Node)
-                m3dNode.scene = scene;
-                //FIXME: should have probably used baseId here
-                m3dNode.id = viewPoint.baseId;
-                m3dNodes.push(m3dNode);
-            }, this);
-
-            return m3dNodes;
-        }
-    },
-
     //FIXME: cache this in the scene
     _getViewPointIndex: {
         value: function(viewPoint) {
-            var viewPoints = this._getGLTFViewPoints(viewPoint.scene);
+            var viewPoints = SceneHelper.getGLTFViewPoints(viewPoint.scene);
 
             for (var i = 0 ; i < viewPoints.length ; i++) {
                 if (viewPoints[i].baseId === viewPoint.id)
@@ -472,7 +439,7 @@ exports.View = Component.specialize( {
                 if (this.sceneRenderer.technique.rootPass) {
                     if (scene) {
                         this.orbitCamera = null;
-                        var viewPoints= this._getViewPoints(m3dScene);
+                        var viewPoints= SceneHelper.getViewPoints(m3dScene);
                         var hasCamera = viewPoints.length > 0;
                         // arbitry set first coming camera as the view point
                         if (viewPoints.length) {
@@ -670,7 +637,7 @@ exports.View = Component.specialize( {
                 self.gradientRenderer = Object.create(SceneRenderer);
                 self.gradientRenderer.init(webGLRenderer, null);
                 self.gradientRenderer.scene = scene.glTFElement;
-                var viewPoints = self._getViewPoints(scene);
+                var viewPoints = SceneHelper.getViewPoints(scene);
                 if (viewPoints) {
                     if (viewPoints.length) {
                         self.gradientRenderer.technique.rootPass.viewPoint = viewPoints[0].glTFElement;
@@ -1021,7 +988,7 @@ exports.View = Component.specialize( {
                         if (this._sceneTime / 1000. > endTime) {
                             if (this.automaticallyCycleThroughViewPoints == true) {
                                 var viewPointIndex = this._viewPointIndex;
-                                var viewPoints = this._getViewPoints(this.scene);
+                                var viewPoints = SceneHelper.getViewPoints(this.scene);
                                 if (viewPoints.length > 0) {
                                     var nextViewPoint;
                                     var checkIdx = 0;
