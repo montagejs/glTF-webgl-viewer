@@ -601,12 +601,14 @@ exports.View = Component.specialize( {
                         }
                     }
 
+
                     if (this.allowsProgressiveSceneLoading === false) {
                         var renderPromise = this.scene.prepareToRender(this.sceneRenderer.webGLRenderer);
                         renderPromise.then(function () {
                             self.sceneRenderer.webGLRenderer.webGLContext.finish();
                             self._sceneResourcesLoaded = true;
                             self.needsDraw = true;
+
                         }, function (error) {
                         }, function (progress) {
                         });
@@ -629,7 +631,7 @@ exports.View = Component.specialize( {
 
     _contextAttributes : { value: null, writable: true },
 
-    _shouldForceClear: { value: true, writable: true },
+    _shouldForceClear: { value: false, writable: true },
 
     enterDocument: {
         value: function(firstTime) {
@@ -1062,7 +1064,8 @@ exports.View = Component.specialize( {
         get: function() {
             if (this._width == null) {
                 var computedStyle = window.getComputedStyle(this.element, null);
-                return parseInt(computedStyle["width"]);
+                var width = parseInt(computedStyle["width"]);
+                return width * 2;
             }
             return this._width;
         },
@@ -1082,7 +1085,7 @@ exports.View = Component.specialize( {
         get: function() {
             if (this._height == null) {
                 var computedStyle = window.getComputedStyle(this.element, null);
-                return parseInt(computedStyle["height"]);
+                return parseInt(computedStyle["height"]) * 2;
             }
             return this._height;
         },
@@ -1246,20 +1249,6 @@ exports.View = Component.specialize( {
 
             var renderer;
 
-
-            /*
-            if(this.orbitCamera && this.orbitCameraAnimating) {
-                if (this.orbitCameraAnimatingXVel < 0.0013) {
-                    this.orbitCameraAnimatingXVel += 0.00001
-                }
-                if (this.orbitCameraAnimatingYVel > -0.0005) {
-                    this.orbitCameraAnimatingYVel -= 0.000005
-                }
-
-                this.orbitCamera.orbit(this.orbitCameraAnimatingXVel, this.orbitCameraAnimatingYVel);
-                this.needsDraw = true;
-            }
-            */
             if (this._state == this.PLAY)
                this.needsDraw = true;
 
@@ -1347,17 +1336,17 @@ exports.View = Component.specialize( {
 
     willDraw: {
         value: function() {
-
         }
     },
 
     templateDidLoad: {
         value: function() {
-            self = this;
+            var self = this;
             window.addEventListener("resize", this, true);
 
             var parent = this.parentComponent;
             var animationTimeout = null;
+
             var composer = TranslateComposer.create();
             composer.animateMomentum = true;
             composer.hasMomentum = true;
@@ -1365,28 +1354,15 @@ exports.View = Component.specialize( {
             composer.pointerSpeedMultiplier = 0.15;
             this.addComposerForElement(composer, this.canvas);
 
-            composer.addPathChangeListener("translateY", function(notification) {
-                self._consideringPointerForPicking = false;
-                self.needsDraw = true;
-            });
-
-            composer.addPathChangeListener("translateX", function(notification) {
+            composer.addEventListener("translate", function(notification) {
                 self._consideringPointerForPicking = false;
                 self.needsDraw = true;
             });
 
             composer.addEventListener('translateStart', function (event) {
-                //self.cameraAnimating = false;
-                if(animationTimeout) {
-                    clearTimeout(animationTimeout);
-                }
             }, false);
 
             composer.addEventListener('translateEnd', function () {
-                animationTimeout = setTimeout(function() {
-                    //self.cameraAnimating = true;
-                    self.needsDraw = true;
-                }, 3000)
             }, false);
             this.translateComposer = composer;
         }
@@ -1414,18 +1390,18 @@ MontageOrbitCamera.prototype._hookEvents = function (element) {
     this.translateComposer.addEventListener('translateStart', function (event) {
         moving = true;
 
-        lastX = event.translateX;
-        lastY = event.translateY;
+        self.lastX = event.translateX;
+        self.lastY = event.translateY;
 
     }, false);
 
     this.translateComposer.addEventListener('translate', function (event) {
         if (moving) {
-            var xDelta = event.translateX  - lastX,
-                yDelta = event.translateY  - lastY;
+            var xDelta = event.translateX  - self.lastX,
+                yDelta = event.translateY  - self.lastY;
 
-            lastX = event.translateX;
-            lastY = event.translateY;
+            self.lastX = event.translateX;
+            self.lastY = event.translateY;
 
             self.orbit(xDelta * 0.013, yDelta * 0.013);
         }
