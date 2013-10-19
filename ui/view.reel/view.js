@@ -57,6 +57,7 @@ var URL = require("montage/core/url");
 var Projection = require("runtime/projection").Projection;
 var Camera = require("runtime/camera").Camera;
 var BBox = require("runtime/utilities").BBox;
+var SceneHelper = require("runtime/scene-helper").SceneHelper;
 
 /**
     Description TODO
@@ -289,7 +290,6 @@ exports.View = Component.specialize( {
         },
         set: function(value) {
             if (this._viewPoint != value) {
-
                 var previousViewPoint = null;
                 if (this._viewPoint && value) {
                     if (this._viewPoint.scene == value.scene) {
@@ -298,9 +298,7 @@ exports.View = Component.specialize( {
                 }
 
                 this.viewPointWillChange(previousViewPoint, value);
-
                 this._viewPoint = value;
-
                 this._sceneTime = 0;
                 if (value) {
                     if (this.scene && (this._viewPoint.scene == null)) {
@@ -476,8 +474,6 @@ exports.View = Component.specialize( {
                         this.orbitCamera = null;
                         var viewPoints= this._getViewPoints(m3dScene);
                         var hasCamera = viewPoints.length > 0;
-                        var sceneBBox =  scene.rootNode.getBoundingBox(true);
-                        var bbox = Object.create(BBox).init(sceneBBox[0], sceneBBox[1]);
                         // arbitry set first coming camera as the view point
                         if (viewPoints.length) {
                             var shouldKeepViewPoint = false;
@@ -490,34 +486,12 @@ exports.View = Component.specialize( {
                                 this.viewPoint = viewPoints[0];
                             }
                         } else {
-                            //TODO: make that a default projection method
-                            var projection = Object.create(Projection);
-                            projection.initWithDescription( {
-                                "projection":"perspective",
-                                "yfov":45,
-                                "aspectRatio":1,
-                                "znear":0.1,
-                                "zfar":100});
-
-                            //create camera
-                            var camera = Object.create(Camera).init();
-                            camera.projection = projection;
-                            //create node to hold the camera
-                            var cameraNode = Object.create(glTFNode).init();
-                            camera.name = cameraNode.name = "camera01";
-                            cameraNode.id = "__default_camera";
-                            cameraNode.baseId = cameraNode.id;
-                            scene.ids[cameraNode.baseId] = cameraNode;
-                            cameraNode.cameras.push(camera);
-                            //FIXME: find out why even when checking that we mergeBBOX of meshes only the highest level BBOX is still wrong if camera is added to the scene.
-                            //scene.rootNode.children.push(cameraNode);
-                            var m3dNode = Montage.create(Node);
-                            m3dNode.scene = m3dScene;
-                            m3dNode.id = cameraNode.baseId;
-                            this.viewPoint = m3dNode;
+                            this.viewPoint = SceneHelper.createNodeIncludingCamera("default", m3dScene);
                         }
 
-                        if (bbox && !hasCamera) {
+                        if (!hasCamera) {
+                            var sceneBBox =  scene.rootNode.getBoundingBox(true);
+                            var bbox = Object.create(BBox).init(sceneBBox[0], sceneBBox[1]);
                             center = vec3.createFrom(0,0,(bbox.size[2]*bbox.computeScaleFactor())/2);
                             var rescaleMat = bbox.computeUnitMatrix([0, 0, bbox.size[2]/2]);
                             mat4.set(rescaleMat, scene.rootNode.transform.matrix);
@@ -693,7 +667,6 @@ exports.View = Component.specialize( {
             var techniquePromise = BuiltInAssets.assetWithName("gradient");
             techniquePromise.then(function (glTFScene_) {
                 var scene = Montage.create(Scene).init(glTFScene_);
-
                 self.gradientRenderer = Object.create(SceneRenderer);
                 self.gradientRenderer.init(webGLRenderer, null);
                 self.gradientRenderer.scene = scene.glTFElement;
@@ -703,7 +676,6 @@ exports.View = Component.specialize( {
                         self.gradientRenderer.technique.rootPass.viewPoint = viewPoints[0].glTFElement;
                     }
                 }
-
                 self.needsDraw = true;
             }, function (error) {
             }, function (progress) {
@@ -982,7 +954,6 @@ exports.View = Component.specialize( {
             var width, height, webGLContext = this.getWebGLContext();
             if (webGLContext == null || this._disableRendering)
                 return;
-
 
             //WebGL does it for us with preserveDrawBuffer = false
             if (this._shouldForceClear || (this._contextAttributes.preserveDrawingBuffer == null) || (this._contextAttributes.preserveDrawingBuffer == true)) {
