@@ -272,11 +272,11 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
 
                     mesh.primitives.push(primitive);
 
-                    var semantics = primitiveDescription.semantics;
-                    var allSemantics = Object.keys(semantics);
+                    var attributes = primitiveDescription.attributes;
+                    var allSemantics = Object.keys(attributes);
 
                     allSemantics.forEach( function(semantic) {
-                        var attributeID = semantics[semantic];
+                        var attributeID = attributes[semantic];
                         var attributeEntry = this.getEntry(attributeID);
 
                         //if (!isCompressedMesh) {
