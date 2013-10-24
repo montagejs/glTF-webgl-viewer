@@ -30,30 +30,30 @@ var WebGLTFResourceManager = require("runtime/helpers/resource-manager").WebGLTF
 
 exports.WebGLRenderer = Object.create(Object.prototype, {
 
-    WORLD: { value: "WORLD", writable: false},
+    MODEL: { value: "MODEL", writable: false},
     VIEW: { value: "VIEW", writable: false},
     PROJECTION: { value: "PROJECTION", writable: false},
-    WORLDVIEW: { value: "WORLDVIEW", writable: false},
+    MODELVIEW: { value: "MODELVIEW", writable: false},
     VIEWPROJECTION: { value: "VIEWPROJECTION", writable: false},
-    WORLDVIEWPROJECTION: { value: "WORLDVIEWPROJECTION", writable: false},
-    WORLDINVERSE: { value: "WORLDINVERSE", writable: false},
+    MODELVIEWPROJECTION: { value: "MODELVIEWPROJECTION", writable: false},
+    MODELINVERSE: { value: "MODELINVERSE", writable: false},
     VIEWINVERSE: { value: "VIEWINVERSE", writable: false},
     PROJECTIONINVERSE: { value: "PROJECTIONINVERSE", writable: false},
-    WORLDVIEWINVERSE: { value: "WORLDVIEWINVERSE", writable: false},
+    MODELVIEWINVERSE: { value: "MODELVIEWINVERSE", writable: false},
     VIEWPROJECTIONINVERSE: { value: "VIEWPROJECTIONINVERSE", writable: false},
-    WORLDVIEWPROJECTIONINVERSE: { value: "WORLDVIEWPROJECTIONINVERSE", writable: false},
-    WORLDTRANSPOSE: { value: "WORLDTRANSPOSE", writable: false},
+    MODELVIEWPROJECTIONINVERSE: { value: "MODELVIEWPROJECTIONINVERSE", writable: false},
+    MODELTRANSPOSE: { value: "MODELTRANSPOSE", writable: false},
     VIEWTRANSPOSE: { value: "VIEWTRANSPOSE", writable: false},
     PROJECTIONTRANSPOSE: { value: "PROJECTIONTRANSPOSE", writable: false},
-    WORLDVIEWTRANSPOSE: { value: "WORLDVIEWTRANSPOSE", writable: false},
+    MODELVIEWTRANSPOSE: { value: "MODELVIEWTRANSPOSE", writable: false},
     VIEWPROJECTIONTRANSPOSE: { value: "VIEWPROJECTIONTRANSPOSE", writable: false},
-    WORLDVIEWPROJECTIONTRANSPOSE: { value: "WORLDVIEWPROJECTIONTRANSPOSE", writable: false},
-    WORLDINVERSETRANSPOSE: { value: "WORLDINVERSETRANSPOSE", writable: false},
+    MODELVIEWPROJECTIONTRANSPOSE: { value: "MODELVIEWPROJECTIONTRANSPOSE", writable: false},
+    MODELINVERSETRANSPOSE: { value: "MODELINVERSETRANSPOSE", writable: false},
     VIEWINVERSETRANSPOSE: { value: "VIEWINVERSETRANSPOSE", writable: false},
     PROJECTIONINVERSETRANSPOSE: { value: "PROJECTIONINVERSETRANSPOSE", writable: false},
-    WORLDVIEWINVERSETRANSPOSE: { value: "WORLDVIEWINVERSETRANSPOSE", writable: false},
+    MODELVIEWINVERSETRANSPOSE: { value: "MODELVIEWINVERSETRANSPOSE", writable: false},
     VIEWPROJECTIONINVERSETRANSPOSE: { value: "VIEWPROJECTIONINVERSETRANSPOSE", writable: false},
-    WORLDVIEWPROJECTIONINVERSETRANSPOSE: { value: "WORLDVIEWPROJECTIONINVERSETRANSPOSE", writable: false},
+    MODELVIEWPROJECTIONINVERSETRANSPOSE: { value: "MODELVIEWPROJECTIONINVERSETRANSPOSE", writable: false},
 
     //private accessors
     _bindedProgram: { value: null, writable: true },
@@ -630,9 +630,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                         var semantic = parameter.semantic;
                         if (semantic === this.PROJECTION) {
                             value = this.projectionMatrix;
-                        } else if (semantic === this.WORLDVIEW) {
+                        } else if (semantic === this.MODELVIEW) {
                             value = primitiveDescription.nodeWrapper.worldViewMatrix;
-                        } else if (semantic === this.WORLDVIEWINVERSETRANSPOSE) {
+                        } else if (semantic === this.MODELVIEWINVERSETRANSPOSE) {
                             value = primitiveDescription.nodeWrapper.worldViewInverseTransposeMatrix;
                         }
                     }
