@@ -43,11 +43,13 @@
     },
     "cameras": {
         "camera_0": {
-            "projection": "orthographic",
-            "xmag": 1,
-            "ymag": 1,
-            "zfar": 1000,
-            "znear": 0
+            "type": "orthographic",
+            "orthographic" : {
+                "xmag": 1, 
+                "ymag": 1,
+                "zfar": 1000,
+                "znear": 0
+        }
         }
     },
     "indices": {
@@ -73,8 +75,8 @@
                 {
                     "indices": "indices_20",
                     "material": "material.0",
-                    "primitive": "TRIANGLES",
-                    "semantics": {
+                    "primitive": 4,
+                    "attributes": {
                         "POSITION": "attribute_22"
                     }
                 }
@@ -160,15 +162,15 @@
                         }
                     },
                     "states": {
-                        "blendEnable": true,
+                        "blendEnable": 1,
                         "blendEquation": 32774,
                         "blendFunc": {
                             "dfactor": 771,
                             "sfactor": 770
                         },
-                        "cullFaceEnable": false,
-                        "depthMask": false,
-                        "depthTestEnable": false
+                        "cullFaceEnable": 0,
+                        "depthMask": 0,
+                        "depthTestEnable": 0
                     }
                 }
             }

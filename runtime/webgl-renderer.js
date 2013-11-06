@@ -905,10 +905,10 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 var ctx = gl;
                 var glProgram = this.resourceManager.getResource(pass.instanceProgram.program, this.programDelegate, ctx);
                 if (glProgram) {
-                    var blending = false;
-                    var depthTest = true;
-                    var depthMask = true;
-                    var cullFaceEnable = true;
+                    var blending = 0;
+                    var depthTest = 1;
+                    var depthMask = 1;
+                    var cullFaceEnable = 1;
                     var states = pass.states;
                     var blendEquation = gl.FUNC_ADD;
                     var sfactor = gl.SRC_ALPHA;
@@ -917,14 +917,14 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
 
                     //FIXME: make a clever handling of states, For now this is incomplete and inefficient.(but robust)
                     if (states) {
-                        if (states.blendEnable === true)
-                            blending = true;
-                        if (states.depthTestEnable === false)
-                            depthTest = false;
-                        if (states.depthMask === false)
-                            depthMask = false;
-                        if (states.cullFaceEnable === false)
-                            cullFaceEnable = false;
+                        if (states.blendEnable === 1)
+                            blending = 1;
+                        if (states.depthTestEnable === 0)
+                            depthTest = 0;
+                        if (states.depthMask === 0)
+                            depthMask = 0;
+                        if (states.cullFaceEnable === 0)
+                            cullFaceEnable = 0;
                         if(states.blendEquation) {
                             var blendFunc = states.blendFunc;
                             if (blendFunc) {

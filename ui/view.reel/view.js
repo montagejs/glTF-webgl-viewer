@@ -1047,7 +1047,7 @@ exports.View = Component.specialize( {
                     this.__renderOptions.interpolatingViewPoint = this.interpolatingViewPoint;
 
                     //FIXME: on the iPad with private function to enable webGL there was an issue with depthMask (need to re-check if that got fixed)
-                    var allowsReflection = this.showReflection && (this.viewPoint.id === "__default_camera");
+                    var allowsReflection = this.showReflection;
                     if(allowsReflection) {
                         /* ------------------------------------------------------------------------------------------------------------
                          Draw reflected scene
@@ -1068,8 +1068,9 @@ exports.View = Component.specialize( {
 
                     if (this.showGradient || allowsReflection) {
                         //FIXME:For now, just allow reflection when using default camera
-                        if (this.viewPoint.id === "__default_camera") {
+                        //if (this.viewPoint.id === "__default_camera") {
                             if (this.gradientRenderer) {
+                                webGLContext.enable(webGLContext.BLEND);
                                 webGLContext.disable(webGLContext.DEPTH_TEST);
                                 webGLContext.disable(webGLContext.CULL_FACE);
                                 webGLContext.depthMask(false);
@@ -1079,7 +1080,7 @@ exports.View = Component.specialize( {
                                 webGLContext.enable(webGLContext.CULL_FACE);
                                 webGLContext.disable(webGLContext.BLEND);
                             }
-                        }
+                        //}
                     }
 
                     /* disable picking

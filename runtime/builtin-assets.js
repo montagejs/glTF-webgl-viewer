@@ -49,6 +49,7 @@ exports.BuiltInAssets = Object.create(Object.prototype, {
 
     assetWithName: {
         value: function(assetName, options) {
+            debugger;
             var deferred = this._deferredForName[assetName];
             if (!deferred) {
                 deferred = Q.defer();
