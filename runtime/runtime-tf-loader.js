@@ -263,7 +263,7 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
             for (var i = 0 ; i < primitivesDescription.length ; i++) {
                 var primitiveDescription = primitivesDescription[i];
 
-                if (primitiveDescription.primitive === "TRIANGLES") {
+                if (primitiveDescription.primitive === WebGLRenderingContext.TRIANGLES) {
                     var primitive = Object.create(Primitive).init();
 
                     //read material

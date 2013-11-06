@@ -75,11 +75,14 @@ exports.SceneHelper = Object.create(Object.prototype, {
             //TODO: make that a default projection method
             var projection = Object.create(Projection);
             projection.initWithDescription( {
-                "projection":"perspective",
-                "yfov":45,
-                "aspectRatio":1,
-                "znear":0.1,
-                "zfar":100});
+                "type":"perspective",
+                "perspective" : {
+                    "yfov":45,
+                    "aspectRatio":1,
+                    "znear":0.1,
+                    "zfar":100
+                }
+                });
 
             //create camera
             var camera = Object.create(Camera).init();
