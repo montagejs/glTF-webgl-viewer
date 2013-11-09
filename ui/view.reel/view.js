@@ -90,7 +90,7 @@ exports.View = Component.specialize( {
             }
 
             if (this._scene) {
-                this._scene.rectEventListener("materialUpdate", this);
+                this._scene.removeEventListener("materialUpdate", this);
                 this._scene.removeEventListener("textureUpdate", this);
             }
         }
@@ -435,7 +435,6 @@ exports.View = Component.specialize( {
     applyScene: {
         value:function () {
             var m3dScene = this.scene;
-            var center = null;
             var scene = m3dScene.glTFElement;
             var self = this;
             if (this.sceneRenderer) {
@@ -445,7 +444,7 @@ exports.View = Component.specialize( {
                         var viewPoints= SceneHelper.getViewPoints(m3dScene);
                         var hasCamera = viewPoints.length > 0;
                         // arbitry set first coming camera as the view point
-                        if (viewPoints.length) {
+                        if (hasCamera) {
                             var shouldKeepViewPoint = false;
                             if (this.viewPoint) {
                                 if (this.viewPoint.scene) {
@@ -456,53 +455,34 @@ exports.View = Component.specialize( {
                                 this.viewPoint = viewPoints[0];
                             }
                         } else {
-                            this.viewPoint = SceneHelper.createNodeIncludingCamera("default", m3dScene);
-                        }
+                            var center = null;
 
-                        if (!hasCamera) {
                             var sceneBBox =  scene.rootNode.getBoundingBox(true);
                             var bbox = Object.create(BBox).init(sceneBBox[0], sceneBBox[1]);
                             center = vec3.createFrom(0,0,(bbox.size[2]*bbox.computeScaleFactor())/2);
-                            var rescaleMat = bbox.computeUnitMatrix([0, 0, bbox.size[2]/2]);
-                            mat4.set(rescaleMat, scene.rootNode.transform.matrix);
                             scene.rootNode.transform._updateDirtyFlag(false);
+
+                            //sceneBBox =  scene.rootNode.getBoundingBox(true);
+                            var glTFScene = this.scene.glTFElement;
+                            var viewPortDistance = 400.3;
+                            var targettedNode = glTFScene.rootNode;
+                            var sceneBBox =  glTFScene.rootNode.getBoundingBox(true);
+                            var midPoint = [
+                                (sceneBBox[0][0] + sceneBBox[1][0]) / 2,
+                                (sceneBBox[0][1] + sceneBBox[1][1]) / 2,
+                                (sceneBBox[0][2] + sceneBBox[1][2]) / 2];
+                            var viewPoint = SceneHelper.createNodeIncludingCamera("__default_camera__", m3dScene);
+                            viewPoint.glTFElement.cameras[0].projection.zfar = 10000;
+                            this.scene.glTFElement.rootNode.children.push(viewPoint.glTFElement);
+
+                            var eye = [midPoint[0], midPoint[1], midPoint[2]];
+                            eye[2] += viewPortDistance;
+
+                            viewPoint.glTFElement.transform.translation = eye;
+                            this.viewPoint = viewPoint;
                         }
 
-                    }
-                    this.sceneRenderer.scene = scene;
-                    if (scene) {
-                        /*
-                        this.orbitCamera = new MontageOrbitCamera(this.canvas);
-
-                        this.orbitCamera.translateComposer = this.translateComposer;
-                        this.orbitCamera._hookEvents(this.canvas);
-                        this.orbitCamera.constrainDistance = hasCamera ? true : false;
-                        this.orbitCamera.maxDistance = hasCamera ? 15 : 200;
-                        this.orbitCamera.minDistance = hasCamera ? -45 : 0;
-                        this.orbitCamera.setDistance(hasCamera ? 0 : 1.3);
-                        this.orbitCamera.distanceStep = hasCamera ? 0.015 : 0.0001;
-                        this.orbitCamera.setRideMode(hasCamera);
-                        this.orbitCamera.setYUp(true);
-
-                        //allow small interaction when a camera is present
-                        if (hasCamera) {
-                            this.orbitCamera.minOrbitX = -0.4;
-                            this.orbitCamera.maxOrbitX = 0.4;
-                            this.orbitCamera.minOrbitY = -0.4;
-                            this.orbitCamera.maxOrbitY = 0.4;
-                        } else {
-                            this.orbitCamera.minOrbitX = 0;
-                        }
-
-                        this.orbitCamera.constrainXOrbit = true;
-                        this.orbitCamera.constrainYOrbit = hasCamera;
-
-                        if (center)
-                            this.orbitCamera.setCenter(center);
-                        */
-                    } else {
-                        //should not reach at the moment
-                        this.flyingCamera = new MontageFlyingCamera(this.canvas);
+                        this.sceneRenderer.scene = scene;
                     }
 
                     //right now, play by default
