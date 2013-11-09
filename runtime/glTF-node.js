@@ -229,6 +229,22 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
     transform: {
         get: function() {
+            if (this.target) {
+                var targetWorldMatrix = this.target.worldMatrix;
+
+                var sourcePosition = this._transform.translation;
+                var targetPosition = vec3.create();
+                var up = [0 , 1, 0];
+
+                Utilities.decomposeMat4(targetWorldMatrix, targetPosition, null, null);
+
+                var lookatmat = mat4.lookAt(sourcePosition, targetPosition, up);
+                mat4.inverse(lookatmat);
+                var transform = Object.create(Transform).init();
+                transform.matrix = lookatmat;
+
+                this._transform.rotation = transform.rotation;
+            }
             return this._transform;
         },
         set: function(value) {
@@ -405,8 +421,8 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
             //for copies of nodes coming from a DAG we keep track of the id but still, we want to be different
             node.id = this.id + "-" +this.bumpId();
-
             node.transform = this.transform.copy();
+
             return node;
         }
     },
@@ -418,7 +434,8 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
     worldMatrix: {
         get: function() {
             if (this.parent) {
-                if (this._worldMatrixIsDirty) {
+                //TODO: handle case with target !
+                if (this._worldMatrixIsDirty || (this.target != null)) {
                     mat4.multiply(this.parent.worldMatrix, this.transform.matrix, this._worldMatrix);
                     this._worldMatrixIsDirty = false;
                 }
@@ -464,7 +481,7 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
     nodeWithPropertyNamed: {
         value: function( propertyName) {
-            if ((typeof this[propertyName] !== "undefined") && (this[propertyName] != null))
+            if (this[propertyName] != null)
                 return this;
 
             if (this.children) {
@@ -476,8 +493,18 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
                     }
                 }
             }
-
             return null;
+        }
+    },
+
+    _target: { value:null , writable:true },
+
+    target: {
+        get: function() {
+            return this._target;
+        },
+        set: function(target) {
+            this._target = target;
         }
     }
 

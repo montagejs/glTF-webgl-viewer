@@ -58,6 +58,7 @@ var Projection = require("runtime/projection").Projection;
 var Camera = require("runtime/camera").Camera;
 var BBox = require("runtime/utilities").BBox;
 var SceneHelper = require("runtime/scene-helper").SceneHelper;
+var CameraController = require("controllers/camera-controller").CameraController;
 
 /**
     Description TODO
@@ -89,7 +90,7 @@ exports.View = Component.specialize( {
             }
 
             if (this._scene) {
-                this._scene.removeEventListener("materialUpdate", this);
+                this._scene.rectEventListener("materialUpdate", this);
                 this._scene.removeEventListener("textureUpdate", this);
             }
         }
@@ -270,6 +271,8 @@ exports.View = Component.specialize( {
 
     viewPointDidChange: {
         value:function() {
+                this._cameraController.node = this.viewPoint;
+
                 if (this.sceneRenderer) {
                     if (this._viewPoint) {
                         if (this.scene) {
@@ -468,6 +471,7 @@ exports.View = Component.specialize( {
                     }
                     this.sceneRenderer.scene = scene;
                     if (scene) {
+                        /*
                         this.orbitCamera = new MontageOrbitCamera(this.canvas);
 
                         this.orbitCamera.translateComposer = this.translateComposer;
@@ -495,6 +499,7 @@ exports.View = Component.specialize( {
 
                         if (center)
                             this.orbitCamera.setCenter(center);
+                        */
                     } else {
                         //should not reach at the moment
                         this.flyingCamera = new MontageFlyingCamera(this.canvas);
@@ -849,8 +854,7 @@ exports.View = Component.specialize( {
         get: function() {
             if (this._width == null) {
                 var computedStyle = window.getComputedStyle(this.element, null);
-                var width = parseInt(computedStyle["width"]);
-                return width * 2;
+                return parseInt(computedStyle["width"]) * this.scaleFactor;
             }
             return this._width;
         },
@@ -870,7 +874,7 @@ exports.View = Component.specialize( {
         get: function() {
             if (this._height == null) {
                 var computedStyle = window.getComputedStyle(this.element, null);
-                return parseInt(computedStyle["height"]) * 2;
+                return parseInt(computedStyle["height"]) * this.scaleFactor;
             }
             return this._height;
         },
@@ -882,29 +886,6 @@ exports.View = Component.specialize( {
         }
     },
 
-    /*
-    _cameraAnimating:{
-        value:true
-    },
-
-    cameraAnimating:{
-        get:function () {
-            return this._cameraAnimating;
-        },
-        set:function (value) {
-            this.orbitCameraAnimatingXVel = 0;
-            this.orbitCameraAnimatingYVel = 0;
-            this._cameraAnimating = value;
-        }
-    },
-
-    cameraAnimatingXVel:{
-        value: 0
-    },
-    cameraAnimatingYVel:{
-        value: 0
-    },
-    */
     interpolatingViewPoint: {
         value: null, writable:true
     },
@@ -1015,22 +996,6 @@ exports.View = Component.specialize( {
             this._lastTime = time;
             //----
 
-            if (this.orbitCamera) {
-                var cameraMatrix = this.orbitCamera.getViewMat();
-                mat4.set(cameraMatrix, this.viewPointModifierMatrix);
-                //FIXME
-                if (this.viewPoint)
-                   if (this.viewPoint.glTFElement.parent == null)
-                        mat4.inverse(this.viewPointModifierMatrix);
-            } else if (this.flyingCamera) {
-                var cameraMatrix = this.flyingCamera.getViewMat();
-                mat4.set(cameraMatrix, this.viewPointModifierMatrix);
-                //FIXME
-                if (this.viewPoint)
-                    if (this.viewPoint.glTFElement.parent == null)
-                        mat4.inverse(this.viewPointModifierMatrix);
-            }
-
             var renderer;
 
             if (this._state == this.PLAY)
@@ -1124,6 +1089,8 @@ exports.View = Component.specialize( {
         }
     },
 
+    _cameraController: { value: null, writable: true },
+
     templateDidLoad: {
         value: function() {
             var self = this;
@@ -1131,7 +1098,6 @@ exports.View = Component.specialize( {
 
             var parent = this.parentComponent;
             var animationTimeout = null;
-
             var composer = TranslateComposer.create();
             composer.animateMomentum = true;
             composer.hasMomentum = true;
@@ -1139,79 +1105,23 @@ exports.View = Component.specialize( {
             composer.pointerSpeedMultiplier = 0.15;
             this.addComposerForElement(composer, this.canvas);
 
-            composer.addEventListener("translate", function(notification) {
-                self._consideringPointerForPicking = false;
+            this._cameraController = Montage.create(CameraController);
+
+            composer.addEventListener("translate", function(event) {
+                self._cameraController.translate(event);
                 self.needsDraw = true;
             });
 
             composer.addEventListener('translateStart', function (event) {
+                self._cameraController.beginTranslate(event);
             }, false);
 
-            composer.addEventListener('translateEnd', function () {
+            composer.addEventListener('translateEnd', function (event) {
+                self._cameraController.endTranslate(event);
             }, false);
+
             this.translateComposer = composer;
         }
     }
 });
-
-
-var MontageOrbitCamera = OrbitCamera;
-MontageOrbitCamera.prototype = Montage.create(OrbitCamera.prototype);
-
-var MontageFlyingCamera = FlyingCamera;
-MontageFlyingCamera.prototype = Montage.create(FlyingCamera.prototype);
-
-MontageOrbitCamera.prototype._hookEvents = function (element) {
-    var self = this, moving = false,
-        lastX = 0, lastY = 0;
-
-    if (!this.translateComposer)
-        return;
-
-    //==============
-    // Mouse Events
-    //==============
-
-    this.translateComposer.addEventListener('translateStart', function (event) {
-        moving = true;
-
-        self.lastX = event.translateX;
-        self.lastY = event.translateY;
-
-    }, false);
-
-    this.translateComposer.addEventListener('translate', function (event) {
-        if (moving) {
-            var xDelta = event.translateX  - self.lastX,
-                yDelta = event.translateY  - self.lastY;
-
-            self.lastX = event.translateX;
-            self.lastY = event.translateY;
-
-            self.orbit(xDelta * 0.013, yDelta * 0.013);
-        }
-
-    }, false);
-
-    this.translateComposer.addEventListener('translateEnd', function () {
-        moving = false;
-    }, false);
-
-    element.addEventListener('mousewheel', function (event) {
-        self.setDistance(-self._distance[2] + (event.wheelDeltaY * self.distanceStep));
-        event.preventDefault();
-    }, false);
-
-    element.addEventListener('gesturestart', function (event) {
-        self.initialDistance = self._distance[2];
-        event.preventDefault();
-    }, false);
-
-    element.addEventListener('gesturechange', function (event) {
-        self.setDistance(-1 * self.initialDistance / event.scale);
-        event.preventDefault();
-    }, false);
-
-};
-
 

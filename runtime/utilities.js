@@ -420,11 +420,14 @@ exports.Utilities = Object.create(Object.prototype, {
                 locMat[this.idx(3, 3)] = 1;
             }
 
-            translation[0] = locMat[this.idx(3, 0)];
+            if (translation) {
+                translation[0] = locMat[this.idx(3, 0)];
+                translation[1] = locMat[this.idx(3, 1)];
+                translation[2] = locMat[this.idx(3, 2)];
+            }
+
             locMat[this.idx(3, 0)] = 0;
-            translation[1] = locMat[this.idx(3, 1)];
             locMat[this.idx(3, 1)] = 0;
-            translation[2] = locMat[this.idx(3, 2)];
             locMat[this.idx(3, 2)] = 0;
 
             /* Now get scale and shear. */
@@ -434,13 +437,14 @@ exports.Utilities = Object.create(Object.prototype, {
                 rows[i][2] = locMat[this.idx(i, 2)];
             }
 
-            scale[0] = vec3.length(rows[0]);
+            if (scale != null) {
+                scale[0] = vec3.length(rows[0]);
+                scale[1] = vec3.length(rows[1]);
+                scale[2] = vec3.length(rows[2]);
+            }
+
             vec3.normalize(rows[0]);
-
-            scale[1] = vec3.length(rows[1]);
             vec3.normalize(rows[1]);
-
-            scale[2] = vec3.length(rows[2]);
             vec3.normalize(rows[2]);
 
             var res = vec3.create();
@@ -448,26 +452,29 @@ exports.Utilities = Object.create(Object.prototype, {
 
             if ( vec3.dot(rows[0], res) < 0 ) {
                 for ( i = 0; i < 3; i++ ) {
-                    scale[i] *= -1;
+                    if (scale != null)
+                        scale[i] *= -1;
                     rows[i][0] *= -1;
                     rows[i][1] *= -1;
                     rows[i][2] *= -1;
                 }
             }
 
-            var amat3 = mat3.create();
-            amat3[0] = rows[0][0];
-            amat3[1] = rows[1][0];
-            amat3[2] = rows[2][0];
-            amat3[3] = rows[0][1];
-            amat3[4] = rows[1][1];
-            amat3[5] = rows[2][1];
-            amat3[6] = rows[0][2];
-            amat3[7] = rows[1][2];
-            amat3[8] = rows[2][2];
-            mat3.transpose(amat3);
-            quat4.fromRotationMatrix(amat3, rotation);
-            quat4.normalize(rotation);
+            if (rotation != null) {
+                var amat3 = mat3.create();
+                amat3[0] = rows[0][0];
+                amat3[1] = rows[1][0];
+                amat3[2] = rows[2][0];
+                amat3[3] = rows[0][1];
+                amat3[4] = rows[1][1];
+                amat3[5] = rows[2][1];
+                amat3[6] = rows[0][2];
+                amat3[7] = rows[1][2];
+                amat3[8] = rows[2][2];
+                mat3.transpose(amat3);
+                quat4.fromRotationMatrix(amat3, rotation);
+                quat4.normalize(rotation);
+            }
         }
     },
 
