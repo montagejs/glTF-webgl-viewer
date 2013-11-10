@@ -48,8 +48,6 @@ var glTFMaterial = require("runtime/glTF-material").glTFMaterial;
 var Utilities = require("runtime/utilities").Utilities;
 var dom = require("montage/core/dom");
 var Point = require("montage/core/geometry/point").Point;
-var OrbitCamera = require("runtime/dependencies/camera").OrbitCamera;
-var FlyingCamera = require("runtime/dependencies/camera").FlyingCamera;
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
 var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
 var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
@@ -440,7 +438,6 @@ exports.View = Component.specialize( {
             if (this.sceneRenderer) {
                 if (this.sceneRenderer.technique.rootPass) {
                     if (scene) {
-                        this.orbitCamera = null;
                         var viewPoints= SceneHelper.getViewPoints(m3dScene);
                         var hasCamera = viewPoints.length > 0;
                         // arbitry set first coming camera as the view point
@@ -462,9 +459,7 @@ exports.View = Component.specialize( {
                             center = vec3.createFrom(0,0,(bbox.size[2]*bbox.computeScaleFactor())/2);
                             scene.rootNode.transform._updateDirtyFlag(false);
 
-                            //sceneBBox =  scene.rootNode.getBoundingBox(true);
                             var glTFScene = this.scene.glTFElement;
-                            var viewPortDistance = 400.3;
                             var targettedNode = glTFScene.rootNode;
                             var sceneBBox =  glTFScene.rootNode.getBoundingBox(true);
                             var midPoint = [
@@ -472,13 +467,15 @@ exports.View = Component.specialize( {
                                 (sceneBBox[0][1] + sceneBBox[1][1]) / 2,
                                 (sceneBBox[0][2] + sceneBBox[1][2]) / 2];
                             var viewPoint = SceneHelper.createNodeIncludingCamera("__default_camera__", m3dScene);
-                            viewPoint.glTFElement.cameras[0].projection.zfar = 10000;
+                            viewPoint.glTFElement.cameras[0].projection.zfar = sceneBBox[1][1] * 2;
                             this.scene.glTFElement.rootNode.children.push(viewPoint.glTFElement);
+                            var viewPortDistance = midPoint[2];
 
                             var eye = [midPoint[0], midPoint[1], midPoint[2]];
-                            eye[2] += viewPortDistance;
+                            eye[2] += viewPortDistance + (sceneBBox[1][0] - sceneBBox[0][0]);
 
                             viewPoint.glTFElement.transform.translation = eye;
+
                             this.viewPoint = viewPoint;
                         }
 
@@ -790,9 +787,6 @@ exports.View = Component.specialize( {
         set: function(flag) {
             this._showReflection = flag;
             this.needsDraw = true;
-            //if reflection (e.g floor) is enabled, then we constrain the rotation
-            if (flag && this.orbitCamera)
-                this.orbitCamera.constrainXOrbit = flag;
         }
     },
 
@@ -996,16 +990,24 @@ exports.View = Component.specialize( {
                     if(allowsReflection) {
                         /* ------------------------------------------------------------------------------------------------------------
                          Draw reflected scene
-                         ------------------------------------------------------------------------------------------------------------ */
+                        ------------------------------------------------------------------------------------------------------------ */
                         webGLContext.depthFunc(webGLContext.LESS);
                         webGLContext.enable(webGLContext.DEPTH_TEST);
                         webGLContext.frontFace(webGLContext.CW);
                         webGLContext.depthMask(true);
+                        //should retrieve by node
                         var rootNode = this.scene.glTFElement.rootNode;
+                        var nodeBBOX = rootNode.getBoundingBox(true);
                         var savedTr = mat4.create(rootNode.transform.matrix);
                         var scaleMatrix = mat4.scale(mat4.identity(), [1, 1, -1]);
                         mat4.multiply(scaleMatrix, rootNode.transform.matrix) ;
                         rootNode.transform.matrix = scaleMatrix;
+                        var invVNodeBBOX = rootNode.getBoundingBox(true);
+                        var mirrorMatrix = mat4.identity();
+                        var translationMatrix = mat4.translate(mat4.identity(), [0, 0,  (nodeBBOX[0][2] - invVNodeBBOX[1][2])]);
+                        mat4.multiply(mirrorMatrix, translationMatrix);
+                        mat4.multiply(mirrorMatrix, scaleMatrix);
+                        rootNode.transform.matrix = mirrorMatrix;
                         this.sceneRenderer.render(time, this.__renderOptions);
                         rootNode.transform.matrix = savedTr;
                         webGLContext.frontFace(webGLContext.CCW);
