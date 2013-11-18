@@ -23,10 +23,37 @@
 
 var Montage = require("montage").Montage;
 var Component3D = require("runtime/component-3d").Component3D;
+var Node = require("runtime/node").Node;
 var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
 var URL = require("montage/core/url");
 var SceneResourceLoader = require("runtime/scene-resource-loader").SceneResourceLoader;
 var Q = require("q");
+
+//http://www.hunlock.com/blogs/Totally_Pwn_CSS_with_Javascript
+function getCSSRule(ruleName) {               // Return requested style obejct
+    ruleName = ruleName.toLowerCase();                       // Convert test string to lower case.
+    if (document.styleSheets) {                            // If browser can play with stylesheets
+        for (var i = 0; i < document.styleSheets.length; i++) { // For each stylesheet
+            var styleSheet = document.styleSheets[i];          // Get the current Stylesheet
+            var ii=0;                                        // Initialize subCounter.
+            var cssRule=false;                               // Initialize cssRule.
+            do {                                             // For each rule in stylesheet
+                if (styleSheet.cssRules) {                    // Browser uses cssRules?
+                    cssRule = styleSheet.cssRules[ii];         // Yes --Mozilla Style
+                } else {                                      // Browser usses rules?
+                    cssRule = styleSheet.rules[ii];            // Yes IE style.
+                }                                             // End IE check.
+                if (cssRule)  {                               // If we found a rule...
+                    if (cssRule.selectorText.toLowerCase() == ruleName) { //  match ruleName?
+                        return cssRule;                      // return the style object.
+                    }                                          // End found rule name
+                }                                             // end found cssRule
+                ii++;                                         // Increment sub-counter
+            } while (cssRule)                                // end While loop
+        }                                                   // end For loop
+    }                                                      // end styleSheet ability check
+    return false;                                          // we found NOTHING!
+}                                                         // end getCSSRule
 
 exports.Scene = Component3D.specialize( {
 
@@ -37,6 +64,21 @@ exports.Scene = Component3D.specialize( {
     },
 
     _resourcesLoaded: { value: false, writable: true },
+
+    _rootNode: { value: null, writable: true },
+
+    rootNode: {
+        get: function() {
+            if (this.status === "loaded") {
+                if (this._rootNode == null) {
+                    this._rootNode = Montage.create(Node);
+                    this._rootNode.scene = this;
+                    this._rootNode.id = this.glTFElement.rootNode.id;
+                }
+            }
+            return this._rootNode;
+        }
+    },
 
     sceneResourcesDidPrepare: {
         value: function() {

@@ -37,6 +37,17 @@ exports.CameraController = Montage.specialize( {
         }
     },
 
+    _viewPoint: { value: null, writable: true},
+
+    viewPoint: {
+        get: function() {
+            return this._viewPoint;
+        },
+        set: function(value) {
+            this._viewPoint = value;
+        }
+    },
+
     _node: { value: null, writable: true},
 
     node: {
@@ -56,8 +67,7 @@ exports.CameraController = Montage.specialize( {
 
     translate: {
         value: function(event) {
-            this._transform.matrix = this.node.glTFElement.worldMatrix;
-
+            this._transform.matrix = this.viewPoint.glTFElement.worldMatrix;
             if (this.moving == false)
                  return;
 
@@ -78,8 +88,6 @@ exports.CameraController = Montage.specialize( {
             var targetPosition;
             if (hasTarget == false) {
                 var rootNode = this.node.glTFElement;
-                while (rootNode.parent != null)
-                    rootNode = rootNode.parent;
                 var sceneBBox =  rootNode.getBoundingBox(true);
                 targetPosition = [
                     (sceneBBox[0][0] + sceneBBox[1][0]) / 2,
@@ -109,7 +117,7 @@ exports.CameraController = Montage.specialize( {
             } else {
                 ratio = Math.abs(xDelta) / Math.abs(yDelta);
             }
-            ratio = 0.6;
+
             if (ratio > 0.5) {
                 mat4.rotate(cameraMat, xDelta, axisUpAdjusted);
                 mat4.rotate(cameraMat, yDelta, right);
@@ -137,7 +145,7 @@ exports.CameraController = Montage.specialize( {
 
             var finalMat = mat4.identity();
             mat4.multiply(translationMatrix, rotationMatrix, finalMat);
-            this.node.glTFElement.transform.matrix = finalMat;
+            this.viewPoint.glTFElement.transform.matrix = finalMat;
 
             //event.stopPropagation();
             event.preventDefault();
@@ -151,7 +159,7 @@ exports.CameraController = Montage.specialize( {
             if (this._transform == null) {
                 this._transform = Object.create(Transform).init();
             }
-            this._transform.matrix = this.node.glTFElement.worldMatrix;
+            this._transform.matrix = this.viewPoint.glTFElement.worldMatrix;
         }
     },
 

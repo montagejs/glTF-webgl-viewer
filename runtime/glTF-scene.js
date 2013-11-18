@@ -70,7 +70,7 @@ exports.glTFScene = Montage.specialize( {
     init: {
         value: function() {
             this.rootNode = Object.create(glTFNode);
-            this.rootNode.init();
+            this.rootNode.initWithID();
             return this;
         }
     },
@@ -87,7 +87,7 @@ exports.glTFScene = Montage.specialize( {
 
     endTime: {
         get: function() {
-            var endTime = 0;
+            var endTime = -1;
             if (this.animationManager) {
                 return this.animationManager.endTime;
             }

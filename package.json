@@ -5,7 +5,8 @@
         "montage": "0.13.5",
         "digit": "0.3.1",
         "matte": "0.1.1",
-        "q" : "0.9.6"
+        "q" : "0.9.6",
+        "cssom" : "0.3.0"
     },
     "devDependencies": {
         "express": "3.4.0"

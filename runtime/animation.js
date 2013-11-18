@@ -23,12 +23,13 @@
 
 require("runtime/dependencies/gl-matrix");
 var Base = require("runtime/base").Base;
+var Utilities = require("runtime/utilities").Utilities;
 
 var Channel = exports.Channel = Object.create(Base, {
 
     startTime: { value: 0, writable:true },
 
-    endTime: { value: 0, writable:true },
+    endTime: { value: -1, writable:true },
 
     _sampler: { value: null, writable: true },
 
@@ -169,7 +170,6 @@ var Channel = exports.Channel = Object.create(Base, {
 
                 this.endTime = inputArray[count - 1];
                 this.startTime = inputArray[0];
-                //time %= this.endTime;
 
                 var lastKeyIndex = 0;
                 var i;
@@ -340,6 +340,7 @@ var Channel = exports.Channel = Object.create(Base, {
 });
 
 var Sampler = Object.create(Base, {
+
     _input: { value: null, writable: true },
 
     input: {
@@ -376,10 +377,133 @@ var Sampler = Object.create(Base, {
             return this;
         }
     }
+});
+
+//FIXME: refactor some common methods of Basic Animation and KeyFrame Animation
+var Animation = exports.Animation = Object.create(Object.prototype, {
+
+    KEYFRAME: { value: "KEYFRAME", writable: true },
+
+    BASIC: { value: "BASIC", writable: true },
+
+    _type: { value: null, writable: true },
+
+    type: {
+        set: function(value) {
+            this._type = value;
+        }, get: function() {
+            return this._type;
+        }
+    },
+
+    _delegate: { value: null, writable: true },
+
+    delegate: {
+        set: function(value) {
+            this._delegate = value;
+        }, get: function() {
+            return this._delegate;
+        }
+    }
 
 });
 
-exports.Animation = Object.create(Base, {
+function NumberInterpolator(from, to, step)
+{
+    //FIXME: the timing function should not be hardcoded, but for the current demos we just need ease out
+    return Utilities.easeOut(from + ((to - from) * step));
+}
+
+//add the moment, system based.
+exports.BasicAnimation = Object.create(Animation, {
+
+    _startTime: { value: 0, writable: true },
+
+    _from: { value: null, writable: true },
+
+    _to: { value: null, writable: true },
+
+    _duration: { value: 0, writable: true },
+
+    path: { value: null, writable: true },
+
+    target: { value: null, writable: true },
+
+    _interpolator: { value: null, writable: true },
+
+    extras : { value: null, writable: true },
+
+    _inferInterpolatorFromValue: {
+        value: function(value) {
+            //is number
+            if (! isNaN (value-0) && value != null) {
+                return NumberInterpolator;
+            }
+            return nil;
+        }
+    },
+
+    to: {
+        set: function(value) {
+            this._interpolator = this._inferInterpolatorFromValue(value);
+            this._to = value;
+        }, get: function() {
+            return this._to;
+        }
+    },
+
+    from: {
+        set: function(value) {
+            this._from = value;
+        }, get: function() {
+            return this._from;
+        }
+    },
+
+    duration: {
+        set: function(value) {
+            this._duration = value;
+        }, get: function() {
+            return this._duration;
+        }
+    },
+
+    _evaluateAtTime: {
+        value: function(time) {
+            var step = (time - this._startTime) / this.duration;
+            var value = this._interpolator(this._from, this._to, step);
+            if (this.target) {
+                if (this.path) {
+                    this.target[this.path] = value;
+                    this.delegate.animationDidUpdate(this);
+                }
+            }
+        }
+    },
+
+    animationWasAddedToTarget: {
+        value: function(target) {
+            this._startTime = Date.now();
+        }
+    },
+
+    animationWasRemovedFromTarget: {
+        value: function(target) {
+            this._startTime = 0;
+        }
+    },
+
+    init: {
+        value: function() {
+            this.type = Animation.BASIC;
+            this.extras = {};
+            return this;
+        }
+    }
+
+});
+
+exports.KeyframeAnimation = Object.create(Animation, {
 
     _count: { value: 0, writable: true },
 
@@ -391,7 +515,7 @@ exports.Animation = Object.create(Base, {
 
     _startTime: { value: 0, writable: true },
 
-    _endTime: { value: 0, writable: true },
+    _endTime: { value: -1, writable: true },
 
     channels: {
         get: function() {
@@ -458,7 +582,7 @@ exports.Animation = Object.create(Base, {
                     }
                     return endTime;
                 }
-                return 0;
+                return -1;
             }
         }
     },
@@ -469,7 +593,6 @@ exports.Animation = Object.create(Base, {
                 channel.updateTargetsAtTime(time, resourceManager);
             }, this);
         }
-
     },
 
     initWithDescription: {
@@ -484,7 +607,6 @@ exports.Animation = Object.create(Base, {
                 var sampler = Object.create(Sampler).initWithDescription(samplerDescription);
                 this.samplers[samplerID] = sampler;
             }, this);
-
 
             description.channels.forEach( function(channelDescription) {
                 var animationChannel = Object.create(Channel).initWithDescription(channelDescription);
@@ -501,9 +623,9 @@ exports.Animation = Object.create(Base, {
 
     init: {
         value: function() {
-            this.__Base_init();
             this.channels = [];
             this.samplers = {};
+            this.type = Animation.KEYFRAME;
             return this;
         }
     }

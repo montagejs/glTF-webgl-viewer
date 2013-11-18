@@ -85,13 +85,22 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(firstTime) {
             if(firstTime) {
                 this.modelsController.content = [
+                    { "name": "loft",      "path": "model/loft/loft8.json"},
+                    { "name": "vc",      "path": "model/vc/vc.json"},
+                    { "name": "minebot",            "path": "model/minebot/mine_bot_anim.json"},
+                    { "name": "bimba",            "path": "model/bimba/bimba.json"},
+                    { "name": "David",            "path": "model/David/David.json"},
+                    { "name": "elephant2",            "path": "model/elephant2/elephant2.json"},
+
+                    { "name": "HolidayIn",            "path": "model/holidayin/models/model.json"},
+                    { "name": "Atomium",            "path": "model/Atomium/models/model.json"},
+                    { "name": "frigate",            "path": "model/frigate/frigate.json"},
+                    { "name": "test",    "path": "model/testMark/testMark.json"},
+                    { "name": "modo",    "path": "model/modo/modo.json"},
                     { "name": "duck", "path": "model/duck/duck.json"},
                     { "name": "Buggy",              "path": "model/rambler/Rambler.json"},
                     { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
                     { "name": "Wine", "path": "model/wine/wine.json"},
-                    { "name": "vc",                 "path": "model/vc/vc.json"}
-
-                    ,
 
 
                     { "name": "Buggy", "path": "model/rambler/Rambler.json"},
@@ -103,7 +112,6 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
                     { "name": "loft",    "path": "model/loft4/loft4.json"},
 
-                    { "name": "test",    "path": "model/testMark/testMark.json"},
 
                     { "name": "cubemaps",    "path": "model/cubemaps/test1.json"},
 
@@ -116,13 +124,11 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                     { "name": "Wine",               "path": "model/wine/wine.json"},
                     { "name": "Nexus",              "path": "model/NexusFlattened/NexusFlattened.json"},
                     { "name": "room1",              "path": "model/room/testRoom5.json"},
-                    { "name": "megacity",           "path": "model/megacity/megacityVideo.json"},
-                    { "name": "minebot",            "path": "model/minebot/mine_bot_anim.json"},
+                    { "name": "megacity",           "path": "model/megacity/megacity4.json"},
                     { "name": "Buggy",              "path": "model/rambler/Rambler.json"},
                     { "name": "BuggyFlatttened",    "path": "model/rambler/RamblerFlattened.json"},
                     { "name": "Wine",               "path": "model/wine/wine.json"},
                     { "name": "balloon",            "path": "model/baloon3/baloon.json"},
-                    { "name": "frigate",            "path": "model/frigate/frigate.json"},
                     { "name": "brainsteam",         "path": "model/brainsteam/brainsteam2.json"},
                     { "name": "FemurTri",           "path": "model/femur/FemurTri.json"},
                     { "name": "monster",            "path": "model/monster/monster.json"}
@@ -325,6 +331,5 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
             }
         }
     }
-
 
 });

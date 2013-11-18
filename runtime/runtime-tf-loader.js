@@ -16,7 +16,7 @@ var Camera = require("runtime/camera").Camera;
 var Skin = require("runtime/skin").Skin;
 var glTFScene = require("runtime/glTF-scene").glTFScene;
 var Transform = require("runtime/transform").Transform;
-var Animation = require("runtime/animation").Animation;
+var KeyframeAnimation = require("runtime/animation").KeyframeAnimation;
 var AnimationManager = require("runtime/animation-manager").AnimationManager;
 
 exports.RuntimeTFLoader = Object.create(glTFParser, {
@@ -433,7 +433,7 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
             scene.baseURL = this.baseURL;
             this.storeEntry(entryID, scene, description);
 
-            var rootNode = Object.create(glTFNode).init();
+            var rootNode = Object.create(glTFNode).initWithID(); //nothing passed as arg = auto id
 
             if (description.nodes) {
                 description.nodes.forEach(function(nodeUID) {
@@ -554,7 +554,7 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
                 this._animations = [];
             }
 
-            var animation = Object.create(Animation).initWithDescription(description);
+            var animation = Object.create(KeyframeAnimation).initWithDescription(description);
             animation.id =  entryID;
             this.storeEntry(entryID, animation, description);
 

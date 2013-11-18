@@ -1,7 +1,7 @@
 {
     "animations": {},
     "asset": {
-        "generator": "collada2gltf@782387ec15d995bc67e8b8678971836074efcbe1"
+        "generator": "collada2gltf@7a0aceba18a5e909be15e6303144f5379cf6bf3f"
     },
     "attributes": {
         "attribute_23": {
@@ -239,6 +239,11 @@
     "profile": "WebGL 1.0.2",
     "programs": {
         "program_0": {
+            "attributes": [
+                "a_normal",
+                "a_position",
+                "a_texcoord0"
+            ],
             "fragmentShader": "duck0FS",
             "vertexShader": "duck0VS"
         }

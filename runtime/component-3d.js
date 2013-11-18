@@ -97,10 +97,14 @@ exports.Component3D = Target.specialize( {
             if (status === "loaded") {
                 if (this._id) {
                     this.glTFElement = this.scene.glTFElement.ids[this._id];
-
+                    if (this.glTFElement == null) {
+                        //FIXME: this should be probably fixed at the loader level instead of having a special case for root. TBD
+                        if (this.scene.glTFElement.rootNode.id == this._id) {
+                            this.glTFElement = this.scene.glTFElement.rootNode;
+                        }
+                    }
                     if (this.glTFElement) {
                         this._hasUnresolvedId = false;
-                        //console.log("node attached to element with id:"+this._id);
                     }
                 }
             }
@@ -116,13 +120,7 @@ exports.Component3D = Target.specialize( {
                 }
 
                 if (this._id) {
-                    if (this.scene.status === "loaded") {
-                        this.glTFElement = this.scene.glTFElement.ids[this._id];
-                        if (this.glTFElement) {
-                            this._hasUnresolvedId = false;
-                            //console.log("node attached to element with id:"+this._id);
-                        }
-                    }
+                    this.handleStatusChange(this.scene.status, "status", this.scene);
                 }
             }
         }

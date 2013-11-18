@@ -35,7 +35,7 @@ var Projection = require("runtime/projection").Projection;
 var Camera = require("runtime/camera").Camera;
 var BBox = require("runtime/utilities").BBox;
 
-exports.SceneHelper = Object.create(Object.prototype, {
+var SceneHelper = exports.SceneHelper = Object.create(Object.prototype, {
 
     getGLTFViewPoints: {
         value: function(scene) {
@@ -69,9 +69,8 @@ exports.SceneHelper = Object.create(Object.prototype, {
         }
     },
 
-    createNodeIncludingCamera: {
-        value: function(cameraName, m3dScene) {
-            var scene = m3dScene.glTFElement;
+    createGLTFNodeIncludingCamera: {
+        value: function(cameraName) {
             //TODO: make that a default projection method
             var projection = Object.create(Projection);
             projection.initWithDescription( {
@@ -82,7 +81,7 @@ exports.SceneHelper = Object.create(Object.prototype, {
                     "znear":0.1,
                     "zfar":100
                 }
-                });
+            });
 
             //create camera
             var camera = Object.create(Camera).init();
@@ -92,10 +91,16 @@ exports.SceneHelper = Object.create(Object.prototype, {
             camera.name = cameraNode.name = cameraName;
             cameraNode.id = Uuid.generate();
             cameraNode.baseId = cameraNode.id;
-            scene.ids[cameraNode.baseId] = cameraNode;
             cameraNode.cameras.push(camera);
-            //FIXME: find out why even when checking that we mergeBBOX of meshes only the highest level BBOX is still wrong if camera is added to the scene.
-            //scene.rootNode.children.push(cameraNode);
+            return cameraNode;
+        }
+    },
+
+    createNodeIncludingCamera: {
+        value: function(cameraName, m3dScene) {
+            var cameraNode = SceneHelper.createGLTFNodeIncludingCamera(cameraName);
+            var scene = m3dScene.glTFElement;
+            scene.ids[cameraNode.baseId] = cameraNode;
             var m3dNode = Montage.create(Node);
             m3dNode.scene = m3dScene;
             m3dNode.id = cameraNode.baseId;

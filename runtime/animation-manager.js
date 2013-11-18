@@ -23,6 +23,8 @@
 
 require("runtime/dependencies/gl-matrix");
 var Base = require("runtime/base").Base;
+var KeyframeAnimation = require("runtime/animation").KeyframeAnimation;
+var BasicAnimation = require("runtime/animation").BasicAnimation;
 var Animation = require("runtime/animation").Animation;
 
 exports.AnimationManager = Object.create(Base, {
@@ -56,7 +58,7 @@ exports.AnimationManager = Object.create(Base, {
                     }
                     return endTime;
                 }
-                return 0;
+                return -1;
             }
         }
     },
@@ -74,14 +76,52 @@ exports.AnimationManager = Object.create(Base, {
         }
     },
 
+    _sceneTime: { value: 0, writable: true },
+
+    sceneTime: {
+        get: function() {
+            return this._sceneTime;
+        },
+        set: function(value) {
+            if (this._delegate) {
+                if (this._delegate.sceneTimeWillChange) {
+                    this._delegate.sceneTimeWillChange(this, value);
+                }
+            }
+            this._sceneTime = value;
+            if (this._delegate) {
+                if (this._delegate.sceneTimeDidChange) {
+                    this._delegate.sceneTimeDidChange(this);
+                }
+            }
+        }
+    },
+
+    _delegate: { value: 0, writable: true },
+
+    delegate: {
+        get: function() {
+            return this._delegate;
+        },
+        set: function(value) {
+            this._delegate = value;
+        }
+    },
+
     targets: {
         get: function() {
             var targets = [];
             if (this._animations != null) {
                 this._animations.forEach(function(animation) {
-                    animation.channels.forEach(function(channel) {
-                        targets.push(channel.target.id);
-                    }, this);
+                    if (animation.type == Animation.KEYFRAME) {
+                        animation.channels.forEach(function(channel) {
+                            targets.push(channel.target.id);
+                        }, this);
+                    } else {
+                        if (animation.type == Animation.BASIC) {
+                        }
+                    }
+
                 }, this);
             }
             return targets;
@@ -113,13 +153,61 @@ exports.AnimationManager = Object.create(Base, {
         }
     },
 
+    //will be deprecated
     updateTargetsAtTime: {
         value: function(time, resourceManager) {
             if (this.animations) {
                 this.animations.forEach( function(animation) {
-                    animation.updateTargetsAtTime(time, resourceManager);
+                    //FIXME: unify this - could just use a method called evaluate
+                    if (animation.type == Animation.KEYFRAME) {
+                        animation.updateTargetsAtTime(time, resourceManager);
+                    } else if (animation.type == Animation.BASIC) {
+                        //animation._evaluateAtTime(time);
+                    }
                 }, this);
             }
+        }
+    },
+
+    evaluateAtTime: {
+        value: function(time, resourceManager) {
+            if (this._activeAnimations) {
+                this._activeAnimations.forEach( function(animation) {
+                    //FIXME: unify this - could just use a method called evaluate
+                    if (animation.type == Animation.KEYFRAME) {
+                        //animation.updateTargetsAtTime(time, resourceManager);
+                    } else if (animation.type == Animation.BASIC) {
+                        animation._evaluateAtTime(time);
+                    }
+                }, this);
+            }
+        }
+    },
+
+    hasActiveAnimations: {
+        value: function() {
+            return this._activeAnimations.length > 0;
+        }
+    },
+
+    _activeAnimations: { value: 0 , writable: true },
+
+    playAnimation: {
+        value: function(animation) {
+            var self = this;
+            this._activeAnimations.push(animation);
+            if (animation.delegate)
+                animation.delegate.animationDidStart(animation);
+            setTimeout(function() {
+                if (animation.delegate) {
+                    animation.delegate.animationDidStop(animation);
+                    var index = self._activeAnimations.indexOf(animation);
+                    if (index !== -1) {
+                        self._activeAnimations.splice(index, 1);
+                    }
+                }
+
+            }, animation.duration);
         }
     },
 
@@ -127,6 +215,7 @@ exports.AnimationManager = Object.create(Base, {
         value: function() {
             this.__Base_init();
             this.animations = [];
+            this._activeAnimations = [];
             return this;
         }
     }

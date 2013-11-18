@@ -132,7 +132,6 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
     boundingBox: {
         enumerable: true,
         get: function() {
-
             this._computeBBOXIfNeeded();
             return this._boundingBox;
         },
@@ -189,6 +188,16 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
             this._worldMatrix = mat4.create();
 
             return this;
+        }
+    },
+
+    initWithID: {
+        value: function(id) {
+            if (id == null)
+                this.id = this.id + "-" +this.bumpId();
+            else
+                this.id = id;
+            return this.init();
         }
     },
 
