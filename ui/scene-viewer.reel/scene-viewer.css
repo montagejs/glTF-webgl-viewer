@@ -1,32 +1,9 @@
-html,
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    -webkit-user-select: none;
-}
-
-html {
-    background-color: hsl(0,0%,95%)
-}
-
-body {
-    font: 13px/1.231 "Lucida Grande", Lucida, Verdana, sans-serif;
-    color: #222;
-    overflow: hidden;
-}
-
-ul, ol {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.sceneViewer {
-    display: -webkit-box;
-    height: 100%;
-}
-
-.sceneViewer .sceneView {
+.SceneViewer {
     -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    display: -webkit-box;
+    display: -ms-flex;
+    display: flex;
+    height: 100%;
 }

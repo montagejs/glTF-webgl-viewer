@@ -27,16 +27,9 @@ ul, ol {
 
 /* Stage -------------------------------- */
 
-.stage {
+.Stage {
     display: -webkit-box;
-    height: 100%;
-}
-
-.stage .ColladaView {
-    -webkit-box-flex: 1;
-}
-
-.stage .options {
-    width: 270px;
+    display: -ms-flex;
+    display: flex;
     height: 100%;
 }
