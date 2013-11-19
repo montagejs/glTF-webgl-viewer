@@ -136,25 +136,19 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                 ];
                 this.modelPath = this.modelsController.content[0].path;
             }
-            if (this.fillViewport) {
-                window.addEventListener("resize", this, true);
-            }
         }
     },
 
     exitDocument: {
         value: function() {
-            if (this.fillViewport) {
-                window.removeEventListener("resize", this, true);
-            }
         }
     },
 
 
     willDraw: {
         value: function() {
-            this.view.width = this.width = window.innerWidth - 270;
-            this.view.height = this.height = window.innerHeight;
+            if (this.sceneView)
+                this.sceneView.needsDraw = true;
         }
     },
 
@@ -172,33 +166,6 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
     location: {
         value: null
-    },
-
-    _fillViewport: {
-        value: true
-    },
-
-    fillViewport: {
-        get: function() {
-            return this._fillViewport;
-        },
-        set: function(value) {
-            if (value && ! this._fillViewport) {
-                window.addEventListener("resize", this, true);
-            } else if (! value && this._fillViewport) {
-                window.removeEventListener("resize", this, true);
-            }
-            this._fillViewport = value;
-        }
-    },
-
-    height: {value: null},
-    width: {value: null},
-
-    captureResize: {
-        value: function(evt) {
-            this.needsDraw = true;
-        }
     },
 
     handleOptionsReload: {

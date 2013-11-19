@@ -204,8 +204,13 @@ exports.SceneViewer = Component.specialize({
     willDraw: {
         value: function() {
             if (this.sceneView) {
-                this.sceneView.width = window.innerWidth;
-                this.sceneView.height = window.innerHeight;
+                var computedStyle = window.getComputedStyle(this.element, null);
+
+                var w = parseInt(computedStyle["width"]);
+                var h = parseInt(computedStyle["height"]);
+
+                this.sceneView.width = w;
+                this.sceneView.height = h;
                 this.sceneView.needsDraw = true;
             }
         }
