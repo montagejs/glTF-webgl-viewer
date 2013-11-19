@@ -213,7 +213,10 @@ exports.View = Component.specialize( {
                 if (value.isLoaded() === false) {
                     value.addOwnPropertyChangeListener("status", this);
                     return;
+                } else {
+                    this.needsDraw = true;
                 }
+
             }
 
             if (this.scene != value) {
@@ -411,34 +414,6 @@ exports.View = Component.specialize( {
         }
     },
 
-    //scenePath is legacy and is kept just for compatibility for now
-    scenePath: {
-        set: function(value) {
-            if (value) {
-                var URLObject = URL.parse(value);
-                if (!URLObject.scheme) {
-                    var packages = Object.keys(require.packages);
-                    //HACK: for demo, packages[0] is guaranted to be the entry point
-                    value = URL.resolve(packages[0], value);
-                }
-            }
-
-            if (this.scene) {
-                if (value == this.scene.path) {
-                    return;
-                }
-            }
-
-            var scene = Montage.create(Scene).init();
-            scene.addOwnPropertyChangeListener("status", this);
-            scene.path = value;
-        },
-
-        get: function() {
-            return this.scene ? this.scene.path : null;
-        }
-    },
-
     //FIXME: cache this in the scene
     _getViewPointIndex: {
         value: function(viewPoint) {
@@ -513,7 +488,6 @@ exports.View = Component.specialize( {
                             self.sceneRenderer.webGLRenderer.webGLContext.finish();
                             self._sceneResourcesLoaded = true;
                             self.needsDraw = true;
-
                         }, function (error) {
                         }, function (progress) {
                         });
@@ -873,11 +847,6 @@ exports.View = Component.specialize( {
 
     draw: {
         value: function() {
-            //bail out if we don't allow to have resources progressively loaded
-            //we should show a loading progress here
-            if ((this.allowsProgressiveSceneLoading === false) && (this._sceneResourcesLoaded === false)) {
-                return;
-            }
             this.sceneRenderer.technique.rootPass.viewPoint = this._internalViewPoint;
 
             //Update canvas when size changed
@@ -889,6 +858,10 @@ exports.View = Component.specialize( {
             if (this._shouldForceClear || (this._contextAttributes.preserveDrawingBuffer == null) || (this._contextAttributes.preserveDrawingBuffer == true)) {
                 webGLContext.clearColor(0,0,0,0.);
                 webGLContext.clear(webGLContext.DEPTH_BUFFER_BIT | webGLContext.COLOR_BUFFER_BIT);
+            }
+
+            if ((this.allowsProgressiveSceneLoading === false) && (this._sceneResourcesLoaded === false)) {
+                return;
             }
 
             if (this._scene == null || this.viewPoint == null || this._disableRendering)

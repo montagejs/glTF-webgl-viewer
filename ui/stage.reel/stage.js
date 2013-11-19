@@ -38,6 +38,7 @@ var Component = require("montage/ui/component").Component;
 var RangeController = require("montage/core/range-controller").RangeController;
 var Utilities = require("runtime/utilities").Utilities;
 var Node = require("runtime/node").Node;
+var Scene = require("runtime/scene").Scene;
 
 var glTFNode = require("runtime/glTF-node").glTFNode;
 var Camera = require("runtime/camera").Camera;
@@ -249,7 +250,9 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(scenePath) {
             this.loadScene();
             if (this.view) {
-                this.view.scenePath = scenePath;
+                var scene = Montage.create(Scene).init();
+                scene.path = scenePath;
+                this.view.scene = scene;
             }
         }
     },

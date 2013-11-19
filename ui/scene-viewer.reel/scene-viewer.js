@@ -6,13 +6,6 @@ var SceneHelper = require("runtime/scene-helper").SceneHelper;
 exports.SceneViewer = Component.specialize({
 
     /**
-     * If true the viewer will automatically switch from one animated viewPoint to another
-     * @type {boolean}
-     * @default true
-     */
-    automaticallyCyclesThroughViewPoints: { value: true, writable: true },
-
-    /**
      * The Scene Object
      * @type {Object}
      */
@@ -35,6 +28,37 @@ exports.SceneViewer = Component.specialize({
     sceneView: {
         get: function() {
             return this.templateObjects ? this.templateObjects.sceneView : null;
+        }
+    },
+
+    /**
+     * If true the viewer will automatically switch from one animated viewPoint to another
+     * @type {boolean}
+     * @default true
+     */
+    automaticallyCyclesThroughViewPoints: { value: true, writable: true },
+
+    play: {
+        value: function() {
+            if (this.sceneView) {
+                this.sceneView.play();
+            }
+        }
+    },
+
+    pause: {
+        value: function() {
+            if (this.sceneView) {
+                this.sceneView.pause();
+            }
+        }
+    },
+
+    stop: {
+        value: function() {
+            if (this.sceneView) {
+                this.sceneView.stop();
+            }
         }
     },
 
@@ -67,13 +91,28 @@ exports.SceneViewer = Component.specialize({
 
     /* internal montage framework + callbacks from various delegates */
 
+    _sceneDidLoad: {
+        value: function(scene) {
+            if (scene.glTFElement) {
+                if (this.scene.glTFElement.animationManager) {
+                    if (this.scene.glTFElement.animationManager) {
+                        this.scene.glTFElement.animationManager.delegate = this;
+                    }
+                }
+            }
+        }
+    },
+
     handleStatusChange: {
         value: function(status, key, object) {
             if (status === "loaded") {
-                if (this.scene.glTFElement.animationManager) {
-                    this.scene.glTFElement.animationManager.delegate = this;
-                    this.scene.removeOwnPropertyChangeListener("status", this);
-                }
+                this._sceneDidLoad(object);
+                //Work-around
+                var self = this;
+                setTimeout(function() {
+                    self.scene.removeOwnPropertyChangeListener("status", self);
+                }, 1);
+
             }
         }
     },
@@ -81,11 +120,15 @@ exports.SceneViewer = Component.specialize({
     sceneDidChange: {
         value: function() {
             if (this.scene) {
-                this.scene.addOwnPropertyChangeListener("status", this);
+                if (this.scene.isLoaded()) {
+                    this._sceneDidLoad(this.scene);
+                } else {
+                    this.scene.addOwnPropertyChangeListener("status", this);
+                }
+
             }
             if (this.sceneView) {
                 this.sceneView.scene = this.scene;
-                this.sceneView.play();
             }
         }
     },
@@ -150,12 +193,6 @@ exports.SceneViewer = Component.specialize({
             if (this.fillViewport) {
                 window.removeEventListener("resize", this, true);
             }
-        }
-    },
-
-    canDraw: {
-        value: function() {
-            return this.sceneView != null;
         }
     },
 
