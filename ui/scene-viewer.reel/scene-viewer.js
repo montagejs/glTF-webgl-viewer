@@ -64,8 +64,6 @@ exports.SceneViewer = Component.specialize({
 
     /* private */
 
-    _fillViewport: { value: true },
-
     _scene: { value: null, writable: true },
 
     constructor: {
@@ -73,21 +71,6 @@ exports.SceneViewer = Component.specialize({
             this.super();
         }
     },
-
-    fillViewport: {
-        get: function() {
-            return this._fillViewport;
-        },
-        set: function(value) {
-            if (value && ! this._fillViewport) {
-                window.addEventListener("resize", this, true);
-            } else if (! value && this._fillViewport) {
-                window.removeEventListener("resize", this, true);
-            }
-            this._fillViewport = value;
-        }
-    },
-
 
     /* internal montage framework + callbacks from various delegates */
 
@@ -177,22 +160,20 @@ exports.SceneViewer = Component.specialize({
             //we ensure that we'll have the scene propagated to view by calling sceneDidChange() in templateDidLoad
             this.sceneDidChange();
             this.needsDraw = true;
+            this.sceneView.needsDraw = true;
+
         }
     },
 
     enterDocument: {
         value: function(firstTime) {
-            if (this.fillViewport) {
-                window.addEventListener("resize", this, true);
-            }
+            window.addEventListener("resize", this, true);
         }
     },
 
     exitDocument: {
         value: function() {
-            if (this.fillViewport) {
-                window.removeEventListener("resize", this, true);
-            }
+            window.removeEventListener("resize", this, true);
         }
     },
 
@@ -204,13 +185,6 @@ exports.SceneViewer = Component.specialize({
     willDraw: {
         value: function() {
             if (this.sceneView) {
-                var computedStyle = window.getComputedStyle(this.element, null);
-
-                var w = parseInt(computedStyle["width"]);
-                var h = parseInt(computedStyle["height"]);
-
-                this.sceneView.width = w;
-                this.sceneView.height = h;
                 this.sceneView.needsDraw = true;
             }
         }
@@ -221,6 +195,14 @@ exports.SceneViewer = Component.specialize({
     captureResize: {
         value: function(evt) {
             this.needsDraw = true;
+
+            var w = this.element.offsetWidth;
+            var h = this.element.offsetHeight;
+
+            this.sceneView.width = w;
+            this.sceneView.height = h;
+            this.sceneView.needsDraw = true;
+
         }
     }
 
