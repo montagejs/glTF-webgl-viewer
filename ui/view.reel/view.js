@@ -129,6 +129,10 @@ exports.View = Component.specialize( {
 
     sceneWillChange: {
         value: function(value) {
+            if (this.getResourceManager()) {
+                this.getResourceManager().reset();
+            }
+
             this._firstFrameDidRender = false;
 
             if (this.delegate) {
@@ -442,7 +446,7 @@ exports.View = Component.specialize( {
                             var shouldKeepViewPoint = false;
                             if (this.viewPoint) {
                                 if (this.viewPoint.scene) {
-                                    shouldKeepViewPoint = this.viewPoint.scenePath === m3dScene.scenePath;
+                                    shouldKeepViewPoint = (this.viewPoint.scenePath != null) && (this.viewPoint.scenePath === m3dScene.scenePath);
                                 }
                             }
                             if (shouldKeepViewPoint === false) {
@@ -472,7 +476,6 @@ exports.View = Component.specialize( {
                         this.sceneRenderer.scene = scene;
                     }
 
-                    //right now, play by default
                     if (this.viewPoint) {
                         if (this.viewPoint.scene == null) {
                             this.viewPoint.scene = m3dScene;
@@ -485,7 +488,6 @@ exports.View = Component.specialize( {
                     if (this.allowsProgressiveSceneLoading === false) {
                         var renderPromise = this.scene.prepareToRender(this.sceneRenderer.webGLRenderer);
                         renderPromise.then(function () {
-                            self.sceneRenderer.webGLRenderer.webGLContext.finish();
                             self._sceneResourcesLoaded = true;
                             self.needsDraw = true;
                         }, function (error) {

@@ -226,25 +226,7 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
     loadScene: {
         value: function() {
-            var self = this;
-            var view = this.view;
-            if (view) {
-                if (view.sceneRenderer) {
-                    if (view.sceneRenderer.scene) {
-                        view.sceneRenderer.technique.rootPass.scene.rootNode.apply( function(node, parent) {
-                            if (node.meshes) {
-                                if (node.meshes.length) {
-                                    node.meshes.forEach( function(mesh) {
-                                        mesh.loadedPrimitivesCount = 0;
-                                        mesh.step = 0;
-                                    }, self);
-                                }
-                            }
-                            return null;
-                        } , true, null);
-                    }
-                }
-            }
+
         }
     },
 
