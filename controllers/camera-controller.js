@@ -44,18 +44,26 @@ exports.CameraController = Montage.specialize( {
             return this._viewPoint;
         },
         set: function(value) {
-            this._viewPoint = value;
+            if (this._viewPoint != value) {
+                this._viewPoint = value;
+                this.zoomStep = 0;
+            }
         }
     },
 
     _node: { value: null, writable: true},
+
+    zoomStep: { value: 0, writable: true },
 
     node: {
         get: function() {
             return this._node;
         },
         set: function(value) {
-            this._node = value;
+            if (this._node != value) {
+                this._node = value;
+                this.zoomStep = 0;
+            }
         }
     },
 
@@ -64,6 +72,42 @@ exports.CameraController = Montage.specialize( {
     _transform: { value: null, writable: true },
 
     _axisUp: { value: null, writable: true },
+
+    zoom: {
+        value: function(event) {
+            if (this.moving)
+                return;
+
+            var self = this;
+            var direction = vec3.create();
+            var eye = vec3.create(this.viewPoint.glTFElement.transform.translation);
+
+            var targetPosition;
+            var rootNode = this.node.glTFElement;
+            var sceneBBox =  rootNode.getBoundingBox(true);
+            targetPosition = [
+                (sceneBBox[0][0] + sceneBBox[1][0]) / 2,
+                (sceneBBox[0][1] + sceneBBox[1][1]) / 2,
+                (sceneBBox[0][2] + sceneBBox[1][2]) / 2];
+
+            if (this.zoomStep == 0) {
+                var lg = vec3.createFrom(sceneBBox[1][0] - sceneBBox[0][0], sceneBBox[1][1] - sceneBBox[0][1], sceneBBox[1][2] - sceneBBox[0][2])
+                this.zoomStep = 0.0001 * vec3.length(lg);
+
+            }
+
+            direction[0] = targetPosition[0] - eye[0];
+            direction[1] = targetPosition[1] - eye[1];
+            direction[2] = targetPosition[2] - eye[2];
+            vec3.normalize(direction);
+
+            eye[0] += this.zoomStep * direction[0] * event.wheelDeltaY;
+            eye[1] += this.zoomStep * direction[1] * event.wheelDeltaY;
+            eye[2] += this.zoomStep * direction[2] * event.wheelDeltaY;
+
+            this.viewPoint.glTFElement.transform.translation = eye;
+        }
+    },
 
     translate: {
         value: function(event) {
@@ -146,15 +190,11 @@ exports.CameraController = Montage.specialize( {
             var finalMat = mat4.identity();
             mat4.multiply(translationMatrix, rotationMatrix, finalMat);
             this.viewPoint.glTFElement.transform.matrix = finalMat;
-
-            //event.stopPropagation();
-            event.preventDefault();
         }
     },
 
     beginTranslate: {
         value: function(event) {
-
             this.moving = true;
             if (this._transform == null) {
                 this._transform = Object.create(Transform).init();

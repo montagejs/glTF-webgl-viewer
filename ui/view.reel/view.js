@@ -60,6 +60,7 @@ var BBox = require("runtime/utilities").BBox;
 var SceneHelper = require("runtime/scene-helper").SceneHelper;
 var CameraController = require("controllers/camera-controller").CameraController;
 var Transform = require("runtime/transform").Transform;
+var cssom = require("runtime/dependencies/CSSOM");
 
 /**
     Description TODO
@@ -510,8 +511,74 @@ exports.View = Component.specialize( {
 
     enterDocument: {
         value: function(firstTime) {
-            var simulateContextLoss = false;  //Very naive for now
             var self = this;
+
+            this.element.addEventListener('wheel', function (event) {
+                if (self.scene) {
+                    if (self.scene.rootNode) {
+                        self._cameraController.node = self.scene.rootNode;
+                        self._cameraController.zoom(event);
+                    }
+                }
+                event.stopPropagation();
+                event.preventDefault();
+            }, false);
+
+            this.element.addEventListener('gesturestart', function (event) {
+                event.preventDefault();
+            }, false);
+
+            this.element.addEventListener('gesturechange', function (event) {
+                event.preventDefault();
+            }, false);
+
+            var composer = this.translateComposer;
+
+            composer.addEventListener("translate", function(event) {
+
+                if (self.scene) {
+                    if (self.scene.rootNode) {
+                        self._cameraController.node = self.scene.rootNode;
+                        self._cameraController.translate(event);
+                    }
+                }
+                self.needsDraw = true;
+            });
+
+            composer.addEventListener('translateStart', function (event) {
+
+                if (self.scene) {
+                    if (self.scene.rootNode) {
+                        self._cameraController.node = self.scene.rootNode;
+                        self._cameraController.beginTranslate(event);
+                    }
+                }
+            }, false);
+
+            composer.addEventListener('translateEnd', function (event) {
+                if (self.scene) {
+                    if (self.scene.rootNode) {
+                        self._cameraController.node = self.scene.rootNode;
+                        self._cameraController.endTranslate(event);
+                    }
+                }
+            }, false);
+
+            this.addComposerForElement(composer, this.canvas);
+
+            /* Hack for MON-420 */
+            var wheelEventName;
+            if (typeof window.onwheel !== "undefined"){
+                wheelEventName = "wheel";
+            } else {
+                wheelEventName = "mousewheel";
+            }
+            this.canvas.removeEventListener(wheelEventName, composer, true);
+            this.canvas.removeEventListener(wheelEventName, composer, false);
+
+
+
+            var simulateContextLoss = false;  //Very naive for now
 
             if (simulateContextLoss) {
                 this.canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(this.canvas);
@@ -627,11 +694,17 @@ exports.View = Component.specialize( {
             this.canvas.addEventListener('mousedown', this.start.bind(this), true);
             document.addEventListener('mouseup', this.end.bind(this), true);
             document.addEventListener('mousemove', this.move.bind(this), true);
-            document.addEventListener('mousewheel', this, true);
+            document.addEventListener('wheel', this, true);
         }
     },
 
     captureMousewheel: {
+        value: function() {
+            this.needsDraw = true;
+        }
+    },
+
+    captureWheel: {
         value: function() {
             this.needsDraw = true;
         }
@@ -1022,40 +1095,10 @@ exports.View = Component.specialize( {
             composer.hasMomentum = true;
             composer.allowFloats = true;
             composer.pointerSpeedMultiplier = 0.15;
-            this.addComposerForElement(composer, this.canvas);
 
             this._cameraController = Montage.create(CameraController);
 
             this._internalViewPoint = SceneHelper.createGLTFNodeIncludingCamera("__internal_viewPoint__");
-
-            composer.addEventListener("translate", function(event) {
-
-                if (self.scene) {
-                    if (self.scene.rootNode) {
-                        self._cameraController.node = self.scene.rootNode;
-                        self._cameraController.translate(event);
-                    }
-                }
-                self.needsDraw = true;
-            });
-
-            composer.addEventListener('translateStart', function (event) {
-                if (self.scene) {
-                    if (self.scene.rootNode) {
-                        self._cameraController.node = self.scene.rootNode;
-                        self._cameraController.beginTranslate(event);
-                    }
-                }
-            }, false);
-
-            composer.addEventListener('translateEnd', function (event) {
-                if (self.scene) {
-                    if (self.scene.rootNode) {
-                        self._cameraController.node = self.scene.rootNode;
-                        self._cameraController.endTranslate(event);
-                    }
-                }
-            }, false);
 
             this.translateComposer = composer;
         }
