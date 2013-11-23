@@ -200,7 +200,9 @@ exports.Component3D = Target.specialize( {
 
     _style: { value: null, writable: true },
 
-    _applyDefaultStyle: {
+    _defaultTransition: { value: {"duration" : 0, "timingFunction" : "ease", "delay" : 0 } },
+
+    _createDefaultStyle: {
         value: function() {
             var style = {};
             if (this.styleableProperties != null) {
@@ -208,25 +210,27 @@ exports.Component3D = Target.specialize( {
                     if (this.getDefaultValueForCSSProperty) {
                         var propertyValue = this.getDefaultValueForCSSProperty(property);
                         if (propertyValue) {
-                            this._applyCSSPropertyWithValueForState(this.__STYLE_DEFAULT__, property, propertyValue.value);
+                            this._applyCSSPropertyWithValueForState(this.__STYLE_DEFAULT__, property, propertyValue.value, style);
+                            //FIXME
+                            if (propertyValue.transition) {
+                                var declaration = this._getStylePropertyObject(style, this.__STYLE_DEFAULT__, property);
+                                declaration.transition = propertyValue.transition;
+                            }
                         }
                     }
                 }, this);
             }
+            return style;
         }
     },
 
     _createStyleStateAndPropertyIfNeeded:  {
-        value: function(state, property) {
-            if (this._style == null) {
-                this._style = {};
+        value: function(style, state, property) {
+            if (style[state] == null) {
+                style[state] = {};
             }
 
-            if (this._style[state] == null) {
-                this._style[state] = {};
-            }
-
-            var stateValue = this._style[state];
+            var stateValue = style[state];
             if (stateValue[property] == null) {
                 stateValue[property] = {};
             }
@@ -236,8 +240,8 @@ exports.Component3D = Target.specialize( {
     },
 
     _getStylePropertyObject: {
-        value: function(state, property) {
-            return this._createStyleStateAndPropertyIfNeeded(state, property);
+        value: function(style, state, property) {
+            return this._createStyleStateAndPropertyIfNeeded(style, state, property);
         }
     },
 
@@ -283,12 +287,22 @@ exports.Component3D = Target.specialize( {
                 } while ((parsingStateIndex < parsingState.length) && (componentMatchesParsingState == false));
 
             }, this);
+            if (transition.duration == null) {
+                transition.duration = 0;
+            }
+            if (transition.timingFunction == null) {
+                transition.timingFunction = "ease";
+            }
+            if (transition.delay == null) {
+                transition.delay = 0;
+            }
+
             return transition;
         }
     },
 
     _applyCSSPropertyWithValueForState: {
-        value: function(state, cssProperty, cssValue) {
+        value: function(state, cssProperty, cssValue, style) {
             //to be optimized (remove switch)
 
             if (cssValue == null)
@@ -298,7 +312,7 @@ exports.Component3D = Target.specialize( {
                 return;
             }
 
-            var declaration = this._getStylePropertyObject(state, cssProperty);
+            var declaration = this._getStylePropertyObject(style, state, cssProperty);
 
             //consider delegating this somewhere else..
             switch(cssProperty) {
@@ -309,8 +323,7 @@ exports.Component3D = Target.specialize( {
                         //do we handle this property ? otherwise specifying transition for it would be pointless
                         if (this.styleableProperties.indexOf(actualProperty) !== -1 ) {
                             if (transitionComponents.length > 0) {
-                                //FIXME: here we assume seconds
-                                declaration = this._getStylePropertyObject(state, "opacity");
+                                declaration = this._getStylePropertyObject(style, state, "opacity");
                                 declaration.transition = this._createTransitionFromComponents(transitionComponents);
                             }
                         }
@@ -319,17 +332,9 @@ exports.Component3D = Target.specialize( {
                     break;
                 case "visibility":
                     declaration.value = cssValue;
-                    if (state === this.__STYLE_DEFAULT__) {
-                        this.visibility = cssValue;
-                    }
                     break;
                 case "opacity":
                     declaration.value = cssValue;
-                    if (state === this.__STYLE_DEFAULT__) {
-                        //FIXME:Horrible hack to ensure the transition is set before assigning the value
-                        var self = this;
-                        setTimeout(function() { self.opacity = cssValue; },1);
-                    }
                     break;
                 default:
                     break;
@@ -338,7 +343,7 @@ exports.Component3D = Target.specialize( {
     },
 
     _applyStyleRule: {
-        value: function(selectorName, styleRule) {
+        value: function(selectorName, styleRule, style) {
             if (styleRule.style) {
                 var length = styleRule.style.length;
                 if (length > 0) {
@@ -349,7 +354,7 @@ exports.Component3D = Target.specialize( {
                         //should be states ?
                         var state = this._stateForSelectorName(selectorName);
                         if (state != null) {
-                            this._applyCSSPropertyWithValueForState(state, cssProperty, cssValue);
+                            this._applyCSSPropertyWithValueForState(state, cssProperty, cssValue, style);
                         }
                     }
                 }
@@ -357,22 +362,42 @@ exports.Component3D = Target.specialize( {
         }
     },
 
+    _executeCurrentStyle: {
+        value: function() {
+            var style = this._style;
+            if (this.styleableProperties != null) {
+                this.styleableProperties.forEach(function(property) {
+                    var declaration = this._getStylePropertyObject(style, this.__STYLE_DEFAULT__, property);
+                    debugger;
+                    if (declaration) {
+                        if (declaration.value != null) {
+                            this[property] = declaration.value;
+                        }
+                    }
+                }, this);
+            }
+        }
+    },
+
     classDidChange: {
         value: function() {
             if (this.class) {
-                this._applyDefaultStyle();
                 var rule = this.retrieveCSSRule(this.class);
                 var selectorName = this.class; //FIXME
                 if (rule) {
+                    var style = this._createDefaultStyle();
                     if (rule.cssText) {
                         var cssDescription = CSSOM.parse(rule.cssText);
                         if (cssDescription) {
                             var allRules = cssDescription.cssRules;
                             allRules.forEach(function(styleRule) {
-                                this._applyStyleRule(selectorName, styleRule);
+                                this._applyStyleRule(selectorName, styleRule, style);
                             }, this);
                         }
+                        this._style = style;
+                        this._executeCurrentStyle();
                     }
+
                 }
             } else {
                 this.removeAllCSSRules();

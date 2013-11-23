@@ -174,17 +174,22 @@ exports.Material = Component3D.specialize( {
 
     opacity_animationSetter: {
         set: function(value) {
-            this._opacity = value;
-            this.handleOpacityChange();
+            if (this._opacity != value) {
+                this._opacity = value;
+                this.handleOpacityChange();
+            }
         }
     },
 
     opacity: {
         set: function(value) {
             if (this._opacity != value) {
-                var declaration = this._getStylePropertyObject(this.__STYLE_DEFAULT__, "opacity");
+                //remove animation if any
+                var animationManager = this.scene.glTFElement.animationManager;
+                animationManager.removeAnimationWithTargetAndPath(this, "opacity_animationSetter");
+
+                var declaration = this._getStylePropertyObject(this._style, this.__STYLE_DEFAULT__, "opacity");
                 if (declaration.transition) {
-                    var animationManager = this.scene.glTFElement.animationManager;
                     var  opacityAnimation = Object.create(BasicAnimation).init();
                     opacityAnimation.path = "opacity_animationSetter";
                     opacityAnimation.target = this;
@@ -193,8 +198,8 @@ exports.Material = Component3D.specialize( {
                     opacityAnimation.to = Number(value);
                     opacityAnimation.duration = declaration.transition.duration * 1000;
                     animationManager.playAnimation(opacityAnimation);
+                    animationManager.evaluateAtTime(Date.now());
                     opacityAnimation.animationWasAddedToTarget();
-
                 } else {
                     this._opacity = value;
                 }
@@ -218,6 +223,7 @@ exports.Material = Component3D.specialize( {
             var propertyValue = {};
             if (property === "opacity") {
                 propertyValue.value = 1.;
+                propertyValue.transition = this._defaultTransition;
             }
             return propertyValue;
         }

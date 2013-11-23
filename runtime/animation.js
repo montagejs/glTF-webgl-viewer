@@ -520,7 +520,7 @@ exports.BasicAnimation = Object.create(Animation, {
             this._timingFunction = value;
         },
         get: function() {
-            return this._timingFunction || "linear";
+            return this._timingFunction || "ease";
         }
     },
 
@@ -568,7 +568,7 @@ exports.BasicAnimation = Object.create(Animation, {
                 step = 0;
 
             if (this._bezier == null) {
-                var easingFunction = easingFunctions[this.timingFunction] || "linear";
+                var easingFunction = easingFunctions[this.timingFunction] || "ease";
                 this._bezier = new KeySpline(easingFunction);
             }
 

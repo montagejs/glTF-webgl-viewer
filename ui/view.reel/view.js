@@ -60,7 +60,6 @@ var BBox = require("runtime/utilities").BBox;
 var SceneHelper = require("runtime/scene-helper").SceneHelper;
 var CameraController = require("controllers/camera-controller").CameraController;
 var Transform = require("runtime/transform").Transform;
-var cssom = require("runtime/dependencies/CSSOM");
 
 /**
     Description TODO
@@ -498,6 +497,7 @@ exports.View = Component.specialize( {
                     } else {
                         this.needsDraw = true;
                     }
+                    this.scene.styleSheets = document.styleSheets;
                 }
             }
         }

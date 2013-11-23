@@ -129,15 +129,15 @@ exports.AnimationManager = Object.create(Base, {
     },
 
     hasAnimation: {
-      value: function(targetUID, targets) {
-          //it is a forEach, because eventually we will return all the animations for a given target.
-          var animated = false;
-          if (this._animations == null)
-              return false;
-          if (targets == null)
-              targets = this.targets;
+        value: function(targetUID, targets) {
+            //it is a forEach, because eventually we will return all the animations for a given target.
+            var animated = false;
+            if (this._animations == null)
+                return false;
+            if (targets == null)
+                targets = this.targets;
 
-          return targets.indexOf(targetUID) !== -1;
+            return targets.indexOf(targetUID) !== -1;
         }
     },
 
@@ -193,6 +193,17 @@ exports.AnimationManager = Object.create(Base, {
 
     _activeAnimations: { value: 0 , writable: true },
 
+    _removeAnimationAtIndex: {
+        value: function(index) {
+            var animation = this._activeAnimations[index];
+            //animation._evaluateAtTime(Date.now());
+            if (animation.delegate) {
+                animation.delegate.animationDidStop(animation);
+            }
+            this._activeAnimations.splice(index, 1);
+        }
+    },
+
     playAnimation: {
         value: function(animation) {
             var self = this;
@@ -200,15 +211,11 @@ exports.AnimationManager = Object.create(Base, {
             if (animation.delegate)
                 animation.delegate.animationDidStart(animation);
             setTimeout(function() {
-                if (animation.delegate) {
-                    animation._evaluateAtTime(Date.now());
-                    animation.delegate.animationDidStop(animation);
-                    var index = self._activeAnimations.indexOf(animation);
-                    if (index !== -1) {
-                        self._activeAnimations.splice(index, 1);
-                    }
+                //animation may have been removed
+                var index = self._activeAnimations.indexOf(animation);
+                if (index !== -1) {
+                    self._removeAnimationAtIndex(index);
                 }
-
             }, animation.duration);
         }
     },
@@ -219,6 +226,20 @@ exports.AnimationManager = Object.create(Base, {
             this.animations = [];
             this._activeAnimations = [];
             return this;
+        }
+    },
+
+    removeAnimationWithTargetAndPath: {
+        value: function(target, path) {
+            if (this._activeAnimations) {
+                for (var i = 0 ; i < this._activeAnimations.length ; i++) {
+                    var animation = this._activeAnimations[i];
+                    if ((animation.target === target) && (animation.path == path)) {
+                        this._removeAnimationAtIndex(i);
+                        return;
+                    }
+                }
+            }
         }
     }
 
