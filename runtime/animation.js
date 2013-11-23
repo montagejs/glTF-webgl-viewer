@@ -25,6 +25,84 @@ require("runtime/dependencies/gl-matrix");
 var Base = require("runtime/base").Base;
 var Utilities = require("runtime/utilities").Utilities;
 
+/** MIT License
+ *
+ * KeySpline - use bezier curve for transition easing function
+ * Copyright (c) 2012 Gaetan Renaudeau <renaudeau.gaetan@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+/**
+ * KeySpline - use bezier curve for transition easing function
+ * is inspired from Firefox's nsSMILKeySpline.cpp
+ * Usage:
+ * var spline = new KeySpline(0.25, 0.1, 0.25, 1.0)
+ * spline.get(x) => returns the easing value | x must be in [0, 1] range
+ */
+
+var easingFunctions = {
+    "ease":        [0.25, 0.1, 0.25, 1.0],
+    "linear":      [0.00, 0.0, 1.00, 1.0],
+    "ease-in":     [0.42, 0.0, 1.00, 1.0],
+    "ease-out":    [0.00, 0.0, 0.58, 1.0],
+    "ease-in-out": [0.42, 0.0, 0.58, 1.0]
+};
+
+function KeySpline (easingFunction) {
+
+    var mX1 = easingFunction[0];
+    var mY1 = easingFunction[1];
+    var mX2 = easingFunction[2];
+    var mY2 = easingFunction[3];
+
+    this.get = function(aX) {
+        if (mX1 == mY1 && mX2 == mY2) return aX; // linear
+        return CalcBezier(GetTForX(aX), mY1, mY2);
+    }
+
+    function A(aA1, aA2) { return 1.0 - 3.0 * aA2 + 3.0 * aA1; }
+    function B(aA1, aA2) { return 3.0 * aA2 - 6.0 * aA1; }
+    function C(aA1)      { return 3.0 * aA1; }
+
+    // Returns x(t) given t, x1, and x2, or y(t) given t, y1, and y2.
+    function CalcBezier(aT, aA1, aA2) {
+        return ((A(aA1, aA2)*aT + B(aA1, aA2))*aT + C(aA1))*aT;
+    }
+
+    // Returns dx/dt given t, x1, and x2, or dy/dt given t, y1, and y2.
+    function GetSlope(aT, aA1, aA2) {
+        return 3.0 * A(aA1, aA2)*aT*aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
+    }
+
+    function GetTForX(aX) {
+        // Newton raphson iteration
+        var aGuessT = aX;
+        for (var i = 0; i < 4; ++i) {
+            var currentSlope = GetSlope(aGuessT, mX1, mX2);
+            if (currentSlope == 0.0) return aGuessT;
+            var currentX = CalcBezier(aGuessT, mX1, mX2) - aX;
+            aGuessT -= currentX / currentSlope;
+        }
+        return aGuessT;
+    }
+}
+
 var Channel = exports.Channel = Object.create(Base, {
 
     startTime: { value: 0, writable:true },
@@ -411,7 +489,7 @@ var Animation = exports.Animation = Object.create(Object.prototype, {
 function NumberInterpolator(from, to, step)
 {
     //FIXME: the timing function should not be hardcoded, but for the current demos we just need ease out
-    return Utilities.easeOut(from + ((to - from) * step));
+    return from + ((to - from) * step);
 }
 
 //add the moment, system based.
@@ -432,6 +510,19 @@ exports.BasicAnimation = Object.create(Animation, {
     _interpolator: { value: null, writable: true },
 
     extras : { value: null, writable: true },
+
+    _timingFunction: { value: null, writable: true },
+
+    _bezier: { value: null, writable: true },
+
+    timingFunction: {
+        set: function(value) {
+            this._timingFunction = value;
+        },
+        get: function() {
+            return this._timingFunction || "linear";
+        }
+    },
 
     _inferInterpolatorFromValue: {
         value: function(value) {
@@ -471,6 +562,17 @@ exports.BasicAnimation = Object.create(Animation, {
     _evaluateAtTime: {
         value: function(time) {
             var step = (time - this._startTime) / this.duration;
+            if (step > 1)
+                step = 1;
+            if (step < 0)
+                step = 0;
+
+            if (this._bezier == null) {
+                var easingFunction = easingFunctions[this.timingFunction] || "linear";
+                this._bezier = new KeySpline(easingFunction);
+            }
+
+            step = this._bezier.get(step);
             var value = this._interpolator(this._from, this._to, step);
             if (this.target) {
                 if (this.path) {

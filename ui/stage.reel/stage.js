@@ -147,8 +147,6 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
     willDraw: {
         value: function() {
-            if (this.sceneView)
-                this.sceneView.needsDraw = true;
         }
     },
 

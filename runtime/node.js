@@ -30,6 +30,7 @@ exports.Node = Component3D.specialize( {
         value: function Node() {
             this.super();
             this.addOwnPropertyChangeListener("hidden", this);
+            this.addOwnPropertyChangeListener("visibility", this);
             this.addOwnPropertyChangeListener("glTFElement", this);
         }
     },
@@ -50,8 +51,19 @@ exports.Node = Component3D.specialize( {
         }
     },
 
+    handleVisibilityChange: {
+        value: function() {
+            if (this.glTFElement != null) {
+                this.glTFElement.hidden = this.visibility ? this.visibility === "hidden" : false;
+                //FIXME: user a more appropriate name for this, it will just trigger a redraw
+                this.scene.dispatchEventNamed("materialUpdate", true, false, this);
+            }
+        }
+    },
+
     _hidden: { value: false, writable:true },
 
+    //deprecated - just kept for the den-demo
     hidden: {
         set: function(value) {
             if (this._hidden != value) {
@@ -60,6 +72,17 @@ exports.Node = Component3D.specialize( {
         },
         get: function() {
             return this._hidden;
+        }
+    },
+
+    _visibility: { value: false, writable:true },
+
+    visibility: {
+        set: function(value) {
+            this._visibility = value;
+        },
+        get: function() {
+            return this._visibility;
         }
     },
 
@@ -88,7 +111,24 @@ exports.Node = Component3D.specialize( {
                 }
             }
         }
-    }
+    },
 
+    _stylableProperties: { value: ["visibility", "transition"]},
+
+    styleableProperties: {
+        get: function() {
+            return this._stylableProperties;
+        }
+    },
+
+    getDefaultValueForCSSProperty: {
+        value: function(property) {
+            var propertyValue = {};
+            if (property === "visibility") {
+                propertyValue.value = "visible";
+            }
+            return propertyValue;
+        }
+    }
 
 });

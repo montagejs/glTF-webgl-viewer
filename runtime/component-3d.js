@@ -24,6 +24,7 @@
 var Montage = require("montage").Montage;
 var glTFNode = require("runtime/glTF-node").glTFNode;
 var Target = require("montage/core/target").Target
+require("runtime/dependencies/CSSOM");
 
 //FIXME: add a state to now that resolution of id pending to avoid adding useless listeners
 //This currently *can't* happen with the code path in use, the API would allow it.
@@ -132,16 +133,271 @@ exports.Component3D = Target.specialize( {
         }
     },
 
+    //here we are guaranteed to have the styleSheet
+    _applyCSS: {
+        value: function() {
+            if (this.class) {
+            }
+        }
+    },
+
+    handleStyleSheetsChange: {
+        value: function(value, key, object) {
+            this._applyCSS();
+            var self = this;
+            setTimeout(function() {
+                self.scene.removeOwnPropertyChangeListener(key, self);
+            }, 1);
+        }
+    },
+
     _sceneDidChange: {
         value: function() {
             this.resolveIdIfNeeded();
+            if (this.scene) {
+                if (this.scene.styleSheets) {
+                    this._applyCSS();
+                } else {
+                    this.scene.addOwnPropertyChangeListener("styleSheets", this);
+                }
+            }
+        }
+    },
+
+    removeAllCSSRules: {
+        value: function() {
+
+        }
+    },
+
+    /*
+        Should I create a Component3DStyle Object ?
+        1.state {} (default:hover:..)
+            2.property {}
+                3.value
+                3.transition
+        States:
+            no state : means value assignment
+     */
+
+
+    __STYLE_DEFAULT__ : { value: "__default__"},
+
+    _stateForSelectorName: {
+        value: function(selectorName) {
+            var state = null;
+
+            if (selectorName.indexOf("hover:") !== -1) {
+                return "hover"
+            } else if (selectorName.indexOf(":") !== -1) {
+                return  null;
+            }
+
+            //that's fragile, we won't need this once we handle all states
+            return this.__STYLE_DEFAULT__;
+        }
+    },
+
+    _style: { value: null, writable: true },
+
+    _applyDefaultStyle: {
+        value: function() {
+            var style = {};
+            if (this.styleableProperties != null) {
+                this.styleableProperties.forEach(function(property) {
+                    if (this.getDefaultValueForCSSProperty) {
+                        var propertyValue = this.getDefaultValueForCSSProperty(property);
+                        if (propertyValue) {
+                            this._applyCSSPropertyWithValueForState(this.__STYLE_DEFAULT__, property, propertyValue.value);
+                        }
+                    }
+                }, this);
+            }
+        }
+    },
+
+    _createStyleStateAndPropertyIfNeeded:  {
+        value: function(state, property) {
+            if (this._style == null) {
+                this._style = {};
+            }
+
+            if (this._style[state] == null) {
+                this._style[state] = {};
+            }
+
+            var stateValue = this._style[state];
+            if (stateValue[property] == null) {
+                stateValue[property] = {};
+            }
+
+            return stateValue[property];
+         }
+    },
+
+    _getStylePropertyObject: {
+        value: function(state, property) {
+            return this._createStyleStateAndPropertyIfNeeded(state, property);
+        }
+    },
+
+    _createTransitionFromComponents: {
+        value: function(transitionComponents) {
+            //the property is handled up front
+            var transition = {};
+            var parsingState = ["duration", "timing-function", "delay"];
+
+            //http://www.w3.org/TR/css3-transitions/#transition-timing-function-property
+            // + need to handle steps () and cubic-bezier
+            var timingFunctions = ["ease", "linear", "ease-in", "ease-out", "ease-in-out", "step-start"];
+
+            var parsingStateIndex = 0;
+            //each component is optional here but there is an order
+            transitionComponents.forEach(function (transitionComponent) {
+                var componentMatchesParsingState = false;
+                var tentativeParsingIndex = parsingStateIndex;
+
+                do {
+                    if (parsingState[tentativeParsingIndex] === "duration") {
+                        //make sure we really have a duration, otherwise it has to be a timing function
+                        if (timingFunctions.indexOf(transitionComponent) === -1) {
+                            //so we assume we have a duration here
+                            componentMatchesParsingState = true;
+                            transition.duration = parseFloat(transitionComponent);
+                            parsingStateIndex = tentativeParsingIndex;
+                        }
+                    } else if (parsingState[tentativeParsingIndex] === "timing-function") {
+                        if (timingFunctions.indexOf(transitionComponent) !== -1) {
+                            componentMatchesParsingState = true;
+                            transition.timingFunction = transitionComponent;
+                            parsingStateIndex = tentativeParsingIndex;
+                        }
+                    } else if (parsingState[tentativeParsingIndex] === "delay") {
+                        //delay has to be last parsed element
+                        if (tentativeParsingIndex ==  transitionComponents.length-1) {
+                            componentMatchesParsingState = true;
+                            transition.delay = parseFloat(transitionComponent);
+                        }
+                    }
+                    tentativeParsingIndex++;
+                } while ((parsingStateIndex < parsingState.length) && (componentMatchesParsingState == false));
+
+            }, this);
+            return transition;
+        }
+    },
+
+    _applyCSSPropertyWithValueForState: {
+        value: function(state, cssProperty, cssValue) {
+            //to be optimized (remove switch)
+
+            if (cssValue == null)
+                return;
+
+            if (this.styleableProperties.indexOf(cssProperty) === -1 ) {
+                return;
+            }
+
+            var declaration = this._getStylePropertyObject(state, cssProperty);
+
+            //consider delegating this somewhere else..
+            switch(cssProperty) {
+                case "transition": {
+                    var transitionComponents = cssValue.split(" ");
+                    if (transitionComponents.length > 0) {
+                        var actualProperty = transitionComponents.shift();
+                        //do we handle this property ? otherwise specifying transition for it would be pointless
+                        if (this.styleableProperties.indexOf(actualProperty) !== -1 ) {
+                            if (transitionComponents.length > 0) {
+                                //FIXME: here we assume seconds
+                                declaration = this._getStylePropertyObject(state, "opacity");
+                                declaration.transition = this._createTransitionFromComponents(transitionComponents);
+                            }
+                        }
+                    }
+                }
+                    break;
+                case "visibility":
+                    declaration.value = cssValue;
+                    if (state === this.__STYLE_DEFAULT__) {
+                        this.visibility = cssValue;
+                    }
+                    break;
+                case "opacity":
+                    declaration.value = cssValue;
+                    if (state === this.__STYLE_DEFAULT__) {
+                        //FIXME:Horrible hack to ensure the transition is set before assigning the value
+                        var self = this;
+                        setTimeout(function() { self.opacity = cssValue; },1);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    },
+
+    _applyStyleRule: {
+        value: function(selectorName, styleRule) {
+            if (styleRule.style) {
+                var length = styleRule.style.length;
+                if (length > 0) {
+                    for (var i = 0 ; i < length ; i++) {
+                        var cssProperty = styleRule.style[i];
+                        var cssValue = styleRule.style[cssProperty];
+
+                        //should be states ?
+                        var state = this._stateForSelectorName(selectorName);
+                        if (state != null) {
+                            this._applyCSSPropertyWithValueForState(state, cssProperty, cssValue);
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    classDidChange: {
+        value: function() {
+            if (this.class) {
+                this._applyDefaultStyle();
+                var rule = this.retrieveCSSRule(this.class);
+                var selectorName = this.class; //FIXME
+                if (rule) {
+                    if (rule.cssText) {
+                        var cssDescription = CSSOM.parse(rule.cssText);
+                        if (cssDescription) {
+                            var allRules = cssDescription.cssRules;
+                            allRules.forEach(function(styleRule) {
+                                this._applyStyleRule(selectorName, styleRule);
+                            }, this);
+                        }
+                    }
+                }
+            } else {
+                this.removeAllCSSRules();
+            }
+        }
+    },
+
+    _class: { value: "",  writable: true },
+
+    class: {
+        get: function() {
+            return this._class;
+        },
+
+        set: function(value) {
+            if (value != this._class) {
+                this._class = value;
+                this.classDidChange();
+            }
         }
     },
 
     _id: { value: null,  writable: true },
 
     id: {
-        enumerable: true,
         get: function() {
             return this._id;
         },
@@ -158,6 +414,34 @@ exports.Component3D = Target.specialize( {
         value: function(scene) {
             this.scene = scene;
             return this;
+        }
+    },
+
+    //http://www.hunlock.com/blogs/Totally_Pwn_CSS_with_Javascript
+    retrieveCSSRule: {
+        value: function(ruleName) {
+            ruleName = ruleName.toLowerCase();                       // Convert test string to lower case.
+            if (document.styleSheets) {                            // If browser can play with stylesheets
+                for (var i = 0; i < document.styleSheets.length; i++) { // For each stylesheet
+                    var styleSheet = document.styleSheets[i];          // Get the current Stylesheet
+                    var ii= 0 ;                                        // Initialize subCounter.
+                    var cssRule=false;                               // Initialize cssRule.
+                    do {                                             // For each rule in stylesheet
+                        if (styleSheet.cssRules) {                    // Browser uses cssRules?
+                            cssRule = styleSheet.cssRules[ii];         // Yes --Mozilla Style
+                        } else {                                      // Browser usses rules?
+                            cssRule = styleSheet.rules[ii];            // Yes IE style.
+                        }                                             // End IE check.
+                        if (cssRule)  {                               // If we found a rule...
+                            if (cssRule.selectorText.toLowerCase() == ruleName) { //  match ruleName?
+                                return cssRule;                      // return the style object.
+                            }                                          // End found rule name
+                        }                                             // end found cssRule
+                        ii++;                                         // Increment sub-counter
+                    } while (cssRule)                                // end While loop
+                }                                                   // end For loop
+            }                                                      // end styleSheet ability check
+            return false;                                          // we found NOTHING!
         }
     },
 

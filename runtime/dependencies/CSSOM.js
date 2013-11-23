@@ -1,6 +1,5 @@
-'use strict';
 
-var CSSOM = {};
+window.CSSOM = {};
 /**
  * @constructor
  * @see http://www.w3.org/TR/DOM-Level-2-Style/css.html#CSS-CSSStyleDeclaration

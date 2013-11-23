@@ -172,6 +172,7 @@ exports.AnimationManager = Object.create(Base, {
     evaluateAtTime: {
         value: function(time, resourceManager) {
             if (this._activeAnimations) {
+
                 this._activeAnimations.forEach( function(animation) {
                     //FIXME: unify this - could just use a method called evaluate
                     if (animation.type == Animation.KEYFRAME) {
@@ -200,6 +201,7 @@ exports.AnimationManager = Object.create(Base, {
                 animation.delegate.animationDidStart(animation);
             setTimeout(function() {
                 if (animation.delegate) {
+                    animation._evaluateAtTime(Date.now());
                     animation.delegate.animationDidStop(animation);
                     var index = self._activeAnimations.indexOf(animation);
                     if (index !== -1) {

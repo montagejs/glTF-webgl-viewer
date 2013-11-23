@@ -23,6 +23,7 @@
 
 var Montage = require("montage").Montage;
 var Component3D = require("runtime/component-3d").Component3D;
+var BasicAnimation = require("runtime/animation").BasicAnimation;
 
 exports.Material = Component3D.specialize( {
 
@@ -63,7 +64,7 @@ exports.Material = Component3D.specialize( {
         value: function() {
             if (this.glTFElement != null) {
                 if (this.glTFElement.parameters["transparency"]) {
-                    this.glTFElement.parameters["transparency"].value = this.opacity;
+                    this.glTFElement.parameters["transparency"].value = this._opacity;
                     if (this.scene) {
                         this.scene.dispatchEventNamed("materialUpdate", true, false, this);
                     }
@@ -156,14 +157,69 @@ exports.Material = Component3D.specialize( {
 
     _opacity: { value: 1., writable:true },
 
+    animationDidStart: {
+        value: function(animation) {
+        }
+    },
+
+    animationDidStop: {
+        value: function(animation) {
+        }
+    },
+
+    animationDidUpdate: {
+        value: function(animation) {
+        }
+    },
+
+    opacity_animationSetter: {
+        set: function(value) {
+            this._opacity = value;
+            this.handleOpacityChange();
+        }
+    },
+
     opacity: {
         set: function(value) {
             if (this._opacity != value) {
-                this._opacity = value;
+                var declaration = this._getStylePropertyObject(this.__STYLE_DEFAULT__, "opacity");
+                if (declaration.transition) {
+                    var animationManager = this.scene.glTFElement.animationManager;
+                    var  opacityAnimation = Object.create(BasicAnimation).init();
+                    opacityAnimation.path = "opacity_animationSetter";
+                    opacityAnimation.target = this;
+                    opacityAnimation.delegate = this;
+                    opacityAnimation.from = Number(this._opacity);
+                    opacityAnimation.to = Number(value);
+                    opacityAnimation.duration = declaration.transition.duration * 1000;
+                    animationManager.playAnimation(opacityAnimation);
+                    opacityAnimation.animationWasAddedToTarget();
+
+                } else {
+                    this._opacity = value;
+                }
             }
         },
         get: function() {
             return this._opacity;
+        }
+    },
+
+    _stylableProperties: { value: ["opacity", "image", "transition"]},
+
+    styleableProperties: {
+        get: function() {
+            return this._stylableProperties;
+        }
+    },
+
+    getDefaultValueForCSSProperty: {
+        value: function(property) {
+            var propertyValue = {};
+            if (property === "opacity") {
+                propertyValue.value = 1.;
+            }
+            return propertyValue;
         }
     }
 
