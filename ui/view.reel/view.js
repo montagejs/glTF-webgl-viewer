@@ -457,7 +457,6 @@ exports.View = Component.specialize( {
                             var bbox = Object.create(BBox).init(sceneBBox[0], sceneBBox[1]);
                             scene.rootNode.transform._updateDirtyFlag(false);
                             var glTFScene = this.scene.glTFElement;
-                            var targettedNode = glTFScene.rootNode;
                             var sceneBBox =  glTFScene.rootNode.getBoundingBox(true);
                             var midPoint = [
                                 (sceneBBox[0][0] + sceneBBox[1][0]) / 2,
@@ -923,7 +922,6 @@ exports.View = Component.specialize( {
     draw: {
         value: function() {
             this.sceneRenderer.technique.rootPass.viewPoint = this._internalViewPoint;
-
             //Update canvas when size changed
             var webGLContext = this.getWebGLContext();
             if (webGLContext == null || this._disableRendering)

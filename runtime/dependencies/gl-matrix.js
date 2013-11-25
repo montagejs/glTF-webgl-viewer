@@ -28,6 +28,8 @@
  *    distribution.
  */
 
+/// 2. --> This is a modified version. quat slerp was updated.
+
 // Updated to use a modification of the "returnExportsGlobal" pattern from https://github.com/umdjs/umd
 
 var global = window;

@@ -30,6 +30,10 @@ exports.Material = Component3D.specialize( {
     constructor: {
         value: function Material() {
             this.super();
+
+            this._opacity = 1;
+            this.filterColor = [1,1,1,1];
+
             this.addRangeAtPathChangeListener("filterColor", this, "handleFilterColorChange");
             this.addOwnPropertyChangeListener("glTFElement", this);
             this.addOwnPropertyChangeListener("image", this);
@@ -215,17 +219,6 @@ exports.Material = Component3D.specialize( {
     styleableProperties: {
         get: function() {
             return this._stylableProperties;
-        }
-    },
-
-    getDefaultValueForCSSProperty: {
-        value: function(property) {
-            var propertyValue = {};
-            if (property === "opacity") {
-                propertyValue.value = 1.;
-                propertyValue.transition = this._defaultTransition;
-            }
-            return propertyValue;
         }
     }
 

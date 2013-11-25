@@ -23,14 +23,21 @@
 
 var Montage = require("montage").Montage;
 var Component3D = require("runtime/component-3d").Component3D;
+require("runtime/dependencies/gl-matrix");
 
 exports.Node = Component3D.specialize( {
 
     constructor: {
         value: function Node() {
             this.super();
+            //FIXME: these guys are not removed
+            this._hidden = false;
+            this._visibility = "visible";
+            this._offsetMatrix = mat4.identity();
+
             this.addOwnPropertyChangeListener("hidden", this);
             this.addOwnPropertyChangeListener("visibility", this);
+            this.addOwnPropertyChangeListener("offsetMatrix", this);
             this.addOwnPropertyChangeListener("glTFElement", this);
         }
     },
@@ -38,6 +45,8 @@ exports.Node = Component3D.specialize( {
     handleGlTFElementChange: {
         value: function() {
             this.handleHiddenChange();
+            this.handleVisibilityChange();
+            this.handleOffsetMatrixChange();
         }
     },
 
@@ -55,6 +64,17 @@ exports.Node = Component3D.specialize( {
         value: function() {
             if (this.glTFElement != null) {
                 this.glTFElement.hidden = this.visibility ? this.visibility === "hidden" : false;
+                //FIXME: user a more appropriate name for this, it will just trigger a redraw
+                this.scene.dispatchEventNamed("materialUpdate", true, false, this);
+            }
+        }
+    },
+
+    handleOffsetMatrixChange: {
+        value: function() {
+            if (this.glTFElement != null) {
+                //access a private property. not sure yet which name would be the most appropriate yet
+                this.glTFElement._offsetMatrix = this._offsetMatrix;
                 //FIXME: user a more appropriate name for this, it will just trigger a redraw
                 this.scene.dispatchEventNamed("materialUpdate", true, false, this);
             }
@@ -86,6 +106,28 @@ exports.Node = Component3D.specialize( {
         }
     },
 
+    _transform: { value: null, writable:true },
+
+    transform: {
+        set: function(value) {
+            this._transform = value;
+        },
+        get: function() {
+            return this._transform;
+        }
+    },
+
+    _offsetMatrix: { value: null, writable:true },
+
+    offsetMatrix: {
+        set: function(value) {
+            this._offsetMatrix = value;
+        },
+        get: function() {
+            return this._offsetMatrix;
+        }
+    },
+
     _observers: { value: null, writable: true},
 
     addObserver: {
@@ -113,21 +155,11 @@ exports.Node = Component3D.specialize( {
         }
     },
 
-    _stylableProperties: { value: ["visibility", "transition"]},
+    _stylableProperties: { value: ["visibility", "offsetMatrix", "transition"]},
 
     styleableProperties: {
         get: function() {
             return this._stylableProperties;
-        }
-    },
-
-    getDefaultValueForCSSProperty: {
-        value: function(property) {
-            var propertyValue = {};
-            if (property === "visibility") {
-                propertyValue.value = "visible";
-            }
-            return propertyValue;
         }
     }
 

@@ -23,8 +23,11 @@
 
 var Montage = require("montage").Montage;
 var glTFNode = require("runtime/glTF-node").glTFNode;
-var Target = require("montage/core/target").Target
+var Transform = require("runtime/transform").Transform;
+var Target = require("montage/core/target").Target;
+var Set = require("collections/set");
 require("runtime/dependencies/CSSOM");
+require("runtime/dependencies/gl-matrix");
 
 //FIXME: add a state to now that resolution of id pending to avoid adding useless listeners
 //This currently *can't* happen with the code path in use, the API would allow it.
@@ -208,7 +211,7 @@ exports.Component3D = Target.specialize( {
             if (this.styleableProperties != null) {
                 this.styleableProperties.forEach(function(property) {
                     if (this.getDefaultValueForCSSProperty) {
-                        var propertyValue = this.getDefaultValueForCSSProperty(property);
+                        var propertyValue = this[property];
                         if (propertyValue) {
                             this._applyCSSPropertyWithValueForState(this.__STYLE_DEFAULT__, property, propertyValue.value, style);
                             //FIXME
@@ -242,6 +245,135 @@ exports.Component3D = Target.specialize( {
     _getStylePropertyObject: {
         value: function(style, state, property) {
             return this._createStyleStateAndPropertyIfNeeded(style, state, property);
+        }
+    },
+
+    _checkTransformConsistency: {
+        value : function(floatValues, expectedComponentsCount) {
+            if (floatValues.length != expectedComponentsCount) {
+                console.log("Component3D: CSS transform ignored got:"+floatValues.length+" but expecting:"+expectedComponentsCount);
+                return false;
+            }
+            return true;
+        }
+    },
+
+    _createMatrixFromCSSDeclaration: {
+        value: function(declaration) {
+
+            function _RotateWithCSSAngleAxis(mat, floatValues) {
+                var PI = 3.1415926535;
+                var DEG_TO_RAD = PI/180.0;
+                floatValues[3] *= DEG_TO_RAD;
+                mat4.rotate(mat, floatValues[3], floatValues);
+            }
+
+            var matrix = mat4.identity();
+            var index = 0;
+            declaration = declaration.trim();
+            var end = 0, command;
+
+            while (end !== -1) {
+                end = declaration.indexOf("(", index);
+                if (end == -1)
+                    break;
+                command = declaration.substring(index, end);
+                index = end + 1;
+
+                end = declaration.indexOf(")", index);
+                if (end == -1)
+                    break;
+                var valuesDec = declaration.substring(index, end);
+
+                var values = valuesDec.indexOf(",") !== -1 ? valuesDec.split(",") : [valuesDec];
+
+                var floatValues = new Float32Array(values.length);
+                for (var i = 0 ; i < values.length ; i++) {
+                    floatValues[i] = parseFloat(values[i]);
+                }
+                index = end + 1;
+
+                switch(command) {
+                    case "matrix3d":
+                        if (this._checkTransformConsistency(floatValues, 16)) {
+                            var m = floatValues;
+                            var mat = mat4.createFrom(
+                                m[0], m[1], m[2], m[3],
+                                m[4], m[5], m[6], m[7],
+                                m[8], m[9], m[10], m[11],
+                                m[12], m[13], m[14], m[15]);
+                            mat4.multiply(matrix, mat);
+                        }
+                        break;
+                    case "translate3d":
+                        if (this._checkTransformConsistency(floatValues, 3)) {
+                            mat4.translate(matrix, floatValues);
+                        }
+                        break;
+                    case "translateX":
+                        if (this._checkTransformConsistency(floatValues, 3)) {
+                            mat4.translate(matrix, [floatValues[0], 0, 0]);
+                        }
+                        break;
+                    case "translateY":
+                        if (this._checkTransformConsistency(floatValues, 3)) {
+                            mat4.translate(matrix, [0, floatValues[0], 0]);
+                        }
+                        break;
+                    case "translateZ":
+                        if (this._checkTransformConsistency(floatValues, 3)) {
+                            mat4.translate(matrix, [0, 0, floatValues[0]]);
+                        }
+                        break;
+                    case "scale3d":
+                        if (this._checkTransformConsistency(floatValues, 3)) {
+                            mat4.scale(matrix, floatValues);
+                        }
+                        break;
+                    case "scaleX":
+                        if (this._checkTransformConsistency(floatValues, 3)) {
+                            mat4.scale(matrix, [floatValues[0], 1, 1]);
+                        }
+                        break;
+                    case "scaleY":
+                        if (this._checkTransformConsistency(floatValues, 3)) {
+                            mat4.scale(matrix, [1, floatValues[0], 1]);
+                        }
+                        break;
+                    case "scaleZ":
+                        if (this._checkTransformConsistency(floatValues, 3)) {
+                            mat4.scale(matrix, [1, 1, floatValues[0]]);
+                        }
+                        break;
+                    case "rotate3d":
+                        if (this._checkTransformConsistency(floatValues, 4)) {
+                            _RotateWithCSSAngleAxis(matrix, floatValues);
+                        }
+                        break;
+                    case "rotateX":
+                        if (this._checkTransformConsistency(floatValues, 1)) {
+                            _RotateWithCSSAngleAxis(matrix, [1, 0, 0, floatValues[0]]);
+                        }
+                        break;
+                    case "rotateY":
+                        if (this._checkTransformConsistency(floatValues, 1)) {
+                            _RotateWithCSSAngleAxis(matrix, [0, 1, 0, floatValues[0]]);
+                        }
+                        break;
+                    case "rotateZ":
+                        if (this._checkTransformConsistency(floatValues, 1)) {
+                            _RotateWithCSSAngleAxis(matrix, [0, 0, 1, floatValues[0]]);
+                        }
+                        break;
+                    case "perspective":
+                        end = -1;
+                        break;
+                    default:
+                        end = -1;
+                        break;
+                }
+            }
+            return matrix;
         }
     },
 
@@ -304,12 +436,11 @@ exports.Component3D = Target.specialize( {
     _applyCSSPropertyWithValueForState: {
         value: function(state, cssProperty, cssValue, style) {
             //to be optimized (remove switch)
-
             if (cssValue == null)
-                return;
+                return false;
 
             if (this.styleableProperties.indexOf(cssProperty) === -1 ) {
-                return;
+                return false;
             }
 
             var declaration = this._getStylePropertyObject(style, state, cssProperty);
@@ -323,12 +454,19 @@ exports.Component3D = Target.specialize( {
                         //do we handle this property ? otherwise specifying transition for it would be pointless
                         if (this.styleableProperties.indexOf(actualProperty) !== -1 ) {
                             if (transitionComponents.length > 0) {
-                                declaration = this._getStylePropertyObject(style, state, "opacity");
+                                declaration = this._getStylePropertyObject(style, state, actualProperty);
                                 declaration.transition = this._createTransitionFromComponents(transitionComponents);
                             }
                         }
                     }
                 }
+                    break;
+                case "offsetMatrix":
+                    if (typeof cssValue === "string") {
+                        declaration.value = this._createMatrixFromCSSDeclaration(cssValue);
+                    } else {
+                        declaration.value = cssValue;
+                    }
                     break;
                 case "visibility":
                     declaration.value = cssValue;
@@ -337,13 +475,14 @@ exports.Component3D = Target.specialize( {
                     declaration.value = cssValue;
                     break;
                 default:
-                    break;
+                    return false;
             }
+            return true;
         }
     },
 
     _applyStyleRule: {
-        value: function(selectorName, styleRule, style) {
+        value: function(selectorName, styleRule, style, appliedProperties) {
             if (styleRule.style) {
                 var length = styleRule.style.length;
                 if (length > 0) {
@@ -351,10 +490,22 @@ exports.Component3D = Target.specialize( {
                         var cssProperty = styleRule.style[i];
                         var cssValue = styleRule.style[cssProperty];
 
+                        //internally we don't want to deal with prefixes.. todo make it general
+                        if (cssProperty === "-webkit-transform") {
+                            cssProperty = "transform";
+                        }
+                        //FIXME: we keep this intermediate step as a placeholder to switch between
+                        //offset or transform some pending CSS verification in test-apps to validate what to do there.
+                        if (cssProperty === "transform") {
+                            cssProperty = "offsetMatrix";
+                        }
+
                         //should be states ?
                         var state = this._stateForSelectorName(selectorName);
                         if (state != null) {
-                            this._applyCSSPropertyWithValueForState(state, cssProperty, cssValue, style);
+                            if (this._applyCSSPropertyWithValueForState(state, cssProperty, cssValue, style)) {
+                                appliedProperties.add(cssProperty);
+                            }
                         }
                     }
                 }
@@ -368,7 +519,6 @@ exports.Component3D = Target.specialize( {
             if (this.styleableProperties != null) {
                 this.styleableProperties.forEach(function(property) {
                     var declaration = this._getStylePropertyObject(style, this.__STYLE_DEFAULT__, property);
-                    debugger;
                     if (declaration) {
                         if (declaration.value != null) {
                             this[property] = declaration.value;
@@ -385,13 +535,15 @@ exports.Component3D = Target.specialize( {
                 var rule = this.retrieveCSSRule(this.class);
                 var selectorName = this.class; //FIXME
                 if (rule) {
+                    var appliedProperties = new Set();
                     var style = this._createDefaultStyle();
                     if (rule.cssText) {
                         var cssDescription = CSSOM.parse(rule.cssText);
                         if (cssDescription) {
                             var allRules = cssDescription.cssRules;
                             allRules.forEach(function(styleRule) {
-                                this._applyStyleRule(selectorName, styleRule, style);
+                                //
+                                this._applyStyleRule(selectorName, styleRule, style, appliedProperties);
                             }, this);
                         }
                         this._style = style;

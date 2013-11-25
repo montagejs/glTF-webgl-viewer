@@ -440,6 +440,8 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
     _worldMatrix: { value: null, writable:true },
 
+    _offsetMatrix: { value: null, writable:true },
+
     worldMatrix: {
         get: function() {
             if (this.parent) {
@@ -448,6 +450,29 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
                     mat4.multiply(this.parent.worldMatrix, this.transform.matrix, this._worldMatrix);
                     this._worldMatrixIsDirty = false;
                 }
+                if (this._offsetMatrix != null) {
+                    //this is now just for testing purposes, not optimized * at all *
+                    var inv = mat4.create();
+                    var res = mat4.identity();
+                    var res2 = mat4.create();
+
+                    var bbox = this.getBoundingBox(true);
+
+                    var mid = [
+                        (bbox[0][0] + bbox[1][0]) / 2,
+                        (bbox[0][1] + bbox[1][1]) / 2,
+                        (bbox[0][2] + bbox[1][2]) / 2];
+
+                    var tr1 = vec3.create(mid);
+                    mat4.translate(res, tr1);
+                    mat4.multiply(res, this._offsetMatrix);
+                    mat4.multiply(this._worldMatrix,  res);
+                    tr1[0] = -tr1[0];
+                    tr1[1] = -tr1[1];
+                    tr1[2] = -tr1[2];
+                    mat4.translate(this._worldMatrix, tr1);
+                }
+
                 return this._worldMatrix;
             } else {
                 this._worldMatrixIsDirty = false;
