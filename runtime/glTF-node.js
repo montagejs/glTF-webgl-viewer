@@ -451,27 +451,28 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
                     this._worldMatrixIsDirty = false;
                 }
                 if (this._offsetMatrix != null) {
-                    //this is now just for testing purposes, not optimized * at all *
-                    var inv = mat4.create();
-                    var res = mat4.identity();
-                    var res2 = mat4.create();
-
                     var bbox = this.getBoundingBox(true);
+                    if (bbox != null) {
+                        //this is now just for testing purposes, not optimized * at all *
+                        var inv = mat4.create();
+                        var res = mat4.identity();
+                        var res2 = mat4.create();
 
-                    var mid = [
-                        (bbox[0][0] + bbox[1][0]) / 2,
-                        (bbox[0][1] + bbox[1][1]) / 2,
-                        (bbox[0][2] + bbox[1][2]) / 2];
+                        var mid = [
+                            (bbox[0][0] + bbox[1][0]) / 2,
+                            (bbox[0][1] + bbox[1][1]) / 2,
+                            (bbox[0][2] + bbox[1][2]) / 2];
 
-                    var tr1 = vec3.create(mid);
-                    mat4.translate(res, tr1);
-                    mat4.multiply(res, this._offsetMatrix, res2);
-                    mat4.multiply(this._worldMatrix,  res2, res);
-                    tr1[0] = -tr1[0];
-                    tr1[1] = -tr1[1];
-                    tr1[2] = -tr1[2];
-                    mat4.translate(res, tr1);
-                    return res;
+                        var tr1 = vec3.create(mid);
+                        mat4.translate(res, tr1);
+                        mat4.multiply(res, this._offsetMatrix, res2);
+                        mat4.multiply(this._worldMatrix,  res2, res);
+                        tr1[0] = -tr1[0];
+                        tr1[1] = -tr1[1];
+                        tr1[2] = -tr1[2];
+                        mat4.translate(res, tr1);
+                        return res;
+                    }
                 }
 
                 return this._worldMatrix;
