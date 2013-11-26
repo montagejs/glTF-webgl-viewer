@@ -23,6 +23,7 @@
 
 require("runtime/dependencies/gl-matrix");
 var Base = require("runtime/base").Base;
+var Transform = require("runtime/transform").Transform;
 var Utilities = require("runtime/utilities").Utilities;
 
 /** MIT License
@@ -486,6 +487,14 @@ var Animation = exports.Animation = Object.create(Object.prototype, {
 
 });
 
+function TransformInterpolator(from, to, step)
+{
+    var result = Object.create(Transform).init();
+    from.interpolateToTransform(to, step, result);
+    return result;
+}
+
+
 function NumberInterpolator(from, to, step)
 {
     //FIXME: the timing function should not be hardcoded, but for the current demos we just need ease out
@@ -527,8 +536,11 @@ exports.BasicAnimation = Object.create(Animation, {
     _inferInterpolatorFromValue: {
         value: function(value) {
             //is number
+
             if (! isNaN (value-0) && value != null) {
                 return NumberInterpolator;
+            } else if (value instanceof Object) {
+                return TransformInterpolator;
             }
             return nil;
         }
@@ -566,7 +578,6 @@ exports.BasicAnimation = Object.create(Animation, {
                 step = 1;
             if (step < 0)
                 step = 0;
-
             if (this._bezier == null) {
                 var easingFunction = easingFunctions[this.timingFunction] || "ease";
                 this._bezier = new KeySpline(easingFunction);

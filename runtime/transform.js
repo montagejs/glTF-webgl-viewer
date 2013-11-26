@@ -58,6 +58,9 @@ var Transform = exports.Transform = Object.create(Base, {
     interpolateToTransform: {
         value: function(to, step, destination) {
             step = Utilities.easeOut(step);
+            this._rebuildAffinesIfNeeded();
+            to._rebuildAffinesIfNeeded();
+
             Utilities.interpolateVec(this._translation, to._translation, step, destination._translation);
             Utilities.interpolateVec(this._scale, to._scale, step, destination._scale);
             Utilities.inverpolateAxisAngle(this._rotation, to._rotation, step, destination._rotation);

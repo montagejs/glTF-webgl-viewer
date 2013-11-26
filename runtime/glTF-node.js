@@ -465,12 +465,13 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
                     var tr1 = vec3.create(mid);
                     mat4.translate(res, tr1);
-                    mat4.multiply(res, this._offsetMatrix);
-                    mat4.multiply(this._worldMatrix,  res);
+                    mat4.multiply(res, this._offsetMatrix, res2);
+                    mat4.multiply(this._worldMatrix,  res2, res);
                     tr1[0] = -tr1[0];
                     tr1[1] = -tr1[1];
                     tr1[2] = -tr1[2];
-                    mat4.translate(this._worldMatrix, tr1);
+                    mat4.translate(res, tr1);
+                    return res;
                 }
 
                 return this._worldMatrix;

@@ -173,17 +173,6 @@ exports.Component3D = Target.specialize( {
         }
     },
 
-    /*
-        Should I create a Component3DStyle Object ?
-        1.state {} (default:hover:..)
-            2.property {}
-                3.value
-                3.transition
-        States:
-            no state : means value assignment
-     */
-
-
     __STYLE_DEFAULT__ : { value: "__default__"},
 
     _stateForSelectorName: {
@@ -210,8 +199,10 @@ exports.Component3D = Target.specialize( {
             var style = {};
             if (this.styleableProperties != null) {
                 this.styleableProperties.forEach(function(property) {
-                    if (this.getDefaultValueForCSSProperty) {
-                        var propertyValue = this[property];
+
+                    /*
+                        var value = this[property];
+
                         if (propertyValue) {
                             this._applyCSSPropertyWithValueForState(this.__STYLE_DEFAULT__, property, propertyValue.value, style);
                             //FIXME
@@ -219,8 +210,7 @@ exports.Component3D = Target.specialize( {
                                 var declaration = this._getStylePropertyObject(style, this.__STYLE_DEFAULT__, property);
                                 declaration.transition = propertyValue.transition;
                             }
-                        }
-                    }
+                        }*/
                 }, this);
             }
             return style;
@@ -293,7 +283,7 @@ exports.Component3D = Target.specialize( {
                 }
                 index = end + 1;
 
-                switch(command) {
+                switch(command.trim()) {
                     case "matrix3d":
                         if (this._checkTransformConsistency(floatValues, 16)) {
                             var m = floatValues;
@@ -451,6 +441,7 @@ exports.Component3D = Target.specialize( {
                     var transitionComponents = cssValue.split(" ");
                     if (transitionComponents.length > 0) {
                         var actualProperty = transitionComponents.shift();
+                        actualProperty = this.propertyNameFromCSS(actualProperty);
                         //do we handle this property ? otherwise specifying transition for it would be pointless
                         if (this.styleableProperties.indexOf(actualProperty) !== -1 ) {
                             if (transitionComponents.length > 0) {
@@ -481,6 +472,22 @@ exports.Component3D = Target.specialize( {
         }
     },
 
+    propertyNameFromCSS: {
+        value: function(cssProperty) {
+            //internally we don't want to deal with prefixes.. todo make it general
+            if (cssProperty === "-webkit-transform") {
+                cssProperty = "transform";
+            }
+            //FIXME: we keep this intermediate step as a placeholder to switch between
+            //offset or transform some pending CSS verification in test-apps to validate what to do there.
+            if (cssProperty === "transform") {
+                cssProperty = "offsetMatrix";
+            }
+
+            return cssProperty;
+        }
+    },
+
     _applyStyleRule: {
         value: function(selectorName, styleRule, style, appliedProperties) {
             if (styleRule.style) {
@@ -490,15 +497,7 @@ exports.Component3D = Target.specialize( {
                         var cssProperty = styleRule.style[i];
                         var cssValue = styleRule.style[cssProperty];
 
-                        //internally we don't want to deal with prefixes.. todo make it general
-                        if (cssProperty === "-webkit-transform") {
-                            cssProperty = "transform";
-                        }
-                        //FIXME: we keep this intermediate step as a placeholder to switch between
-                        //offset or transform some pending CSS verification in test-apps to validate what to do there.
-                        if (cssProperty === "transform") {
-                            cssProperty = "offsetMatrix";
-                        }
+                        cssProperty = this.propertyNameFromCSS(cssProperty);
 
                         //should be states ?
                         var state = this._stateForSelectorName(selectorName);
@@ -529,45 +528,31 @@ exports.Component3D = Target.specialize( {
         }
     },
 
-    classDidChange: {
+    classListDidChange: {
         value: function() {
-            if (this.class) {
-                var rule = this.retrieveCSSRule(this.class);
-                var selectorName = this.class; //FIXME
-                if (rule) {
-                    var appliedProperties = new Set();
-                    var style = this._createDefaultStyle();
-                    if (rule.cssText) {
-                        var cssDescription = CSSOM.parse(rule.cssText);
-                        if (cssDescription) {
-                            var allRules = cssDescription.cssRules;
-                            allRules.forEach(function(styleRule) {
-                                //
-                                this._applyStyleRule(selectorName, styleRule, style, appliedProperties);
-                            }, this);
+            if (this.classList) {
+                var values = this.classList.enumerate();
+                for (var i = 0 ; i < values.length ; i++) {
+                    var selectorName = values[i][1];
+                    var rule = this.retrieveCSSRule(selectorName);
+                    if (rule) {
+                        var appliedProperties = new Set();
+                        var style = this._createDefaultStyle();
+                        if (rule.cssText) {
+                            var cssDescription = CSSOM.parse(rule.cssText);
+                            if (cssDescription) {
+                                var allRules = cssDescription.cssRules;
+                                allRules.forEach(function(styleRule) {
+                                    this._applyStyleRule(selectorName, styleRule, style, appliedProperties);
+                                }, this);
+                            }
+                            this._style = style;
+                            this._executeCurrentStyle();
                         }
-                        this._style = style;
-                        this._executeCurrentStyle();
                     }
-
                 }
             } else {
                 this.removeAllCSSRules();
-            }
-        }
-    },
-
-    _class: { value: "",  writable: true },
-
-    class: {
-        get: function() {
-            return this._class;
-        },
-
-        set: function(value) {
-            if (value != this._class) {
-                this._class = value;
-                this.classDidChange();
             }
         }
     },
@@ -591,6 +576,54 @@ exports.Component3D = Target.specialize( {
         value: function(scene) {
             this.scene = scene;
             return this;
+        }
+    },
+
+
+    //--- class list excerpt from montage / component.js
+
+    _classList: {
+        value: null
+    },
+
+    /**
+     The classList of the component's element, the purpose is to mimic the element's API but to also respect the draw.
+     It can also be bound to by binding each class as a property.
+     example to toggle the complete class: "classList.has('complete')" : { "<-" : "@owner.isCompete"}
+     @type {Property}
+     @default null
+     */
+    classList: {
+        get: function () {
+            if (this._classList == null) {
+                this._classList = new Set();
+                this._classList.addRangeChangeListener(this, "classList");
+            }
+            return this._classList;
+        },
+        set: function(value) {
+            if (this._classList !== value) {
+                if (value != null) {
+                    var self = this;
+                    if (value instanceof Array) {
+                        this._classList = new Set();
+                        value.forEach( function(className) {
+                            self._classList.add(className);
+                        },this);
+                        value = this._classList;
+                    } else {
+                        this._classList = value;
+                    }
+                }
+                this._classList.addRangeChangeListener(this, "classList");
+                this.classListDidChange();
+            }
+        }
+    },
+
+    handleClassListRangeChange: {
+        value: function (plus, minus) {
+            this.classListDidChange();
         }
     },
 

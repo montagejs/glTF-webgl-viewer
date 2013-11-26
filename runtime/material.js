@@ -191,7 +191,6 @@ exports.Material = Component3D.specialize( {
                 //remove animation if any
                 var animationManager = this.scene.glTFElement.animationManager;
                 animationManager.removeAnimationWithTargetAndPath(this, "opacity_animationSetter");
-
                 var declaration = this._getStylePropertyObject(this._style, this.__STYLE_DEFAULT__, "opacity");
                 if (declaration.transition) {
                     var  opacityAnimation = Object.create(BasicAnimation).init();

@@ -23,6 +23,8 @@
 
 var Montage = require("montage").Montage;
 var Component3D = require("runtime/component-3d").Component3D;
+var Transform = require("runtime/transform").Transform;
+var BasicAnimation = require("runtime/animation").BasicAnimation;
 require("runtime/dependencies/gl-matrix");
 
 exports.Node = Component3D.specialize( {
@@ -39,6 +41,21 @@ exports.Node = Component3D.specialize( {
             this.addOwnPropertyChangeListener("visibility", this);
             this.addOwnPropertyChangeListener("offsetMatrix", this);
             this.addOwnPropertyChangeListener("glTFElement", this);
+        }
+    },
+
+    animationDidStart: {
+        value: function(animation) {
+        }
+    },
+
+    animationDidStop: {
+        value: function(animation) {
+        }
+    },
+
+    animationDidUpdate: {
+        value: function(animation) {
         }
     },
 
@@ -67,6 +84,13 @@ exports.Node = Component3D.specialize( {
                 //FIXME: user a more appropriate name for this, it will just trigger a redraw
                 this.scene.dispatchEventNamed("materialUpdate", true, false, this);
             }
+        }
+    },
+
+    offsetMatrix_animationSetter: {
+        set: function(value) {
+                this._offsetMatrix = value.matrix;
+                this.handleOffsetMatrixChange();
         }
     },
 
@@ -121,6 +145,31 @@ exports.Node = Component3D.specialize( {
 
     offsetMatrix: {
         set: function(value) {
+            if (this.glTFElement) {
+                var animationManager = this.scene.glTFElement.animationManager;
+                animationManager.removeAnimationWithTargetAndPath(this, "offsetMatrix_animationSetter");
+                var declaration = this._getStylePropertyObject(this._style, this.__STYLE_DEFAULT__, "offsetMatrix");
+                if (declaration.transition) {
+                    if (declaration.transition.duration > 0) {
+                        var fromTr = Object.create(Transform).init();
+                        var toTr = Object.create(Transform).init();
+                        fromTr.matrix = this._offsetMatrix;
+                        toTr.matrix = value;
+
+                        var  transformAnimation = Object.create(BasicAnimation).init();
+                        transformAnimation.path = "offsetMatrix_animationSetter";
+                        transformAnimation.target = this;
+                        transformAnimation.delegate = this;
+                        transformAnimation.from = fromTr;
+                        transformAnimation.to = toTr;
+                        transformAnimation.duration = declaration.transition.duration * 1000;
+                        animationManager.playAnimation(transformAnimation);
+                        transformAnimation.animationWasAddedToTarget();
+                        animationManager.evaluateAtTime(Date.now());
+                        return;
+                    }
+                }
+            }
             this._offsetMatrix = value;
         },
         get: function() {
