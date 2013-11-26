@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="style-options.css">
+    <script type="text/montage-serialization">
+        {
+        "owner": {
+            "prototype": "ui/options.reel",
+            "properties": {
+                "element": {"#": "options"}
+            }
+        },
+        "selectComponent": {
+            "prototype": "digit/ui/select.reel",
+            "properties": {
+                "element": {"#": "selectComponent"},
+                "labelPropertyName": "name",
+                "multiSelect": false
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.idsController"}
+            }
+        },
+
+        "typeLabel": {
+            "prototype": "montage/ui/text.reel",
+            "properties": {
+                "element": {"#": "typeLabel"}
+            }
+        },
+
+        "plusButton": {
+            "prototype": "digit/ui/button.reel",
+            "properties": {
+                "element": {"#": "plusButton"},
+                "label": "+"
+            },
+            "listeners": [
+            {
+                "type": "action",
+                "listener": {"@": "owner"}
+            }]
+        },
+        "selectClass": {
+            "prototype": "digit/ui/select.reel",
+            "properties": {
+                "element": {"#": "selectClass"},
+                "labelPropertyName": "name",
+                "multiSelect": false
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.classController"}
+            }
+        },
+
+        "minusButton": {
+            "prototype": "digit/ui/button.reel",
+            "properties": {
+                "element": {"#": "minusButton"},
+                "label": "-"
+
+            }
+        },
+        "selectClassForRemoval": {
+            "prototype": "digit/ui/select.reel",
+            "properties": {
+                "element": {"#": "selectClassForRemoval"},
+                "labelPropertyName": "name",
+                "multiSelect": false
+            },
+            "bindings": {
+                "contentController": {"<-": "@owner.classControllerForRemoval"}
+            }
+        }
+
+        }
+    </script>
+</head>
+<body>
+<div data-montage-id="options" class="options">
+
+    <section class="optionsGroup">
+        <select type="select" data-montage-id="selectComponent">
+        </select>
+    </section>
+
+    <section class="optionsGroup">
+        <p data-montage-id="typeLabel"></p>
+    </section>
+
+    <section class="optionsGroup">
+        <button data-montage-id="plusButton"></button>
+        <select type="select" data-montage-id="selectClass">
+        </select>
+    </section>
+
+    <section class="optionsGroup">
+        <button data-montage-id="minusButton"></button>
+        <select type="select" data-montage-id="selectClassForRemoval">
+        </select>
+    </section>
+
+</div>
+</body>
+</html>

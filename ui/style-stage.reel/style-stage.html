@@ -1,0 +1,65 @@
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="style-stage.css">
+    <script type="text/montage-serialization">
+        {
+            "owner": {
+                "prototype": "ui/style-stage.reel",
+                "properties": {
+                    "element": {"#" : "component"},
+                    "scene" : {"@" : "scene"}
+                }
+            },
+
+            "scene": {
+                "prototype": "runtime/scene",
+                "properties": {
+                    "path": "model/duck/duck.json"
+                }
+            },
+
+            "cat": {
+                "prototype": "runtime/node",
+                "properties": {
+                    "id": "ID3",
+                    "scene" : { "@" : "scene" }
+                }
+            },
+
+            "skin": {
+                "prototype": "runtime/material",
+                "properties": {
+                    "id": "ID6",
+                    "scene" : { "@" : "scene" }
+                }
+            },
+
+            "sceneViewer": {
+                "prototype": "ui/scene-viewer.reel",
+                "properties": {
+                    "element": {"#": "sceneViewer"}
+                }
+            },
+            "options": {
+                "prototype": "ui/style-options.reel",
+                "properties": {
+                    "element": {"#": "options"}
+                },
+                "bindings": {
+                    "idsController" : {"<-" : "@owner.idsController"},
+                    "classController" : {"<-" : "@owner.classController"},
+                    "classControllerForRemoval" : {"<-" : "@owner.classControllerForRemoval"}
+                }
+            }
+        }
+    </script>
+
+</head>
+<body>
+    <div data-montage-id="component" class="Stage" data-montage-skin="light">
+        <div data-montage-id="sceneViewer"></div>
+        <div data-montage-id="options"></div>
+    </div>
+</body>
+</html>
