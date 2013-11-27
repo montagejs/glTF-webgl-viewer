@@ -22,19 +22,19 @@
         "pickingTechnique": {
             "parameters": {
                 "pickingColor": {
-                    "type": "FLOAT_VEC3"
+                    "type": 35665
                 },
                 "position": {
                     "semantic": "POSITION",
-                    "type": "FLOAT_VEC3"
+                    "type": 35665
                 },
                 "projectionMatrix": {
                     "semantic": "PROJECTION",
-                    "type": "FLOAT_MAT4"
+                    "type": 35676
                 },
                 "worldViewMatrix": {
                     "semantic": "WORLDVIEW",
-                    "type": "FLOAT_MAT4"
+                    "type": 35676
                 }
             },
             "pass": "defaultPass",
@@ -52,10 +52,10 @@
                         }
                     },
                     "states": {
-                        "blendEnable": false,
-                        "cullFaceEnable": true,
-                        "depthMask": true,
-                        "depthTestEnable": true,
+                        "blendEnable": 0,
+                        "cullFaceEnable": 1,
+                        "depthMask": 1,
+                        "depthTestEnable": 1,
                         "extras" : {
                             "comment" : "we ignore states here, we will use state used by the material associated with the primitive being drawn"
                         }

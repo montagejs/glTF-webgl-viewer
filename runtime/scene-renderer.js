@@ -36,7 +36,7 @@ exports.SceneRenderer = Object.create(Object.prototype, {
             var techniquePromise = BuiltInAssets.assetWithName( "pickingTechnique");
 
             techniquePromise.then(function (asset) {
-                self.technique.rootPass.sceneRenderer.pickingTechnique = asset;
+                self.technique.rootPass.scenePassRenderer.pickingTechnique = asset;
             }, function (error) {
             }, function (progress) {
             });
@@ -305,7 +305,7 @@ exports.SceneRenderer = Object.create(Object.prototype, {
         value: function( webGLRenderer, options) {
             this.webGLRenderer = webGLRenderer;
             this.createTechniqueIfNeeded();
-            //this.loadPickingTechnique();
+            this.loadPickingTechnique();
             return this;
         }
     },
