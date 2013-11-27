@@ -574,14 +574,11 @@ exports.Component3D = Target.specialize( {
                     this._applySelectorNamed(selectorName, appliedProperties);
                 }
 
-                if (appliedProperties.enumerate().length != this.styleableProperties.length) {
-
-                    this.styleableProperties.forEach(function(property) {
-                        if (appliedProperties.has(property) == false) {
-                            this[property] = this.initialValueForStyleableProperty(property);
-                        }
-                    }, this);
-                }
+                this.styleableProperties.forEach(function(property) {
+                    if (appliedProperties.has(property) == false) {
+                        this[property] = this.initialValueForStyleableProperty(property);
+                    }
+                }, this);
 
             } else {
                 this.removeAllCSSRules();
