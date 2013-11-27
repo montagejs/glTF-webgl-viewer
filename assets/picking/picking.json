@@ -33,7 +33,7 @@
                     "type": 35676
                 },
                 "worldViewMatrix": {
-                    "semantic": "WORLDVIEW",
+                    "semantic": "MODELVIEW",
                     "type": 35676
                 }
             },

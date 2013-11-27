@@ -618,7 +618,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             if (!parameters)
                 parameters = primitive.material.parameters;
             var allUniforms = program.uniformSymbols;
-
             for (i = 0; i < allUniforms.length ; i++) {
                 var symbol = allUniforms[i];
                 var parameter = pass.instanceProgram.uniforms[symbol];
@@ -780,7 +779,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                 console.log("ERROR:programDelegate:"+errorCode+" :"+info);
             },
 
-            //should be called only once
+            //should be called only once per program
             convert: function (source, resource, ctx) {
                 var gl = ctx;
                 var glslProgram = Object.create(GLSLProgram);
@@ -901,7 +900,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             var count = primitives.length;
             var gl = this.webGLContext;
             if (pass.instanceProgram) {
-
                 var ctx = gl;
                 var glProgram = this.resourceManager.getResource(pass.instanceProgram.program, this.programDelegate, ctx);
                 if (glProgram) {
@@ -1000,7 +998,6 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             } else {
                                 this.renderPrimitive(primitive, pass, time);
                             }
-
                         }
                     }
                 }
@@ -1133,9 +1130,9 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
             var restoreCullFace = gl.isEnabled(gl.CULL_FACE);
             var restoreBlend = gl.isEnabled(gl.BLEND);
 
-            this.setState(gl.DEPTH_TEST, false);
-            this.setState(gl.CULL_FACE, false);
-            this.setState(gl.BLEND, false);
+            this.setState(gl.DEPTH_TEST, 0);
+            this.setState(gl.CULL_FACE, 0);
+            this.setState(gl.BLEND, 0);
 
             if (!this.displayTexture) {
                 this.displayTexture = {};

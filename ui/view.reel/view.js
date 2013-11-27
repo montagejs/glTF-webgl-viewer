@@ -718,8 +718,6 @@ exports.View = Component.specialize( {
 
     move:{
         value: function (event) {
-            //no drag at the moment
-            this._mousePosition = null;
         }
     },
 
@@ -733,6 +731,7 @@ exports.View = Component.specialize( {
             if (this._state == this.PLAY) {
                 this.pause();
             }
+            this.needsDraw = true;
         }
     },
 
@@ -760,9 +759,11 @@ exports.View = Component.specialize( {
     },
 
     /* returns an array of test results */
+    /*
     hitTest: {
         value: function(position, options) {
             if (this.sceneRenderer) {
+                debugger;
                 if ((this.sceneRenderer.technique.rootPass) && (this.canvas)) {
                     var viewport = [0, 0, parseInt(this.canvas.getAttribute("width")), parseInt(this.canvas.getAttribute("height"))];
                     return this.sceneRenderer.technique.rootPass.hitTest(position, viewport, options);
@@ -771,7 +772,7 @@ exports.View = Component.specialize( {
             return null;
         }
     },
-
+*/
     getWebGLRenderer: {
         value: function() {
             return this.sceneRenderer ? this.sceneRenderer.webGLRenderer : null;
@@ -839,6 +840,8 @@ exports.View = Component.specialize( {
 
     handleSelectedNode: {
         value: function(nodeID) {
+            if (nodeID != null) {
+            }
         }
     },
 
@@ -1041,15 +1044,13 @@ exports.View = Component.specialize( {
                         }
                     }
 
-                    /* disable picking
                     if (this._mousePosition) {
                         this.__renderOptions.picking = true;
                         this.__renderOptions.coords = this._mousePosition;
                         this.__renderOptions.delegate = this;
-
                         this.sceneRenderer.render(time, this.__renderOptions);
                     }
-                    */
+
                     this.__renderOptions.picking = false;
                     this.__renderOptions.coords = null;
                     this.__renderOptions.delegate = null;

@@ -441,7 +441,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
         value: function(webGLRenderer, time, options) {
             if (!this.scene || !this.viewPoint)
                 return;
-
             //FIXME: make a pool to avoid these object, they are temporary we don't want to re-create them each time
             if (this.__matrix == null)
                 this.__matrix = mat4.create();
@@ -459,7 +458,7 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 }
             }
 
-            var picking = options ? ((options.picking == true) && (options.coords)) : false;
+            var picking = options ? ((options.picking === true) && (options.coords != null)) : false;
             if (picking) {
                 this.pickingRenderTarget.extras.coords = options.coords;
                 webGLRenderer.bindRenderTarget(this.pickingRenderTarget);
@@ -488,11 +487,11 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 if (states.blendEnable && !picking) {
                     this.__nonOpaquePassesWithPrimitives.push(passWithPrimitives);
                 } else {
-                    if (picking && this.pickingTechnique)
+                    if (picking && this.pickingTechnique) {
                         webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, this.pickingTechnique.parameters, time);
-                    else
+                    } else {
                         webGLRenderer.renderPrimitivesWithPass(passWithPrimitives.primitives, pass, null, time);
-
+                    }
                 }
             }
 
@@ -509,7 +508,6 @@ var ScenePassRenderer = Object.create(Object.prototype, {
                 var nodeIDs = Object.keys(this.pickingPass.extras.nodeIDToColor);
                 nodeIDs.forEach( function(nodeID) {
                     var color = this.pickingPass.extras.nodeIDToColor[nodeID];
-
                     if (Math.abs(Math.round(color[0]*255) - pickedPixel[0]) <= 1 &&
                         Math.abs(Math.round(color[1]*255) - pickedPixel[1]) <= 1 &&
                         Math.abs(Math.round(color[2]*255) - pickedPixel[2]) <= 1)  {
