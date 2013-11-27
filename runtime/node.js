@@ -89,8 +89,8 @@ exports.Node = Component3D.specialize( {
 
     offsetMatrix_animationSetter: {
         set: function(value) {
-                this._offsetMatrix = value.matrix;
-                this.handleOffsetMatrixChange();
+            this._offsetMatrix = value.matrix;
+            this.handleOffsetMatrixChange();
         }
     },
 
@@ -204,11 +204,21 @@ exports.Node = Component3D.specialize( {
         }
     },
 
-    _stylableProperties: { value: ["visibility", "offsetMatrix", "transition"]},
+    _stylableProperties: { value: ["visibility", "offsetMatrix"]},
 
     styleableProperties: {
         get: function() {
             return this._stylableProperties;
+        }
+    },
+
+    initialValueForStyleableProperty: {
+        value: function(property) {
+            if (property === "visibility") {
+                return "visible";
+            } else if (property === "offsetMatrix") {
+                return mat4.identity();
+            }
         }
     }
 

@@ -67,8 +67,8 @@ exports.StyleStage = Montage.create(Component, /** @lends module:"montage/ui/sta
             this.defineBinding("class" ,{"<-": "classController.selection.0"});
             this.defineBinding("classToRemove" ,{"<-": "classControllerForRemoval.selection.0"});
 
-            this.classController.avoidsEmptySelection = true;
-            this.classControllerForRemoval.avoidsEmptySelection = true;
+            //this.classController.avoidsEmptySelection = true;
+            //this.classControllerForRemoval.avoidsEmptySelection = true;
 
             this.addOwnPropertyChangeListener("id", this);
         }
@@ -101,9 +101,8 @@ exports.StyleStage = Montage.create(Component, /** @lends module:"montage/ui/sta
                 if (obj instanceof Component3D) {
                     var idEntry = {};
                     if (obj.id) {
-                        idEntry.name = obj.id;
                         idEntry.component3D = obj;
-
+                        idEntry.name = obj.name;
                         content.push(idEntry);
                     }
                 }
@@ -180,6 +179,11 @@ exports.StyleStage = Montage.create(Component, /** @lends module:"montage/ui/sta
                     this.options.addEventListener("classRemoved", this);
                 }
             }
+        }
+    },
+
+    templateDidLoad: {
+        value: function() {
         }
     },
 

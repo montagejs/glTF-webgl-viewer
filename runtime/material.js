@@ -31,9 +31,6 @@ exports.Material = Component3D.specialize( {
         value: function Material() {
             this.super();
 
-            this._opacity = 1;
-            this.filterColor = [1,1,1,1];
-
             this.addRangeAtPathChangeListener("filterColor", this, "handleFilterColorChange");
             this.addOwnPropertyChangeListener("glTFElement", this);
             this.addOwnPropertyChangeListener("image", this);
@@ -43,11 +40,27 @@ exports.Material = Component3D.specialize( {
 
     filterColor: { value: [1,1,1,1]},
 
+    _originalOpacity: { value: 1, writable: true },
+
     handleGlTFElementChange: {
         value: function() {
             this.handleFilterColorChange();
             this.handleImageChange();
-            this.handleOpacityChange();
+
+            if (this._opacity == null) {
+                this._originalOpacity = this._opacity = this.glTFElement.parameters["transparency"].value;
+            } else {
+                this._originalOpacity = this._opacity;
+                this.handleOpacityChange();
+            }
+        }
+    },
+
+    initialValueForStyleableProperty: {
+        value: function(property) {
+            if (property == "opacity") {
+                return this._originalOpacity;
+            }
         }
     },
 
@@ -159,7 +172,7 @@ exports.Material = Component3D.specialize( {
         }
     },
 
-    _opacity: { value: 1., writable:true },
+    _opacity: { value: null, writable:true },
 
     animationDidStart: {
         value: function(animation) {
@@ -213,7 +226,7 @@ exports.Material = Component3D.specialize( {
         }
     },
 
-    _stylableProperties: { value: ["opacity", "image", "transition"]},
+    _stylableProperties: { value: ["opacity"]},
 
     styleableProperties: {
         get: function() {

@@ -19,28 +19,31 @@ exports.StyleOptions = Montage.create(Component, /** @lends module:"montage/ui/s
         value: function(event) {
             if (this.classControllerForRemoval) {
                 var selection = this.classController.selection[0];
-                this.classControllerForRemoval.add(selection);
-//                this.classController.delete(selection);
-                var self = this;
-               // setTimeout(function(){
+                if (selection != null) {
+                    this.classControllerForRemoval.add(selection);
+                    var self = this;
                     self.dispatchEventNamed("classAdded", true, false, self);
                     self.classController.delete(selection);
-                //}, 10);
-
+                    if (self.classController.content[0] != null)
+                        self.classController.select(self.classController.content[0]);
+                }
             }
         }
     },
 
     handleMinusButtonAction: {
         value: function(event) {
-            return;
-            var selection = this.classControllerForRemoval.selection[0];
-            this.classController.add(selection);
-            this.dispatchEventNamed("classRemoved", true, false, this);
-            var self = this;
-            setTimeout(function(){
-                self.classControllerForRemoval.delete(selection);
-            }, 1);
+            if (this.classController) {
+                var selection = this.classControllerForRemoval.selection[0];
+                if (selection != null) {
+                    this.classController.add(selection);
+                    var self = this;
+                    self.dispatchEventNamed("classRemoved", true, false, self);
+                    self.classControllerForRemoval.delete(selection);
+                    if (self.classControllerForRemoval.content[0] != null)
+                        self.classControllerForRemoval.select(self.classControllerForRemoval.content[0]);
+                }
+            }
         }
     }
 

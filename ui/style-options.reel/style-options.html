@@ -26,8 +26,10 @@
         "typeLabel": {
             "prototype": "montage/ui/text.reel",
             "properties": {
-                "element": {"#": "typeLabel"}
-            }
+                "element": {"#": "typeLabel"},
+                "value": "3D Component Class"
+
+        }
         },
 
         "plusButton": {
@@ -59,8 +61,12 @@
             "properties": {
                 "element": {"#": "minusButton"},
                 "label": "-"
-
-            }
+            },
+            "listeners": [
+            {
+                "type": "action",
+                "listener": {"@": "owner"}
+            }]
         },
         "selectClassForRemoval": {
             "prototype": "digit/ui/select.reel",

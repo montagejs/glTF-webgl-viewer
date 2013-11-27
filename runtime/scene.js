@@ -65,7 +65,6 @@ exports.Scene = Component3D.specialize( {
                 //only problem now is pass the webGLContext through the promise properly
                 this.dispatchEventNamed("resourcesDidLoad", true, false, this);
                 this.status = "loaded";
-                console.log("resourcesDidLoad");
             }
         }
     },

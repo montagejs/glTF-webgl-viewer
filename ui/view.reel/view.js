@@ -113,7 +113,8 @@ exports.View = Component.specialize( {
 
     _contextAttributes : { value: null, writable: true },
 
-    _shouldForceClear: { value: false, writable: true },
+    //FIXME: figure out why the clear made by the browser isn't performed when no draw element is performed
+    _shouldForceClear: { value: true, writable: true },
 
     _viewPointIndex: { value: 0, writable: true },
 
