@@ -60,6 +60,7 @@ var BBox = require("runtime/utilities").BBox;
 var SceneHelper = require("runtime/scene-helper").SceneHelper;
 var CameraController = require("controllers/camera-controller").CameraController;
 var Transform = require("runtime/transform").Transform;
+var Component3D = require("runtime/component-3d").Component3D;
 
 /**
     Description TODO
@@ -716,8 +717,70 @@ exports.View = Component.specialize( {
         }
     },
 
-    move:{
+    _TOUCH_DOWN: { value: 0 },
+
+    _TOUCH_UP: { value: 1 },
+
+    _TOUCH_MOVE: { value: 2 },
+
+    _eventType: { value: -1, writable: true },
+
+    _previousEventType: { value: -1, writable: true },
+
+    _lastHandledComponent: { value: null, writable: true },
+
+    _previousHandledComponent: { value: null, writable: true },
+
+    handleSelectedNode: {
+        value: function(componentID) {
+
+            if (this._eventType === this._TOUCH_UP) {
+                if (this._previousHandledComponent != null)
+                    this._previousHandledComponent.handleEventNamed(Component3D._TOUCH_UP);
+                this._eventType = -1;
+                return;
+            }
+
+            var component = null;
+            if (componentID != null) {
+                var glTFElement = this.scene.glTFElement.ids[componentID];
+                if (glTFElement != null) {
+                    if (glTFElement.component3D != null) {
+                        component = glTFElement.component3D;
+                    }
+                }
+            }
+
+            //are we out of a move ?
+            if ((this._previousEventType === this._TOUCH_MOVE) &&
+                (component !== this._previousHandledComponent)) {
+                if (this._previousHandledComponent != null) {
+                    this._previousHandledComponent.handleEventNamed(Component3D._EXIT);
+                }
+            }
+            if ((this._eventType === this._TOUCH_MOVE) &&
+                (component !== this._previousHandledComponent)) {
+                if (component != null) {
+                    component.handleEventNamed(Component3D._ENTER);
+                } else {
+                    this._eventType = -1;
+                }
+            } else if (this._eventType === this._TOUCH_DOWN) {
+                if (component != null)
+                    component.handleEventNamed(Component3D._TOUCH_DOWN);
+            }
+
+            this._previousHandledComponent = component;
+            this._previousEventType = this._eventType;
+        }
+    },
+
+    move: {
         value: function (event) {
+            var position = this.getRelativePositionToCanvas(event);
+            this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
+            this._eventType = this._TOUCH_MOVE;
+            this.needsDraw = true;
         }
     },
 
@@ -728,9 +791,12 @@ exports.View = Component.specialize( {
             var position = this.getRelativePositionToCanvas(event);
             this._mousePosition = [position.x * this.scaleFactor,  this.height - (position.y * this.scaleFactor)];
 
-            if (this._state == this.PLAY) {
+            if (this._state === this.PLAY) {
                 this.pause();
             }
+
+            this._eventType = this._TOUCH_DOWN;
+
             this.needsDraw = true;
         }
     },
@@ -742,7 +808,7 @@ exports.View = Component.specialize( {
                 event.preventDefault();
             }
 
-            if (this._state == this.PAUSE) {
+            if (this._state === this.PAUSE) {
                 if (this.scene && this.viewPoint) {
                     if (this.scene.glTFElement) {
                         var animationManager = this.getAnimationManager();
@@ -754,6 +820,8 @@ exports.View = Component.specialize( {
             }
 
             this._consideringPointerForPicking = false;
+            this._eventType = this._TOUCH_UP;
+            this.handleSelectedNode(null);
             this._mousePosition = null;
         }
     },
@@ -835,13 +903,6 @@ exports.View = Component.specialize( {
         set: function(flag) {
             this._showReflection = flag;
             this.needsDraw = true;
-        }
-    },
-
-    handleSelectedNode: {
-        value: function(nodeID) {
-            if (nodeID != null) {
-            }
         }
     },
 

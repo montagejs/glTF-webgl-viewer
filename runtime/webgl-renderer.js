@@ -951,7 +951,7 @@ exports.WebGLRenderer = Object.create(Object.prototype, {
                             if (primitive.node.hidden)
                                 continue;
                             if (!primitive.pickingColor) {
-                                var nodeID = primitive.node.id;
+                                var nodeID = primitive.node.baseId; //FIXME
                                 if (nodeID) {
                                     //FIXME move this into the picking technique when we have it..
                                     //for picking, we need to associate a color to each node.

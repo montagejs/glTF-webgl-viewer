@@ -13,9 +13,26 @@
     transition-timing-function: linear;
 }
 
-.hidden:hover {
-     visibility: hidden;
- }
+.scale:hover {
+    -webkit-transform: scale3d(1.3,1.3,1.3) rotate3d(1.2, 0, 0.3, -60deg);
+    transition-property: -webkit-transform;
+    transition-duration: 2s;
+    transition-timing-function: ease;
+}
+
+.scale:active {
+    -webkit-transform: scale3d(2.3,2.3,2.3);
+    transition-property: -webkit-transform;
+    transition-duration: 2s;
+    transition-timing-function: ease;
+}
+
+.dim:hover {
+    opacity: 0.2;
+    transition-property: opacity;
+    transition-duration: 2s;
+    transition-timing-function: ease;
+}
 
 .oriented {
     -webkit-transform: scale3d(0.3,0.3,0.3) rotate3d(1, 0.4, 0.3, -60deg) translate3d(10000px,0px,0px);

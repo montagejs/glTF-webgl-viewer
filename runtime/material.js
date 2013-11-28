@@ -202,23 +202,32 @@ exports.Material = Component3D.specialize( {
         set: function(value) {
             if (this._opacity != value) {
                 //remove animation if any
-                var animationManager = this.scene.glTFElement.animationManager;
-                animationManager.removeAnimationWithTargetAndPath(this, "opacity_animationSetter");
-                var declaration = this._getStylePropertyObject(this._style, this.__STYLE_DEFAULT__, "opacity");
-                if (declaration.transition) {
-                    var  opacityAnimation = Object.create(BasicAnimation).init();
-                    opacityAnimation.path = "opacity_animationSetter";
-                    opacityAnimation.target = this;
-                    opacityAnimation.delegate = this;
-                    opacityAnimation.from = Number(this._opacity);
-                    opacityAnimation.to = Number(value);
-                    opacityAnimation.duration = declaration.transition.duration * 1000;
-                    animationManager.playAnimation(opacityAnimation);
-                    animationManager.evaluateAtTime(Date.now());
-                    opacityAnimation.animationWasAddedToTarget();
-                } else {
-                    this._opacity = value;
+                if (this.glTFElement) {
+                    var animationManager = this.scene.glTFElement.animationManager;
+                    animationManager.removeAnimationWithTargetAndPath(this, "opacity_animationSetter");
+                    if (this._style) {
+                        if (this._style.transitions) {
+                            var transition = this._style.transitions["opacity"];
+                            if (transition != null) {
+                                if (transition.duration > 0) {
+                                    var  opacityAnimation = Object.create(BasicAnimation).init();
+                                    opacityAnimation.path = "opacity_animationSetter";
+                                    opacityAnimation.target = this;
+                                    opacityAnimation.delegate = this;
+                                    opacityAnimation.from = Number(this._opacity);
+                                    opacityAnimation.to = Number(value);
+                                    opacityAnimation.duration = transition.duration * 1000;
+                                    animationManager.playAnimation(opacityAnimation);
+                                    opacityAnimation.animationWasAddedToTarget();
+                                    animationManager.evaluateAtTime(Date.now());
+                                    return;
+                                }
+                            }
+                        }
+                    }
                 }
+
+                this._opacity = value;
             }
         },
         get: function() {

@@ -64,6 +64,9 @@ exports.Node = Component3D.specialize( {
             this.handleHiddenChange();
             this.handleVisibilityChange();
             this.handleOffsetMatrixChange();
+
+            this._applyCSSPropertyWithValueForState(this.__STYLE_DEFAULT__, "offsetMatrix", this._offsetMatrix);
+
         }
     },
 
@@ -148,28 +151,32 @@ exports.Node = Component3D.specialize( {
             if (this.glTFElement) {
                 var animationManager = this.scene.glTFElement.animationManager;
                 animationManager.removeAnimationWithTargetAndPath(this, "offsetMatrix_animationSetter");
-                var declaration = this._getStylePropertyObject(this._style, this.__STYLE_DEFAULT__, "offsetMatrix");
-                if (declaration.transition) {
-                    if (declaration.transition.duration > 0) {
-                        var fromTr = Object.create(Transform).init();
-                        var toTr = Object.create(Transform).init();
-                        fromTr.matrix = this._offsetMatrix;
-                        toTr.matrix = value;
-
-                        var  transformAnimation = Object.create(BasicAnimation).init();
-                        transformAnimation.path = "offsetMatrix_animationSetter";
-                        transformAnimation.target = this;
-                        transformAnimation.delegate = this;
-                        transformAnimation.from = fromTr;
-                        transformAnimation.to = toTr;
-                        transformAnimation.duration = declaration.transition.duration * 1000;
-                        animationManager.playAnimation(transformAnimation);
-                        transformAnimation.animationWasAddedToTarget();
-                        animationManager.evaluateAtTime(Date.now());
-                        return;
+                if (this._style) {
+                    if (this._style.transitions) {
+                        var transition = this._style.transitions["offsetMatrix"];
+                        if (transition != null) {
+                            if (transition.duration > 0) {
+                                var fromTr = Object.create(Transform).init();
+                                var toTr = Object.create(Transform).init();
+                                fromTr.matrix = this._offsetMatrix;
+                                toTr.matrix = value;
+                                var  transformAnimation = Object.create(BasicAnimation).init();
+                                transformAnimation.path = "offsetMatrix_animationSetter";
+                                transformAnimation.target = this;
+                                transformAnimation.delegate = this;
+                                transformAnimation.from = fromTr;
+                                transformAnimation.to = toTr;
+                                transformAnimation.duration = transition.duration * 1000;
+                                animationManager.playAnimation(transformAnimation);
+                                transformAnimation.animationWasAddedToTarget();
+                                animationManager.evaluateAtTime(Date.now());
+                                return;
+                            }
+                        }
                     }
                 }
             }
+
             this._offsetMatrix = value;
         },
         get: function() {
