@@ -22,14 +22,14 @@
 // THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var Montage = require("montage").Montage;
-var Component3D = require("runtime/component-3d").Component3D;
 var Node = require("runtime/node").Node;
 var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
 var URL = require("montage/core/url");
 var SceneResourceLoader = require("runtime/scene-resource-loader").SceneResourceLoader;
 var Q = require("q");
+var Target = require("montage/core/target").Target;
 
-exports.Scene = Component3D.specialize( {
+exports.Scene = Target.specialize( {
 
     constructor: {
         value: function Scene() {
@@ -156,7 +156,7 @@ exports.Scene = Component3D.specialize( {
                 this.glTFElement = glTFElement;
                 this.status = "loaded";
             }
-            return this.initWithScene(this);
+            return this;
         }
     }
 

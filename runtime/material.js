@@ -47,10 +47,12 @@ exports.Material = Component3D.specialize( {
             this.handleFilterColorChange();
             this.handleImageChange();
 
+            this._originalOpacity = this._opacity;
             if (this._opacity == null) {
-                this._originalOpacity = this._opacity = this.glTFElement.parameters["transparency"].value;
+                if (this.glTFElement.parameters["transparency"] != null) {
+                    this._originalOpacity = this._opacity = this.glTFElement.parameters["transparency"].value;
+                }
             } else {
-                this._originalOpacity = this._opacity;
                 this.handleOpacityChange();
             }
         }

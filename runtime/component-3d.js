@@ -647,9 +647,7 @@ exports.Component3D = Target.specialize( {
 
     //--- class list excerpt from montage / component.js
 
-    _classList: {
-        value: null
-    },
+    _classList: { value: null },
 
     /**
      The classList of the component's element, the purpose is to mimic the element's API but to also respect the draw.
@@ -741,7 +739,7 @@ exports.Component3D = Target.specialize( {
 
             var state = this.__STYLE_DEFAULT__;
 
-            console.log("name:"+name);
+            //console.log("name:"+name);
 
             switch (name) {
                 case this._ENTER:
@@ -750,8 +748,12 @@ exports.Component3D = Target.specialize( {
                 case this._EXIT:
                     state = this.__STYLE_DEFAULT__; //this is probably wrong - what happens if active is on going too ?
                     break;
-                case this._TOUCH_DOWN:
+                case this._TOUCH_DOWN: {
                     state = "active";
+                    var actionEvent = document.createEvent("CustomEvent");
+                    actionEvent.initCustomEvent("action", true, true, null);
+                    this.dispatchEvent(actionEvent);
+                }
                     break;
                 case this._TOUCH_UP:
                     state = this.__STYLE_DEFAULT__; //this is probably wrong - what happens if hover is on going too ?
@@ -759,12 +761,22 @@ exports.Component3D = Target.specialize( {
             }
 
             if (state != this._state) {
-                //this._saveCurrentStyle(state);
                 this._state = state;
                 this._executeCurrentStyle(state);
             }
         }
     },
+
+    //--
+
+    deserializedFromTemplate: {
+        value: function (objectOwner, label, documentPart) {
+            this.nextTarget = objectOwner;
+            this.identifier = label;
+        }
+    },
+
+    //--
 
     blueprintModuleId:require("montage")._blueprintModuleIdDescriptor,
 

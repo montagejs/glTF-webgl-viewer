@@ -12,23 +12,9 @@
         }
     },
 
-    "blueprint_parent": {
-        "prototype": "montage/core/meta/blueprint-reference",
-        "properties": {
-            "valueReference": {
-                "blueprintName": "Component3D",
-                "blueprintModule": {
-                    "%": "runtime/component-3d.meta"
-                },
-                "prototypeName": "Component3D"
-            }
-        }
-    },
-
     "root": {
         "prototype": "montage/core/meta/module-blueprint",
         "properties": {
-            "parent": {"@": "blueprint_parent"},
             "name": "Scene",
             "propertyBlueprints": [
                 {

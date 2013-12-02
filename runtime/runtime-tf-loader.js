@@ -202,24 +202,14 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
         }
     },
 
-    handleAttribute: {
-        value: function(entryID, description, userInfo) {
-
-            var bufferEntry = this.getEntry(description.bufferView);
-            description.bufferView = bufferEntry.entry;
-            if (!description.byteOffset)
-                description.byteOffset = 0;
-
-            this.storeEntry(entryID, description, description);
-        }
-    },
-
-    handleIndices: {
+    handleAccessor: {
         value: function(entryID, description, userInfo) {
 
             description.id = entryID;
             var bufferEntry = this.getEntry(description.bufferView);
-            description.bufferView = bufferEntry.entry ;
+            description.bufferView = bufferEntry.entry;
+            if (!description.byteOffset)
+                description.byteOffset = 0;
 
             this.storeEntry(entryID, description, description);
         }
@@ -561,7 +551,8 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
             var componentSize = 0;
             var parameters = {};
             Object.keys(description.parameters).forEach( function(parameterSID) {
-                var parameterDescription = description.parameters[parameterSID];
+                var parameterUID = description.parameters[parameterSID];
+                parameterDescription = this.getEntry(parameterUID).entry;
                 //we can avoid code below if we add byteStride
                 switch (parameterDescription.type) {
                     case WebGLRenderingContext.FLOAT_VEC4:
@@ -598,7 +589,6 @@ exports.RuntimeTFLoader = Object.create(glTFParser, {
 
                 parameterDescription.byteStride = 4 * componentsPerAttribute;
                 parameterDescription.componentsPerAttribute = componentsPerAttribute;
-                parameterDescription.bufferView = this.getEntry(parameterDescription.bufferView).entry;
                 parameterDescription.id = animation.id + parameterSID;
                 parameters[parameterSID] = parameterDescription;
             }, this);

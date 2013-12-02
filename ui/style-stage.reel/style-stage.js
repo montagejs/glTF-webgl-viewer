@@ -207,6 +207,12 @@ exports.StyleStage = Montage.create(Component, /** @lends module:"montage/ui/sta
         }
     },
 
+    handleCatAction: {
+        value: function(event) {
+            console.log("node with label \"cat\" was is clicked");
+        }
+    },
+
     exitDocument: {
         value: function() {
         }

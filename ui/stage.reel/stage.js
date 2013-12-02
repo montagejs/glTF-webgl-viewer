@@ -86,6 +86,10 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(firstTime) {
             if(firstTime) {
                 this.modelsController.content = [
+                    { "name": "movingBox",      "path": "model/movingBox/movingBox.json"},
+                    { "name": "test2",      "path": "model/test2/anim2.json"},
+                    { "name": "cat",      "path": "model/cat/Creature.json"},
+
                     { "name": "loft",      "path": "model/loft/loft8.json"},
                     { "name": "vc",      "path": "model/vc/vc.json"},
                     { "name": "minebot",            "path": "model/minebot/mine_bot_anim.json"},

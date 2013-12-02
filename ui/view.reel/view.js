@@ -970,10 +970,10 @@ exports.View = Component.specialize( {
                 }
                 var viewPointIndex = this._viewPointIndex; //_viewPointIndex is private in view, we could actually put/access this info from scene
                 var viewPoints = SceneHelper.getViewPoints(this.scene);
-                if (viewPoints.length > 0) {
+                if (viewPoints.length > 1) {
                     var nextViewPoint = this.viewPoint;
                     var checkIdx = 0;
-                    while ((checkIdx < viewPoints.length) && (animationManager.nodeHasAnimatedAncestor(nextViewPoint.glTFElement) == false)) {                    animationManager.sceneTime = 0;
+                    while ((checkIdx < viewPoints.length) && (animationManager.nodeHasAnimatedAncestor(nextViewPoint.glTFElement) == false)) {
                         viewPointIndex = ++viewPointIndex % viewPoints.length;
                         nextViewPoint = viewPoints[viewPointIndex];
                         checkIdx++;

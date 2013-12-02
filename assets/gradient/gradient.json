@@ -2,7 +2,7 @@
     "asset": {
         "generator": "hand-written"
     },
-    "attributes": {
+    "accessors": {
         "attribute_22": {
             "bufferView": "bufferView_28",
             "byteOffset": 0,
@@ -19,7 +19,14 @@
                 -0.5
             ],
             "type": 35665
+        },
+        "indices_20": {
+            "bufferView": "bufferView_29",
+            "byteOffset": 0,
+            "count": 6,
+            "type": 5123
         }
+        
     },
     "bufferViews": {
         "bufferView_28": {
@@ -50,14 +57,6 @@
                 "zfar": 1000,
                 "znear": 0
         }
-        }
-    },
-    "indices": {
-        "indices_20": {
-            "bufferView": "bufferView_29",
-            "byteOffset": 0,
-            "count": 6,
-            "type": 5123
         }
     },
     "materials": {
