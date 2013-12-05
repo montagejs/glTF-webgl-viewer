@@ -113,7 +113,6 @@ exports.Node = Component3D.specialize( {
     handleOriginVectorChange: {
         value: function() {
             if (this.glTFElement != null) {
-                debugger;
                 this.glTFElement._originVector = this._originVector;
                 //FIXME: user a more appropriate name for this, it will just trigger a redraw
                 this.scene.dispatchEventNamed("materialUpdate", true, false, this);
