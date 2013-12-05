@@ -429,7 +429,9 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
             }
 
             //for copies of nodes coming from a DAG we keep track of the id but still, we want to be different
-            node.id = this.id + "-" +this.bumpId();
+            var postId = this.bumpId();
+            node.id = this.id + "-" +postId;
+            node.baseId = this.baseId + "-" +postId;
             node.transform = this.transform.copy();
 
             return node;
