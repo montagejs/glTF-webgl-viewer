@@ -442,6 +442,8 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
     _offsetMatrix: { value: null, writable:true },
 
+    _originMatrix: { value: null, writable:true },
+
     worldMatrix: {
         get: function() {
             if (this.parent) {
@@ -465,12 +467,24 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
                         var tr1 = vec3.create(mid);
                         mat4.translate(res, tr1);
+                        if (this._originMatrix != null) {
+                            var invOriginMatrix = mat4.create();
+                            mat4.inverse(this._originMatrix, invOriginMatrix);
+                            mat4.multiply(res, invOriginMatrix);
+                        }
+
                         mat4.multiply(res, this._offsetMatrix, res2);
                         mat4.multiply(this._worldMatrix,  res2, res);
                         tr1[0] = -tr1[0];
                         tr1[1] = -tr1[1];
                         tr1[2] = -tr1[2];
                         mat4.translate(res, tr1);
+
+                        if (this._originMatrix != null) {
+                            mat4.multiply(res, this._originMatrix);
+                        }
+
+
                         return res;
                     }
                 }

@@ -268,7 +268,26 @@ exports.Component3D = Target.specialize( {
         }
     },
 
-    _createMatrixFromCSSDeclaration: {
+    _createMatrixFromCSSTransformOriginDeclaration: {
+        value: function(declaration) {
+            var components = declaration.split(" ");
+
+            if (components.length == 3) {
+                var transformOrigin = vec3.create();
+
+                transformOrigin[0] = parseFloat(components[0]);
+                transformOrigin[1] = parseFloat(components[1]);
+                transformOrigin[2] = parseFloat(components[2]);
+                var transformOriginMatrix = mat4.identity();
+
+                return mat4.translate(transformOriginMatrix, transformOrigin);
+            }
+
+            return mat4.identity();
+        }
+    },
+
+    _createMatrixFromCSSTransformDeclaration: {
         value: function(declaration) {
 
             function _RotateWithCSSAngleAxis(mat, floatValues) {
@@ -477,11 +496,19 @@ exports.Component3D = Target.specialize( {
                     break;
                 case "offsetMatrix":
                     if (typeof cssValue === "string") {
-                        declaration.value = this._createMatrixFromCSSDeclaration(cssValue);
+                        declaration.value = this._createMatrixFromCSSTransformDeclaration(cssValue);
                     } else {
                         declaration.value = cssValue;
                     }
                     break;
+                case "originMatrix":
+                    if (typeof cssValue === "string") {
+                        declaration.value = this._createMatrixFromCSSTransformOriginDeclaration(cssValue);
+                    } else {
+                        declaration.value = cssValue;
+                    }
+                    break;
+
                 case "visibility":
                     declaration.value = cssValue;
                     break;
@@ -501,10 +528,17 @@ exports.Component3D = Target.specialize( {
             if (cssProperty === "-webkit-transform") {
                 cssProperty = "transform";
             }
+            if (cssProperty === "-webkit-transform-origin") {
+                cssProperty = "transform-origin";
+            }
+
             //FIXME: we keep this intermediate step as a placeholder to switch between
             //offset or transform some pending CSS verification in test-apps to validate what to do there.
             if (cssProperty === "transform") {
                 cssProperty = "offsetMatrix";
+            }
+            if (cssProperty === "transform-origin") {
+                cssProperty = "originMatrix";
             }
 
             return cssProperty;
@@ -533,25 +567,6 @@ exports.Component3D = Target.specialize( {
                         }
                     }
                 }
-            }
-        }
-    },
-
-    _saveCurrentStyle: {
-        value: function() {
-            if (this._style == null)
-                return;
-
-            //FIXME: looks like for now we just want to save values for default
-            if (this._state !== this.__STYLE_DEFAULT__)
-                return;
-
-            var style = this._style;
-            if (this.styleableProperties != null) {
-                this.styleableProperties.forEach(function(property) {
-
-                    this._applyCSSPropertyWithValueForState(this._state, property, this[property]);
-                }, this);
             }
         }
     },
@@ -603,7 +618,6 @@ exports.Component3D = Target.specialize( {
         value: function() {
             if (this.classList) {
                 var appliedProperties = new Set();
-
                 var values = this.classList.enumerate();
                 for (var i = 0 ; i < values.length ; i++) {
                     var selectorName = values[i][1];
@@ -760,7 +774,7 @@ exports.Component3D = Target.specialize( {
                     break;
             }
 
-            if (state != this._state) {
+            if (state !== this._state) {
                 this._state = state;
                 this._executeCurrentStyle(state);
             }
