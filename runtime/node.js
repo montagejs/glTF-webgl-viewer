@@ -40,7 +40,7 @@ exports.Node = Component3D.specialize( {
             this.addOwnPropertyChangeListener("hidden", this);
             this.addOwnPropertyChangeListener("visibility", this);
             this.addOwnPropertyChangeListener("offsetMatrix", this);
-            this.addOwnPropertyChangeListener("originMatrix", this);
+            this.addOwnPropertyChangeListener("originVector", this);
             this.addOwnPropertyChangeListener("glTFElement", this);
         }
     },
@@ -65,7 +65,7 @@ exports.Node = Component3D.specialize( {
             this.handleHiddenChange();
             this.handleVisibilityChange();
             this.handleOffsetMatrixChange();
-            this.handleOriginMatrixChange();
+            this.handleOriginVectorChange();
 
             this._applyCSSPropertyWithValueForState(this.__STYLE_DEFAULT__, "offsetMatrix", this._offsetMatrix);
 
@@ -110,10 +110,11 @@ exports.Node = Component3D.specialize( {
         }
     },
 
-    handleOriginMatrixChange: {
+    handleOriginVectorChange: {
         value: function() {
             if (this.glTFElement != null) {
-                this.glTFElement._originMatrix = this._originMatrix;
+                debugger;
+                this.glTFElement._originVector = this._originVector;
                 //FIXME: user a more appropriate name for this, it will just trigger a redraw
                 this.scene.dispatchEventNamed("materialUpdate", true, false, this);
             }
@@ -196,17 +197,16 @@ exports.Node = Component3D.specialize( {
         }
     },
 
-    _originMatrix: { value: null, writable:true },
+    _originVector: { value: null, writable:true },
 
-    originMatrix: {
+    originVector: {
         set: function(value) {
-            this._originMatrix = value;
+            this._originVector = value;
         },
         get: function() {
-            return this._originMatrix;
+            return this._originVector;
         }
     },
-
 
     _observers: { value: null, writable: true},
 
@@ -235,7 +235,7 @@ exports.Node = Component3D.specialize( {
         }
     },
 
-    _stylableProperties: { value: ["visibility", "offsetMatrix", "originMatrix"]},
+    _stylableProperties: { value: ["visibility", "offsetMatrix", "originVector"]},
 
     styleableProperties: {
         get: function() {
@@ -249,8 +249,8 @@ exports.Node = Component3D.specialize( {
                 return "visible";
             } else if (property === "offsetMatrix") {
                 return mat4.identity();
-            } else if (property === "originMatrix") {
-                return mat4.identity();
+            } else if (property === "originVector") {
+                return vec3.createFrom(50, 50, 50);
             }
         }
     }

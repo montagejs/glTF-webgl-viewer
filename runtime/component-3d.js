@@ -268,22 +268,32 @@ exports.Component3D = Target.specialize( {
         }
     },
 
-    _createMatrixFromCSSTransformOriginDeclaration: {
+    _createVectorFromCSSTransformOriginDeclaration: {
         value: function(declaration) {
             var components = declaration.split(" ");
-
+            var transformOrigin;
             if (components.length == 3) {
-                var transformOrigin = vec3.create();
+                transformOrigin = vec3.create();
 
                 transformOrigin[0] = parseFloat(components[0]);
                 transformOrigin[1] = parseFloat(components[1]);
                 transformOrigin[2] = parseFloat(components[2]);
-                var transformOriginMatrix = mat4.identity();
 
-                return mat4.translate(transformOriginMatrix, transformOrigin);
+                return transformOrigin;
             }
 
-            return mat4.identity();
+            if (components.length == 2) {
+                transformOrigin = vec3.create();
+
+                transformOrigin[0] = parseFloat(components[0]);
+                transformOrigin[1] = parseFloat(components[1]);
+                transformOrigin[2] = 50;
+
+                return transformOrigin;
+            }
+
+
+            return vec3.createFrom(50,50,50);
         }
     },
 
@@ -501,9 +511,9 @@ exports.Component3D = Target.specialize( {
                         declaration.value = cssValue;
                     }
                     break;
-                case "originMatrix":
+                case "originVector":
                     if (typeof cssValue === "string") {
-                        declaration.value = this._createMatrixFromCSSTransformOriginDeclaration(cssValue);
+                        declaration.value = this._createVectorFromCSSTransformOriginDeclaration(cssValue);
                     } else {
                         declaration.value = cssValue;
                     }
@@ -538,7 +548,7 @@ exports.Component3D = Target.specialize( {
                 cssProperty = "offsetMatrix";
             }
             if (cssProperty === "transform-origin") {
-                cssProperty = "originMatrix";
+                cssProperty = "originVector";
             }
 
             return cssProperty;

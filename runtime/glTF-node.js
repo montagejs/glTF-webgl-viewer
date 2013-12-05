@@ -444,7 +444,7 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
 
     _offsetMatrix: { value: null, writable:true },
 
-    _originMatrix: { value: null, writable:true },
+    _originVector: { value: null, writable:true },
 
     worldMatrix: {
         get: function() {
@@ -462,30 +462,26 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
                         var res = mat4.identity();
                         var res2 = mat4.create();
 
+                        var originVector = vec3.createFrom(0.5, 0.5, 0.5);
+                        if (this._originVector != null) {
+                            originVector[0] = this._originVector[0] / 100.0;
+                            originVector[1] = this._originVector[1] / 100.0;
+                            originVector[2] = this._originVector[2] / 100.0;
+                        }
+
                         var mid = [
-                            (bbox[0][0] + bbox[1][0]) / 2,
-                            (bbox[0][1] + bbox[1][1]) / 2,
-                            (bbox[0][2] + bbox[1][2]) / 2];
+                            (bbox[0][0] + bbox[1][0]) * originVector[0],
+                            (bbox[0][1] + bbox[1][1]) * originVector[0],
+                            (bbox[0][2] + bbox[1][2]) * originVector[0]];
 
                         var tr1 = vec3.create(mid);
                         mat4.translate(res, tr1);
-                        if (this._originMatrix != null) {
-                            var invOriginMatrix = mat4.create();
-                            mat4.inverse(this._originMatrix, invOriginMatrix);
-                            mat4.multiply(res, invOriginMatrix);
-                        }
-
                         mat4.multiply(res, this._offsetMatrix, res2);
                         mat4.multiply(this._worldMatrix,  res2, res);
                         tr1[0] = -tr1[0];
                         tr1[1] = -tr1[1];
                         tr1[2] = -tr1[2];
                         mat4.translate(res, tr1);
-
-                        if (this._originMatrix != null) {
-                            mat4.multiply(res, this._originMatrix);
-                        }
-
 
                         return res;
                     }
