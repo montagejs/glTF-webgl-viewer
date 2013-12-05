@@ -453,7 +453,7 @@ var glTFNode = exports.glTFNode = Object.create(Base, {
                     this._worldMatrixIsDirty = false;
                 }
                 if (this._offsetMatrix != null) {
-                    var bbox = this.getBoundingBox(true);
+                    var bbox = this.getBoundingBox(false);
                     if (bbox != null) {
                         //this is now just for testing purposes, not optimized * at all *
                         var inv = mat4.create();
