@@ -6,7 +6,8 @@
         "digit": "0.3.1",
         "matte": "0.1.1",
         "q" : "0.9.6",
-        "collections": "~0.2.1"
+        "collections": "~0.2.1",
+        "mjs-volume": "git://github.com/fabrobinet/mjs-volume.git"
     },
     "devDependencies": {
         "express": "3.4.0"

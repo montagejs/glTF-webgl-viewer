@@ -36,14 +36,14 @@ POSSIBILITY OF SUCH DAMAGE.
 var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
 var RangeController = require("montage/core/range-controller").RangeController;
-var Utilities = require("runtime/utilities").Utilities;
-var Node = require("runtime/node").Node;
-var Scene = require("runtime/scene").Scene;
 
-var glTFNode = require("runtime/glTF-node").glTFNode;
-var Camera = require("runtime/camera").Camera;
-var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
-var glMatrix = require("runtime/dependencies/gl-matrix").glMatrix;
+var Utilities = require("mjs-volume/runtime/utilities").Utilities;
+var Node = require("mjs-volume/runtime/node").Node;
+var Scene = require("mjs-volume/runtime/scene").Scene;
+var glTFNode = require("mjs-volume/runtime/glTF-node").glTFNode;
+var Camera = require("mjs-volume/runtime/camera").Camera;
+var GLSLProgram = require("mjs-volume/runtime/glsl-program").GLSLProgram;
+var glMatrix = require("mjs-volume/runtime/dependencies/gl-matrix").glMatrix;
 
 /**
     Description TODO
@@ -86,6 +86,8 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(firstTime) {
             if(firstTime) {
                 this.modelsController.content = [
+                    { "name": "Santa",      "path": "model/Santa/Santa.json"},
+                    { "name": "skinTest",      "path": "model/skinBug/skinTest.json"},
                     { "name": "movingBox",      "path": "model/movingBox/movingBox.json"},
                     { "name": "test2",      "path": "model/test2/anim2.json"},
                     { "name": "cat",      "path": "model/cat/Creature.json"},

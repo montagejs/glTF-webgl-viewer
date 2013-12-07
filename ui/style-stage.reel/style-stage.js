@@ -36,15 +36,15 @@ POSSIBILITY OF SUCH DAMAGE.
 var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
 var RangeController = require("montage/core/range-controller").RangeController;
-var Utilities = require("runtime/utilities").Utilities;
-var Node = require("runtime/node").Node;
-var Component3D = require("runtime/component-3d").Component3D;
-var Scene = require("runtime/scene").Scene;
 
-var glTFNode = require("runtime/glTF-node").glTFNode;
-var Camera = require("runtime/camera").Camera;
-var GLSLProgram = require("runtime/glsl-program").GLSLProgram;
-var glMatrix = require("runtime/dependencies/gl-matrix").glMatrix;
+var Utilities = require("mjs-volume/runtime/utilities").Utilities;
+var Node = require("mjs-volume/runtime/node").Node;
+var Component3D = require("mjs-volume/runtime/component-3d").Component3D;
+var Scene = require("mjs-volume/runtime/scene").Scene;
+var glTFNode = require("mjs-volume/runtime/glTF-node").glTFNode;
+var Camera = require("mjs-volume/runtime/camera").Camera;
+var GLSLProgram = require("mjs-volume/runtime/glsl-program").GLSLProgram;
+var glMatrix = require("mjs-volume/runtime/dependencies/gl-matrix").glMatrix;
 
 /**
     Description TODO

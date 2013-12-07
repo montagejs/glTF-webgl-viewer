@@ -39,7 +39,10 @@
     transition-property: -webkit-transform;
     transition-duration: 2s;
     transition-timing-function: ease;
+}
 
+.origin {
+    -webkit-transform-origin: 50% 50%;
 }
 
 .oriented1 {

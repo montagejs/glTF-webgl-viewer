@@ -13,14 +13,14 @@
             },
 
             "scene": {
-                "prototype": "runtime/scene",
+                "prototype": "mjs-volume/runtime/scene",
                 "properties": {
                     "path": "model/cat/Creature.json"
                 }
             },
 
             "cat": {
-                "prototype": "runtime/node",
+                "prototype": "mjs-volume/runtime/node",
                 "properties": {
                     "id": "ID3",
                     "scene" : { "@" : "scene" }
@@ -33,7 +33,7 @@
             },
 
             "skin": {
-                "prototype": "runtime/material",
+                "prototype": "mjs-volume/runtime/material",
                 "properties": {
                     "id": "ID6",
                     "scene" : { "@" : "scene" }
@@ -41,7 +41,7 @@
             },
 
             "sceneViewer": {
-                "prototype": "ui/scene-viewer.reel",
+                "prototype": "mjs-volume/ui/scene-viewer.reel",
                 "properties": {
                     "element": {"#": "sceneViewer"}
                 }

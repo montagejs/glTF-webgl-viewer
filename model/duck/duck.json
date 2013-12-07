@@ -1,9 +1,5 @@
 {
-    "animations": {},
-    "asset": {
-        "generator": "collada2gltf@7a0aceba18a5e909be15e6303144f5379cf6bf3f"
-    },
-    "attributes": {
+    "accessors": {
         "attribute_23": {
             "bufferView": "bufferView_29",
             "byteOffset": 0,
@@ -52,7 +48,17 @@
                 0.019963
             ],
             "type": 35664
+        },
+        "indices_21": {
+            "bufferView": "bufferView_30",
+            "byteOffset": 0,
+            "count": 12636,
+            "type": 5123
         }
+    },
+    "animations": {},
+    "asset": {
+        "generator": "collada2gltf@d42009773b99cb8242af401409875263fab3a09a"
     },
     "bufferViews": {
         "bufferView_29": {
@@ -83,7 +89,6 @@
     "cameras": {
         "camera_0": {
             "perspective": {
-                "aspect_ratio": 1.5,
                 "yfov": 37.8492,
                 "zfar": 10000,
                 "znear": 1
@@ -94,14 +99,6 @@
     "images": {
         "image_0": {
             "path": "duckCM.png"
-        }
-    },
-    "indices": {
-        "indices_21": {
-            "bufferView": "bufferView_30",
-            "byteOffset": 0,
-            "count": 12636,
-            "type": 5123
         }
     },
     "lights": {
@@ -128,12 +125,6 @@
                         1
                     ],
                     "diffuse": "texture_image_0",
-                    "emission": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ],
                     "shininess": 38.4,
                     "specular": [
                         0,
@@ -147,8 +138,8 @@
         }
     },
     "meshes": {
-        "LOD3spShape-lib": {
-            "name": "LOD3spShape",
+        "geometry3": {
+            "name": "geometry3",
             "primitives": [
                 {
                     "attributes": {
@@ -167,25 +158,25 @@
         "LOD3sp": {
             "children": [],
             "matrix": [
-                1,
+                2,
                 0,
                 0,
                 0,
                 0,
-                1,
+                2,
                 0,
                 0,
                 0,
                 0,
-                1,
+                2,
                 0,
-                0,
+                10,
                 0,
                 0,
                 1
             ],
             "meshes": [
-                "LOD3spShape-lib"
+                "geometry3"
             ],
             "name": "LOD3sp"
         },
@@ -251,7 +242,7 @@
     "samplers": {
         "sampler_0": {
             "magFilter": 9729,
-            "minFilter": 9987,
+            "minFilter": 9729,
             "wrapS": 10497,
             "wrapT": 10497
         }
@@ -283,9 +274,6 @@
                 },
                 "diffuse": {
                     "type": 35678
-                },
-                "emission": {
-                    "type": 35666
                 },
                 "light0Color": {
                     "type": 35665,
@@ -342,7 +330,6 @@
                             "parameters": [
                                 "ambient",
                                 "diffuse",
-                                "emission",
                                 "light0Color",
                                 "light0Transform",
                                 "modelViewMatrix",
@@ -367,7 +354,6 @@
                         "uniforms": {
                             "u_ambient": "ambient",
                             "u_diffuse": "diffuse",
-                            "u_emission": "emission",
                             "u_light0Color": "light0Color",
                             "u_light0Transform": "light0Transform",
                             "u_modelViewMatrix": "modelViewMatrix",
