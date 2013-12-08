@@ -33,34 +33,28 @@ POSSIBILITY OF SUCH DAMAGE.
 <html id="viewer">
 <head>
     <meta charset="utf-8">
-    <title>MontageJS Scene Viewer</title>
+    <title>GLTF Viewer</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     
     <link rel="stylesheet" href="assets/style/style.css">
-        <script src="node_modules/montage/montage.js"></script>
+    
+    <script src="node_modules/montage/montage.js"></script>
     <script type="text/montage-serialization">
     {
-        "scene": {
-            "prototype": "mjs-volume/runtime/scene",
-            "properties": {
-                "path": "model/duck/duck.json"
+            "theStage": {
+                "prototype": "ui/stage.reel",
+                "properties": {
+                    "element": {"#": "theStage"}
+                }
             }
-        },
-        "sceneViewer": {
-            "prototype": "mjs-volume/ui/scene-viewer.reel",
-            "properties": {
-                "element": {"#" : "sceneViewer" },
-                "scene" : { "@" : "scene" }
-            }
-        }
     }
     </script>
 
 </head>
 <body>
-    <div data-montage-id="sceneViewer"></div>
+    <div data-montage-id="theStage"></div>
 </body>
 </html>

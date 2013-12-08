@@ -33,6 +33,10 @@ POSSIBILITY OF SUCH DAMAGE.
     @requires montage
     @requires montage/ui/component
 */
+
+//FIXME: rename .view as .sceneViewer
+//FIXME: camera controller currently broken
+
 var Montage = require("montage").Montage;
 var Component = require("montage/ui/component").Component;
 var RangeController = require("montage/core/range-controller").RangeController;
@@ -78,7 +82,6 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
      */
     templateDidLoad:{
         value:function () {
-            this.view.delegate = this;
         }
     },
 
@@ -86,59 +89,10 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(firstTime) {
             if(firstTime) {
                 this.modelsController.content = [
-                    { "name": "Santa",      "path": "model/Santa/Santa.json"},
-                    { "name": "skinTest",      "path": "model/skinBug/skinTest.json"},
-                    { "name": "movingBox",      "path": "model/movingBox/movingBox.json"},
-                    { "name": "test2",      "path": "model/test2/anim2.json"},
-                    { "name": "cat",      "path": "model/cat/Creature.json"},
-
-                    { "name": "loft",      "path": "model/loft/loft8.json"},
-                    { "name": "vc",      "path": "model/vc/vc.json"},
-                    { "name": "minebot",            "path": "model/minebot/mine_bot_anim.json"},
-                    { "name": "bimba",            "path": "model/bimba/bimba.json"},
-                    { "name": "David",            "path": "model/David/David.json"},
-                    { "name": "elephant2",            "path": "model/elephant2/elephant2.json"},
-
-                    { "name": "HolidayIn",            "path": "model/holidayin/models/model.json"},
-                    { "name": "Atomium",            "path": "model/Atomium/models/model.json"},
-                    { "name": "frigate",            "path": "model/frigate/frigate.json"},
-                    { "name": "test",    "path": "model/testMark/testMark.json"},
-                    { "name": "modo",    "path": "model/modo/modo.json"},
                     { "name": "duck", "path": "model/duck/duck.json"},
-                    { "name": "Buggy",              "path": "model/rambler/Rambler.json"},
-                    { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
-                    { "name": "Wine", "path": "model/wine/wine.json"},
-
-
                     { "name": "Buggy", "path": "model/rambler/Rambler.json"},
-
-                    { "name": "challenge",          "path": "model/challenge/challengeFlattened.json"},
-                    { "name": "monster", "path": "model/monster/monster.json"},
-
-                    { "name": "testShadows",    "path": "model/test_shadows/test_shadows.json"},
-
-                    { "name": "loft",    "path": "model/loft4/loft4.json"},
-
-
-                    { "name": "cubemaps",    "path": "model/cubemaps/test1.json"},
-
-                    { "name": "roomWithCameras",    "path": "model/testWithCameras/testWithCameras.json"},
-                    { "name": "vc",                 "path": "model/vc/vc.json"},
-                    { "name": "BuggyFlatttened",    "path": "model/rambler/RamblerFlattened.json"},
-                    { "name": "duck",               "path": "model/duck/duck.json"},
-                    { "name": "room1",              "path": "model/room/testRoom6.json"},
-                    { "name": "SuperMurdoch",       "path": "model/SuperMurdoch/SuperMurdoch.json"},
-                    { "name": "Wine",               "path": "model/wine/wine.json"},
-                    { "name": "Nexus",              "path": "model/NexusFlattened/NexusFlattened.json"},
-                    { "name": "room1",              "path": "model/room/testRoom5.json"},
-                    { "name": "megacity",           "path": "model/megacity/megacity4.json"},
-                    { "name": "Buggy",              "path": "model/rambler/Rambler.json"},
-                    { "name": "BuggyFlatttened",    "path": "model/rambler/RamblerFlattened.json"},
-                    { "name": "Wine",               "path": "model/wine/wine.json"},
-                    { "name": "balloon",            "path": "model/baloon3/baloon.json"},
-                    { "name": "brainsteam",         "path": "model/brainsteam/brainsteam2.json"},
-                    { "name": "FemurTri",           "path": "model/femur/FemurTri.json"},
-                    { "name": "monster",            "path": "model/monster/monster.json"}
+                    { "name": "SuperMurdoch", "path": "model/SuperMurdoch/SuperMurdoch.json"},
+                    { "name": "Wine", "path": "model/wine/wine.json"}
                 ];
                 this.modelPath = this.modelsController.content[0].path;
             }
@@ -189,9 +143,9 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(camera) {
             if (camera) {
                 var m3dNode = Montage.create(Node);
-                m3dNode.scene = this.view.scene;
+                m3dNode.scene = this.view.sceneView.scene;
                 m3dNode.id = camera.node.baseId;
-                this.view.viewPoint = m3dNode;
+                this.view.sceneView.viewPoint = m3dNode;
             } else {
                 //FIXME: handle this case
                 //this.view.viewPoint = null;
@@ -217,6 +171,30 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         }
     },
 
+    _showBBOX: { value: false, writable: true },
+
+    showBBOX: {
+        get: function() {
+            return this._showBBOX;
+        },
+        set: function(flag) {
+            //FIXME: need to fix mjs-volume
+            if (this.view) {
+                if (this.view.sceneView) {
+                    this.view.sceneView.showBBOX = flag;
+                }
+            }
+            this._showBBOX = flag;
+        }
+    },
+
+    handleStatusChange: {
+        value: function(status, key, object) {
+            object.addOwnPropertyChangeListener("status", this);
+            this.sceneDidChange();
+        }
+    },
+
     run: {
         value: function(scenePath) {
             this.loadScene();
@@ -224,6 +202,7 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                 var scene = Montage.create(Scene).init();
                 scene.path = scenePath;
                 this.view.scene = scene;
+                scene.addOwnPropertyChangeListener("status", this);
             }
         }
     },
@@ -238,26 +217,16 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
 
     sceneWillChange: {
         value: function() {
-            var resourceManager = this.view.getResourceManager();
-            if (resourceManager) {
-                this.view.viewPoint = null;
-                resourceManager.maxConcurrentRequests = this.concurrentRequests;
-                resourceManager.bytesLimit = this.bytesLimit * 1024;
-                resourceManager.reset();
-            }
         }
     },
 
+
+    //This is using private methods - stay away from that.
     sceneDidChange: {
         value: function() {
+            debugger;
             if(this.view.scene) {
                 this.loadScene();
-                 var resourceManager = this.view.getResourceManager();
-                 if (resourceManager) {
-                     if (resourceManager.observers.length === 1) { //FIXME:...
-                         resourceManager.observers.push(this);
-                     }
-                 }
                  this.camerasController.content = [];
 
                  var cameraNodes = [];
@@ -272,18 +241,6 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
                  cameraNodes.forEach( function(cameraNode) {
                      this.camerasController.content.push( { "name": cameraNode.name, "node": cameraNode} );
                  }, this);
-            }
-        }
-    },
-
-    resourceAvailable: {
-        value: function(resource) {
-            if (resource.range && this.loading) {
-                this.loadingProgress += ((resource.range[1] - resource.range[0])/this.view.totalBufferSize)*100;
-                if (this.loadingProgress >= 99) {
-                    this.loadingProgress = 0;
-                    this.loading = false;
-                }
             }
         }
     }
