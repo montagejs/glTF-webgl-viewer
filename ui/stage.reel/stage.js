@@ -224,7 +224,6 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
     //This is using private methods - stay away from that.
     sceneDidChange: {
         value: function() {
-            debugger;
             if(this.view.scene) {
                 this.loadScene();
                  this.camerasController.content = [];
