@@ -143,9 +143,9 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(camera) {
             if (camera) {
                 var m3dNode = Montage.create(Node);
-                m3dNode.scene = this.view.sceneView.scene;
+                m3dNode.scene = this.view.scene;
                 m3dNode.id = camera.node.baseId;
-                this.view.sceneView.viewPoint = m3dNode;
+                this.view.viewPoint = m3dNode;
             } else {
                 //FIXME: handle this case
                 //this.view.viewPoint = null;
@@ -180,8 +180,8 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         set: function(flag) {
             //FIXME: need to fix mjs-volume
             if (this.view) {
-                if (this.view.sceneView) {
-                    this.view.sceneView.showBBOX = flag;
+                if (this.view) {
+                    this.view.showBBOX = flag;
                 }
             }
             this._showBBOX = flag;
