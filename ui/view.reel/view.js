@@ -53,7 +53,7 @@ var FlyingCamera = require("runtime/dependencies/camera").FlyingCamera;
 var TranslateComposer = require("montage/composer/translate-composer").TranslateComposer;
 var BuiltInAssets = require("runtime/builtin-assets").BuiltInAssets;
 var WebGLRenderer = require("runtime/webgl-renderer").WebGLRenderer;
-var URL = require("montage/core/url");
+var URL = require("url");
 var Projection = require("runtime/projection").Projection;
 var Camera = require("runtime/camera").Camera;
 

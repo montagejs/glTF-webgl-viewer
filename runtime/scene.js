@@ -24,7 +24,7 @@
 var Montage = require("montage").Montage;
 var Component3D = require("runtime/component-3d").Component3D;
 var RuntimeTFLoader = require("runtime/runtime-tf-loader").RuntimeTFLoader;
-var URL = require("montage/core/url");
+var URL = require("url");
 var SceneResourceLoader = require("runtime/scene-resource-loader").SceneResourceLoader;
 var Q = require("q");
 
