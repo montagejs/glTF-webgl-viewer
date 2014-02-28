@@ -1,6 +1,13 @@
 {
     "accessors": {
-        "attribute_120": {
+        "accessor_118": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 8208,
+            "byteStride": 0,
+            "count": 360,
+            "type": 5123
+        },
+        "accessor_120": {
             "bufferView": "bufferView_408",
             "byteOffset": 38592,
             "byteStride": 12,
@@ -17,7 +24,7 @@
             ],
             "type": 35665
         },
-        "attribute_122": {
+        "accessor_122": {
             "bufferView": "bufferView_408",
             "byteOffset": 40704,
             "byteStride": 12,
@@ -34,7 +41,7 @@
             ],
             "type": 35665
         },
-        "attribute_124": {
+        "accessor_124": {
             "bufferView": "bufferView_408",
             "byteOffset": 42816,
             "byteStride": 8,
@@ -49,7 +56,14 @@
             ],
             "type": 35664
         },
-        "attribute_147": {
+        "accessor_145": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 8928,
+            "byteStride": 0,
+            "count": 168,
+            "type": 5123
+        },
+        "accessor_147": {
             "bufferView": "bufferView_408",
             "byteOffset": 44224,
             "byteStride": 12,
@@ -66,7 +80,7 @@
             ],
             "type": 35665
         },
-        "attribute_149": {
+        "accessor_149": {
             "bufferView": "bufferView_408",
             "byteOffset": 45376,
             "byteStride": 12,
@@ -83,7 +97,7 @@
             ],
             "type": 35665
         },
-        "attribute_151": {
+        "accessor_151": {
             "bufferView": "bufferView_408",
             "byteOffset": 46528,
             "byteStride": 8,
@@ -98,7 +112,14 @@
             ],
             "type": 35664
         },
-        "attribute_174": {
+        "accessor_172": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 9264,
+            "byteStride": 0,
+            "count": 4740,
+            "type": 5123
+        },
+        "accessor_174": {
             "bufferView": "bufferView_408",
             "byteOffset": 47296,
             "byteStride": 12,
@@ -115,7 +136,7 @@
             ],
             "type": 35665
         },
-        "attribute_176": {
+        "accessor_176": {
             "bufferView": "bufferView_408",
             "byteOffset": 70912,
             "byteStride": 12,
@@ -132,7 +153,7 @@
             ],
             "type": 35665
         },
-        "attribute_178": {
+        "accessor_178": {
             "bufferView": "bufferView_408",
             "byteOffset": 94528,
             "byteStride": 8,
@@ -147,7 +168,21 @@
             ],
             "type": 35664
         },
-        "attribute_221": {
+        "accessor_216": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 18744,
+            "byteStride": 0,
+            "count": 66,
+            "type": 5123
+        },
+        "accessor_219": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 18876,
+            "byteStride": 0,
+            "count": 66,
+            "type": 5123
+        },
+        "accessor_221": {
             "bufferView": "bufferView_408",
             "byteOffset": 110272,
             "byteStride": 12,
@@ -164,7 +199,7 @@
             ],
             "type": 35665
         },
-        "attribute_223": {
+        "accessor_223": {
             "bufferView": "bufferView_408",
             "byteOffset": 110848,
             "byteStride": 12,
@@ -181,7 +216,7 @@
             ],
             "type": 35665
         },
-        "attribute_225": {
+        "accessor_225": {
             "bufferView": "bufferView_408",
             "byteOffset": 111424,
             "byteStride": 8,
@@ -196,7 +231,21 @@
             ],
             "type": 35664
         },
-        "attribute_248": {
+        "accessor_24": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "count": 168,
+            "type": 5123
+        },
+        "accessor_246": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 19008,
+            "byteStride": 0,
+            "count": 360,
+            "type": 5123
+        },
+        "accessor_248": {
             "bufferView": "bufferView_408",
             "byteOffset": 111808,
             "byteStride": 12,
@@ -213,7 +262,7 @@
             ],
             "type": 35665
         },
-        "attribute_250": {
+        "accessor_250": {
             "bufferView": "bufferView_408",
             "byteOffset": 113920,
             "byteStride": 12,
@@ -230,7 +279,7 @@
             ],
             "type": 35665
         },
-        "attribute_252": {
+        "accessor_252": {
             "bufferView": "bufferView_408",
             "byteOffset": 116032,
             "byteStride": 8,
@@ -245,7 +294,7 @@
             ],
             "type": 35664
         },
-        "attribute_26": {
+        "accessor_26": {
             "bufferView": "bufferView_408",
             "byteOffset": 0,
             "byteStride": 12,
@@ -262,7 +311,14 @@
             ],
             "type": 35665
         },
-        "attribute_270": {
+        "accessor_268": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 19728,
+            "byteStride": 0,
+            "count": 600,
+            "type": 5123
+        },
+        "accessor_270": {
             "bufferView": "bufferView_408",
             "byteOffset": 117440,
             "byteStride": 12,
@@ -279,7 +335,7 @@
             ],
             "type": 35665
         },
-        "attribute_272": {
+        "accessor_272": {
             "bufferView": "bufferView_408",
             "byteOffset": 120128,
             "byteStride": 12,
@@ -296,7 +352,7 @@
             ],
             "type": 35665
         },
-        "attribute_28": {
+        "accessor_28": {
             "bufferView": "bufferView_408",
             "byteOffset": 1152,
             "byteStride": 12,
@@ -313,7 +369,14 @@
             ],
             "type": 35665
         },
-        "attribute_295": {
+        "accessor_293": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 20928,
+            "byteStride": 0,
+            "count": 6918,
+            "type": 5123
+        },
+        "accessor_295": {
             "bufferView": "bufferView_408",
             "byteOffset": 122816,
             "byteStride": 12,
@@ -330,7 +393,7 @@
             ],
             "type": 35665
         },
-        "attribute_297": {
+        "accessor_297": {
             "bufferView": "bufferView_408",
             "byteOffset": 158012,
             "byteStride": 12,
@@ -347,7 +410,7 @@
             ],
             "type": 35665
         },
-        "attribute_299": {
+        "accessor_299": {
             "bufferView": "bufferView_408",
             "byteOffset": 193208,
             "byteStride": 8,
@@ -362,7 +425,7 @@
             ],
             "type": 35664
         },
-        "attribute_30": {
+        "accessor_30": {
             "bufferView": "bufferView_408",
             "byteOffset": 2304,
             "byteStride": 8,
@@ -377,7 +440,14 @@
             ],
             "type": 35664
         },
-        "attribute_317": {
+        "accessor_315": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 34764,
+            "byteStride": 0,
+            "count": 216,
+            "type": 5123
+        },
+        "accessor_317": {
             "bufferView": "bufferView_408",
             "byteOffset": 216672,
             "byteStride": 12,
@@ -394,7 +464,7 @@
             ],
             "type": 35665
         },
-        "attribute_319": {
+        "accessor_319": {
             "bufferView": "bufferView_408",
             "byteOffset": 218112,
             "byteStride": 12,
@@ -411,7 +481,14 @@
             ],
             "type": 35665
         },
-        "attribute_342": {
+        "accessor_340": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 35196,
+            "byteStride": 0,
+            "count": 4740,
+            "type": 5123
+        },
+        "accessor_342": {
             "bufferView": "bufferView_408",
             "byteOffset": 219552,
             "byteStride": 12,
@@ -428,7 +505,7 @@
             ],
             "type": 35665
         },
-        "attribute_344": {
+        "accessor_344": {
             "bufferView": "bufferView_408",
             "byteOffset": 243168,
             "byteStride": 12,
@@ -445,7 +522,7 @@
             ],
             "type": 35665
         },
-        "attribute_346": {
+        "accessor_346": {
             "bufferView": "bufferView_408",
             "byteOffset": 266784,
             "byteStride": 8,
@@ -460,7 +537,21 @@
             ],
             "type": 35664
         },
-        "attribute_389": {
+        "accessor_384": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 44676,
+            "byteStride": 0,
+            "count": 66,
+            "type": 5123
+        },
+        "accessor_387": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 44808,
+            "byteStride": 0,
+            "count": 66,
+            "type": 5123
+        },
+        "accessor_389": {
             "bufferView": "bufferView_408",
             "byteOffset": 282528,
             "byteStride": 12,
@@ -477,7 +568,7 @@
             ],
             "type": 35665
         },
-        "attribute_391": {
+        "accessor_391": {
             "bufferView": "bufferView_408",
             "byteOffset": 283104,
             "byteStride": 12,
@@ -494,7 +585,7 @@
             ],
             "type": 35665
         },
-        "attribute_393": {
+        "accessor_393": {
             "bufferView": "bufferView_408",
             "byteOffset": 283680,
             "byteStride": 8,
@@ -509,7 +600,14 @@
             ],
             "type": 35664
         },
-        "attribute_48": {
+        "accessor_46": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 336,
+            "byteStride": 0,
+            "count": 1944,
+            "type": 5123
+        },
+        "accessor_48": {
             "bufferView": "bufferView_408",
             "byteOffset": 3072,
             "byteStride": 12,
@@ -526,7 +624,7 @@
             ],
             "type": 35665
         },
-        "attribute_50": {
+        "accessor_50": {
             "bufferView": "bufferView_408",
             "byteOffset": 11712,
             "byteStride": 12,
@@ -543,7 +641,14 @@
             ],
             "type": 35665
         },
-        "attribute_68": {
+        "accessor_66": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 4224,
+            "byteStride": 0,
+            "count": 1944,
+            "type": 5123
+        },
+        "accessor_68": {
             "bufferView": "bufferView_408",
             "byteOffset": 20352,
             "byteStride": 12,
@@ -560,7 +665,7 @@
             ],
             "type": 35665
         },
-        "attribute_70": {
+        "accessor_70": {
             "bufferView": "bufferView_408",
             "byteOffset": 28992,
             "byteStride": 12,
@@ -577,7 +682,14 @@
             ],
             "type": 35665
         },
-        "attribute_93": {
+        "accessor_91": {
+            "bufferView": "bufferView_409",
+            "byteOffset": 8112,
+            "byteStride": 0,
+            "count": 48,
+            "type": 5123
+        },
+        "accessor_93": {
             "bufferView": "bufferView_408",
             "byteOffset": 37632,
             "byteStride": 12,
@@ -594,7 +706,7 @@
             ],
             "type": 35665
         },
-        "attribute_95": {
+        "accessor_95": {
             "bufferView": "bufferView_408",
             "byteOffset": 37992,
             "byteStride": 12,
@@ -611,7 +723,7 @@
             ],
             "type": 35665
         },
-        "attribute_97": {
+        "accessor_97": {
             "bufferView": "bufferView_408",
             "byteOffset": 38352,
             "byteStride": 8,
@@ -625,107 +737,14 @@
                 0.352547
             ],
             "type": 35664
-        },
-        "indices_118": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 8208,
-            "count": 360,
-            "type": 5123
-        },
-        "indices_145": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 8928,
-            "count": 168,
-            "type": 5123
-        },
-        "indices_172": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 9264,
-            "count": 4740,
-            "type": 5123
-        },
-        "indices_216": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 18744,
-            "count": 66,
-            "type": 5123
-        },
-        "indices_219": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 18876,
-            "count": 66,
-            "type": 5123
-        },
-        "indices_24": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 0,
-            "count": 168,
-            "type": 5123
-        },
-        "indices_246": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 19008,
-            "count": 360,
-            "type": 5123
-        },
-        "indices_268": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 19728,
-            "count": 600,
-            "type": 5123
-        },
-        "indices_293": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 20928,
-            "count": 6918,
-            "type": 5123
-        },
-        "indices_315": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 34764,
-            "count": 216,
-            "type": 5123
-        },
-        "indices_340": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 35196,
-            "count": 4740,
-            "type": 5123
-        },
-        "indices_384": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 44676,
-            "count": 66,
-            "type": 5123
-        },
-        "indices_387": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 44808,
-            "count": 66,
-            "type": 5123
-        },
-        "indices_46": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 336,
-            "count": 1944,
-            "type": 5123
-        },
-        "indices_66": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 4224,
-            "count": 1944,
-            "type": 5123
-        },
-        "indices_91": {
-            "bufferView": "bufferView_409",
-            "byteOffset": 8112,
-            "count": 48,
-            "type": 5123
         }
     },
     "animations": {},
     "asset": {
-        "generator": "collada2gltf@1b9793fc50310c7532ba229f759f6a9882e3febc"
+        "extras": {
+            "premultipliedAlpha": true
+        },
+        "generator": "collada2gltf@985e183e0b14eccd090e8738d70057e5825dd8ee"
     },
     "bufferViews": {
         "bufferView_408": {
@@ -739,11 +758,6 @@
             "byteLength": 44940,
             "byteOffset": 284064,
             "target": 34963
-        },
-        "bufferView_410": {
-            "buffer": "wine",
-            "byteLength": 0,
-            "byteOffset": 329004
         }
     },
     "buffers": {
@@ -868,11 +882,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_28",
-                        "POSITION": "attribute_26",
-                        "TEXCOORD_0": "attribute_30"
+                        "NORMAL": "accessor_28",
+                        "POSITION": "accessor_26",
+                        "TEXCOORD_0": "accessor_30"
                     },
-                    "indices": "indices_24",
+                    "indices": "accessor_24",
                     "material": "ID6",
                     "primitive": 4
                 }
@@ -883,10 +897,10 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_50",
-                        "POSITION": "attribute_48"
+                        "NORMAL": "accessor_50",
+                        "POSITION": "accessor_48"
                     },
-                    "indices": "indices_46",
+                    "indices": "accessor_46",
                     "material": "ID21",
                     "primitive": 4
                 }
@@ -897,10 +911,10 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_70",
-                        "POSITION": "attribute_68"
+                        "NORMAL": "accessor_70",
+                        "POSITION": "accessor_68"
                     },
-                    "indices": "indices_66",
+                    "indices": "accessor_66",
                     "material": "ID21",
                     "primitive": 4
                 }
@@ -911,11 +925,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_95",
-                        "POSITION": "attribute_93",
-                        "TEXCOORD_0": "attribute_97"
+                        "NORMAL": "accessor_95",
+                        "POSITION": "accessor_93",
+                        "TEXCOORD_0": "accessor_97"
                     },
-                    "indices": "indices_91",
+                    "indices": "accessor_91",
                     "material": "ID6",
                     "primitive": 4
                 }
@@ -926,11 +940,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_122",
-                        "POSITION": "attribute_120",
-                        "TEXCOORD_0": "attribute_124"
+                        "NORMAL": "accessor_122",
+                        "POSITION": "accessor_120",
+                        "TEXCOORD_0": "accessor_124"
                     },
-                    "indices": "indices_118",
+                    "indices": "accessor_118",
                     "material": "ID6",
                     "primitive": 4
                 }
@@ -941,11 +955,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_149",
-                        "POSITION": "attribute_147",
-                        "TEXCOORD_0": "attribute_151"
+                        "NORMAL": "accessor_149",
+                        "POSITION": "accessor_147",
+                        "TEXCOORD_0": "accessor_151"
                     },
-                    "indices": "indices_145",
+                    "indices": "accessor_145",
                     "material": "ID6",
                     "primitive": 4
                 }
@@ -956,11 +970,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_176",
-                        "POSITION": "attribute_174",
-                        "TEXCOORD_0": "attribute_178"
+                        "NORMAL": "accessor_176",
+                        "POSITION": "accessor_174",
+                        "TEXCOORD_0": "accessor_178"
                     },
-                    "indices": "indices_172",
+                    "indices": "accessor_172",
                     "material": "ID77",
                     "primitive": 4
                 }
@@ -971,21 +985,21 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_223",
-                        "POSITION": "attribute_221",
-                        "TEXCOORD_0": "attribute_225"
+                        "NORMAL": "accessor_223",
+                        "POSITION": "accessor_221",
+                        "TEXCOORD_0": "accessor_225"
                     },
-                    "indices": "indices_216",
+                    "indices": "accessor_216",
                     "material": "ID89",
                     "primitive": 4
                 },
                 {
                     "attributes": {
-                        "NORMAL": "attribute_223",
-                        "POSITION": "attribute_221",
-                        "TEXCOORD_0": "attribute_225"
+                        "NORMAL": "accessor_223",
+                        "POSITION": "accessor_221",
+                        "TEXCOORD_0": "accessor_225"
                     },
-                    "indices": "indices_219",
+                    "indices": "accessor_219",
                     "material": "ID77",
                     "primitive": 4
                 }
@@ -996,11 +1010,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_250",
-                        "POSITION": "attribute_248",
-                        "TEXCOORD_0": "attribute_252"
+                        "NORMAL": "accessor_250",
+                        "POSITION": "accessor_248",
+                        "TEXCOORD_0": "accessor_252"
                     },
-                    "indices": "indices_246",
+                    "indices": "accessor_246",
                     "material": "ID6",
                     "primitive": 4
                 }
@@ -1011,10 +1025,10 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_272",
-                        "POSITION": "attribute_270"
+                        "NORMAL": "accessor_272",
+                        "POSITION": "accessor_270"
                     },
-                    "indices": "indices_268",
+                    "indices": "accessor_268",
                     "material": "ID21",
                     "primitive": 4
                 }
@@ -1025,11 +1039,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_297",
-                        "POSITION": "attribute_295",
-                        "TEXCOORD_0": "attribute_299"
+                        "NORMAL": "accessor_297",
+                        "POSITION": "accessor_295",
+                        "TEXCOORD_0": "accessor_299"
                     },
-                    "indices": "indices_293",
+                    "indices": "accessor_293",
                     "material": "ID139",
                     "primitive": 4
                 }
@@ -1040,10 +1054,10 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_319",
-                        "POSITION": "attribute_317"
+                        "NORMAL": "accessor_319",
+                        "POSITION": "accessor_317"
                     },
-                    "indices": "indices_315",
+                    "indices": "accessor_315",
                     "material": "ID21",
                     "primitive": 4
                 }
@@ -1054,11 +1068,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_344",
-                        "POSITION": "attribute_342",
-                        "TEXCOORD_0": "attribute_346"
+                        "NORMAL": "accessor_344",
+                        "POSITION": "accessor_342",
+                        "TEXCOORD_0": "accessor_346"
                     },
-                    "indices": "indices_340",
+                    "indices": "accessor_340",
                     "material": "ID77",
                     "primitive": 4
                 }
@@ -1069,21 +1083,21 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_391",
-                        "POSITION": "attribute_389",
-                        "TEXCOORD_0": "attribute_393"
+                        "NORMAL": "accessor_391",
+                        "POSITION": "accessor_389",
+                        "TEXCOORD_0": "accessor_393"
                     },
-                    "indices": "indices_384",
+                    "indices": "accessor_384",
                     "material": "ID89",
                     "primitive": 4
                 },
                 {
                     "attributes": {
-                        "NORMAL": "attribute_391",
-                        "POSITION": "attribute_389",
-                        "TEXCOORD_0": "attribute_393"
+                        "NORMAL": "accessor_391",
+                        "POSITION": "accessor_389",
+                        "TEXCOORD_0": "accessor_393"
                     },
-                    "indices": "indices_387",
+                    "indices": "accessor_387",
                     "material": "ID77",
                     "primitive": 4
                 }
@@ -11626,22 +11640,28 @@
     },
     "shaders": {
         "wine0FS": {
-            "path": "wine0FS.glsl"
+            "path": "wine0FS.glsl",
+            "type": 35632
         },
         "wine0VS": {
-            "path": "wine0VS.glsl"
+            "path": "wine0VS.glsl",
+            "type": 35633
         },
         "wine2FS": {
-            "path": "wine2FS.glsl"
+            "path": "wine2FS.glsl",
+            "type": 35632
         },
         "wine2VS": {
-            "path": "wine2VS.glsl"
+            "path": "wine2VS.glsl",
+            "type": 35633
         },
         "wine4FS": {
-            "path": "wine4FS.glsl"
+            "path": "wine4FS.glsl",
+            "type": 35632
         },
         "wine4VS": {
-            "path": "wine4VS.glsl"
+            "path": "wine4VS.glsl",
+            "type": 35633
         }
     },
     "skins": {},
@@ -11797,10 +11817,10 @@
                         "blendEquation": 32774,
                         "blendFunc": {
                             "dfactor": 771,
-                            "sfactor": 770
+                            "sfactor": 1
                         },
                         "cullFaceEnable": 1,
-                        "depthMask": 0,
+                        "depthMask": 1,
                         "depthTestEnable": 1
                     }
                 }
@@ -11884,21 +11904,24 @@
             "internalFormat": 6408,
             "sampler": "sampler_0",
             "source": "image_0",
-            "target": 3553
+            "target": 3553,
+            "type": 5121
         },
         "texture_image_1": {
             "format": 6408,
             "internalFormat": 6408,
             "sampler": "sampler_0",
             "source": "image_1",
-            "target": 3553
+            "target": 3553,
+            "type": 5121
         },
         "texture_image_2": {
             "format": 6408,
             "internalFormat": 6408,
             "sampler": "sampler_0",
             "source": "image_2",
-            "target": 3553
+            "target": 3553,
+            "type": 5121
         }
     }
 }

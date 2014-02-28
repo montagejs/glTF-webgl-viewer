@@ -1,6 +1,13 @@
 {
     "accessors": {
-        "attribute_23": {
+        "accessor_21": {
+            "bufferView": "bufferView_30",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "count": 12636,
+            "type": 5123
+        },
+        "accessor_23": {
             "bufferView": "bufferView_29",
             "byteOffset": 0,
             "byteStride": 12,
@@ -17,7 +24,7 @@
             ],
             "type": 35665
         },
-        "attribute_25": {
+        "accessor_25": {
             "bufferView": "bufferView_29",
             "byteOffset": 28788,
             "byteStride": 12,
@@ -34,7 +41,7 @@
             ],
             "type": 35665
         },
-        "attribute_27": {
+        "accessor_27": {
             "bufferView": "bufferView_29",
             "byteOffset": 57576,
             "byteStride": 8,
@@ -48,17 +55,14 @@
                 0.019963
             ],
             "type": 35664
-        },
-        "indices_21": {
-            "bufferView": "bufferView_30",
-            "byteOffset": 0,
-            "count": 12636,
-            "type": 5123
         }
     },
     "animations": {},
     "asset": {
-        "generator": "collada2gltf@1b9793fc50310c7532ba229f759f6a9882e3febc"
+        "extras": {
+            "premultipliedAlpha": true
+        },
+        "generator": "collada2gltf@985e183e0b14eccd090e8738d70057e5825dd8ee"
     },
     "bufferViews": {
         "bufferView_29": {
@@ -72,11 +76,6 @@
             "byteLength": 25272,
             "byteOffset": 76768,
             "target": 34963
-        },
-        "bufferView_31": {
-            "buffer": "duck",
-            "byteLength": 0,
-            "byteOffset": 102040
         }
     },
     "buffers": {
@@ -150,11 +149,11 @@
             "primitives": [
                 {
                     "attributes": {
-                        "NORMAL": "attribute_25",
-                        "POSITION": "attribute_23",
-                        "TEXCOORD_0": "attribute_27"
+                        "NORMAL": "accessor_25",
+                        "POSITION": "accessor_23",
+                        "TEXCOORD_0": "accessor_27"
                     },
-                    "indices": "indices_21",
+                    "indices": "accessor_21",
                     "material": "blinn3-fx",
                     "primitive": 4
                 }
@@ -266,10 +265,12 @@
     },
     "shaders": {
         "duck0FS": {
-            "path": "duck0FS.glsl"
+            "path": "duck0FS.glsl",
+            "type": 35632
         },
         "duck0VS": {
-            "path": "duck0VS.glsl"
+            "path": "duck0VS.glsl",
+            "type": 35633
         }
     },
     "skins": {},
@@ -391,7 +392,8 @@
             "internalFormat": 6408,
             "sampler": "sampler_0",
             "source": "image_0",
-            "target": 3553
+            "target": 3553,
+            "type": 5121
         }
     }
 }
