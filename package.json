@@ -2,7 +2,7 @@
     "name":"glTF-webgl-viewer",
     "version":"0.1.0",
     "dependencies": {
-        "montage": "git://github.com/montagejs/montage.git",
+        "montage": "~0.14.6",
         "digit": "~0.4.0",
         "matte": "0.1.1",
         "q" : "0.9.6",
