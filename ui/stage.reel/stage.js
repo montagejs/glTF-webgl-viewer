@@ -89,10 +89,10 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(firstTime) {
             if(firstTime) {
                 this.modelsController.content = [
-                    { "name": "duck", "path": "/model/duck/duck.json"},
-                    { "name": "Buggy", "path": "/model/rambler/Rambler.json"},
-                    { "name": "SuperMurdoch", "path": "/model/SuperMurdoch/SuperMurdoch.json"},
-                    { "name": "Wine", "path": "/model/wine/wine.json"}
+                    { "name": "Buggy", "path": "/model/rambler/Rambler.gltf"},
+                    { "name": "duck", "path": "/model/duck/duck.gltf"},
+                    { "name": "SuperMurdoch", "path": "/model/SuperMurdoch/SuperMurdoch.gltf"},
+                    { "name": "Wine", "path": "/model/wine/wine.gltf"}
                 ];
                 this.modelPath = this.modelsController.content[0].path;
             }
