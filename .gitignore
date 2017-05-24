@@ -1,5 +1,9 @@
-.DS_Store
+.npmignore
+.tmp
 .idea
+.DS_Store
+atlassian-ide-plugin.xml
 npm-debug.log
-*$py.class
-console.log
+report/
+node_modules/
+out/
