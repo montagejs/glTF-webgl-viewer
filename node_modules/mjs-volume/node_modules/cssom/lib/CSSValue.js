@@ -19,7 +19,7 @@ CSSOM.CSSValue.prototype = {
 	set cssText(text) {
 		var name = this._getConstructorName();
 
-		throw new Exception('DOMException: property "cssText" of "' + name + '" is readonly!');
+		throw new Exception('DOMException: can\'t set "cssText" to "' + text + '" because property "cssText" of "' + name + '" is readonly!');
 	},
 
 	get cssText() {
