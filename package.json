@@ -1,17 +1,15 @@
 {
   "name": "glTF-webgl-viewer",
   "version": "0.1.0",
-  "dependencies": {
-    "digit": "^3.0.0",
-    "matte": "^0.3.0",
-    "mjs-volume": "git://github.com/montagestudio/mjs-volume.git",
-    "montage": "^17.0.8"
-  },
-  "devDependencies": {
-    "express": "3.4.0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/montagejs/glTF-webgl-viewer.git"
+  },
+  "dependencies": {
+    "cssom": "^0.3.2",
+    "digit": "^3.0.0",
+    "matte": "^0.3.0",
+    "mjs-volume": "montagestudio/mjs-volume.git",
+    "montage": "^17.0.8"
   }
 }
