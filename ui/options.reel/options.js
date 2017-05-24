@@ -36,7 +36,7 @@
 var Montage = require("montage").Montage,
     Component = require("montage/ui/component").Component;
 
-exports.Options = Montage.create(Component, /** @lends module:"montage/ui/stage.reel".Stage# */ {
+exports.Options = Component.specialize(/** @lends module:"montage/ui/stage.reel".Stage# */ {
 
     bytesLimit: {
         value: 100

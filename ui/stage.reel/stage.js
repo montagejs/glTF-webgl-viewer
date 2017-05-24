@@ -54,7 +54,7 @@ var glMatrix = require("mjs-volume/runtime/dependencies/gl-matrix").glMatrix;
     @class module:"montage/ui/stage.reel".Stage
     @extends module:montage/ui/component.Component
 */
-exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.reel".Stage# */ {
+exports.Stage = Component.specialize(/** @lends module:"montage/ui/stage.reel".Stage# */ {
 
     constructor: {
         value: function Stage () {
@@ -142,7 +142,7 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
     handleCameraChange: {
         value: function(camera) {
             if (camera) {
-                var m3dNode = Montage.create(Node);
+                var m3dNode = new Node;
                 m3dNode.scene = this.view.scene;
                 m3dNode.id = camera.node.baseId;
                 this.view.viewPoint = m3dNode;
@@ -199,7 +199,7 @@ exports.Stage = Montage.create(Component, /** @lends module:"montage/ui/stage.re
         value: function(scenePath) {
             this.loadScene();
             if (this.view) {
-                var scene = Montage.create(Scene).init();
+                var scene = new Scene().init();
                 scene.path = scenePath;
                 this.view.scene = scene;
                 scene.addOwnPropertyChangeListener("status", this);
